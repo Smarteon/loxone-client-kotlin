@@ -8,9 +8,7 @@ interface LoxoneClient {
 
     suspend fun <R : LoxoneResponse> call(command: String, responseType: KClass<out R>): R
 
-    // can't use @JvmOverloads on interface
-    @Suppress("UNCHECKED_CAST")
-    suspend fun <R : LoxoneResponse> call(command: String): R = call(command, RawLoxoneResponse::class as KClass<out R>)
+    suspend fun callRaw(command: String): String
 
     fun close()
 

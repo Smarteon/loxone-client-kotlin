@@ -15,12 +15,23 @@ class HttpLoxoneClient(
 ) : LoxoneClient {
 
 
-
     private val httpClient = HttpClient(clientEngineFactory) {
         expectSuccess = true
     }
 
     override suspend fun <R : LoxoneResponse> call(command: String, responseType: KClass<out R>): R = httpClient.get {
+        commandReuqest(command)
+    }.body(responseType.typeInfo)
+
+    override suspend fun callRaw(command: String): String = httpClient.get {
+        commandReuqest(command)
+    }.body()
+
+    override fun close() {
+        httpClient.close()
+    }
+
+    private fun HttpRequestBuilder.commandReuqest(command: String) {
         url {
             protocol = if (profile.endpoint.useSsl) URLProtocol.HTTPS else URLProtocol.HTTP
             host = profile.endpoint.host
@@ -29,10 +40,6 @@ class HttpLoxoneClient(
         profile.credentials?.let {
             basicAuth(it.username, it.password)
         }
-    }.body(responseType.typeInfo)
-
-    override fun close() {
-        httpClient.close()
     }
 }
 
