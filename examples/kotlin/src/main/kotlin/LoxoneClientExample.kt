@@ -5,6 +5,7 @@ import cz.smarteon.loxone.LoxoneCredentials
 import cz.smarteon.loxone.LoxoneEndpoint
 import cz.smarteon.loxone.LoxoneProfile
 import cz.smarteon.loxone.ktor.HttpLoxoneClient
+import cz.smarteon.loxone.message.LoxoneMessage
 
 
 suspend fun main(args: Array<String>) {
@@ -16,4 +17,5 @@ suspend fun main(args: Array<String>) {
     )
 
     println(loxoneClient.callRaw("/jdev/cfg/api"))
+    println(loxoneClient.call("/jdev/cfg/api", LoxoneMessage::class))
 }
