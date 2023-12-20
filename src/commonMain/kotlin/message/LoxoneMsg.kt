@@ -10,7 +10,7 @@ import kotlinx.serialization.json.JsonNames
 
 
 @Serializable
-data class LoxoneMessage internal constructor(@SerialName("LL") private val content: Content) : LoxoneResponse {
+data class LoxoneMsg internal constructor(@SerialName("LL") private val content: Content) : LoxoneResponse {
     val control: String = content.control
     val code: String = content.code
     val value: String = content.value
@@ -24,3 +24,5 @@ data class LoxoneMessage internal constructor(@SerialName("LL") private val cont
         val value: String,
     )
 }
+
+interface LoxoneMsgVal

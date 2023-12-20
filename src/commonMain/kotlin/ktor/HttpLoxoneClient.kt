@@ -1,6 +1,7 @@
 package cz.smarteon.loxone.ktor
 
 import cz.smarteon.loxone.Codec
+import cz.smarteon.loxone.Command
 import cz.smarteon.loxone.LoxoneClient
 import cz.smarteon.loxone.LoxoneProfile
 import cz.smarteon.loxone.LoxoneResponse
@@ -26,24 +27,28 @@ class HttpLoxoneClient(
 
     }
 
-    override suspend fun <R : LoxoneResponse> call(command: String, responseType: KClass<out R>): R = httpClient.get {
-        commandReuqest(command)
-    }.body(responseType.typeInfo)
+    override suspend fun <RESPONSE : LoxoneResponse> call(command: Command<RESPONSE>): RESPONSE = httpClient.get {
+        commandReuqest {
+            pathSegments = command.pathSegments
+        }
+    }.body(command.responseType.typeInfo)
 
 
     override suspend fun callRaw(command: String): String = httpClient.get {
-        commandReuqest(command)
+        commandReuqest {
+            encodedPath = command
+        }
     }.body()
 
     override fun close() {
         httpClient.close()
     }
 
-    private fun HttpRequestBuilder.commandReuqest(command: String) {
+    private fun HttpRequestBuilder.commandReuqest(pathBuilder: URLBuilder.() -> Unit) {
         url {
             protocol = if (profile.endpoint.useSsl) URLProtocol.HTTPS else URLProtocol.HTTP
             host = profile.endpoint.host
-            encodedPath = command
+            pathBuilder()
         }
         profile.credentials?.let {
             basicAuth(it.username, it.password)

@@ -7,9 +7,9 @@ import io.kotest.matchers.shouldBe
 class LoxoneMessageTest : StringSpec({
 
     "should deserialize" {
-        JSON.decodeFromString<LoxoneMessage>("""
+        JSON.decodeFromString<LoxoneMsg>("""
             {"LL": { "control": "dev/cfg/api", "value": "SOMEVAL", "Code": "200"}}
-        """) shouldBe LoxoneMessage("dev/cfg/api", "200", "SOMEVAL")
+        """) shouldBe LoxoneMsg("dev/cfg/api", "200", "SOMEVAL")
     }
 
 })

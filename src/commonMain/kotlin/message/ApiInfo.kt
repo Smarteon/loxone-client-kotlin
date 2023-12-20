@@ -12,7 +12,7 @@ data class ApiInfo(
     val hasEventSlots: Boolean?,
     val isInTrust: Boolean?,
     @SerialName("local") val isLocal: Boolean?
-) {
+) : LoxoneMsgVal {
     companion object {
         @JvmStatic
         fun fromMessageValue(value: String): ApiInfo = JSON.decodeFromString(value.replace("'", "\""))
