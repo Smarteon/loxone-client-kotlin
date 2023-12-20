@@ -7,6 +7,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
+import kotlin.reflect.KClass
 
 
 @Serializable
@@ -23,6 +24,20 @@ data class LoxoneMsg internal constructor(@SerialName("LL") private val content:
         @JsonNames("code", "Code") val code: String,
         val value: String,
     )
+
+    fun valueForDecoding(cls: KClass<out LoxoneMsgVal>): String = when(cls) {
+        ApiInfo::class -> ApiInfo.valueForDecoding(value)
+        else -> value
+    }
+
+    companion object {
+        const val CODE_OK = "200"
+        const val CODE_AUTH_FAIL = "401"
+        const val CODE_NOT_AUTHENTICATED = "400"
+        const val CODE_NOT_FOUND = "404"
+        const val CODE_AUTH_TOO_LONG = "420"
+        const val CODE_UNAUTHORIZED = "500"
+    }
 }
 
 interface LoxoneMsgVal

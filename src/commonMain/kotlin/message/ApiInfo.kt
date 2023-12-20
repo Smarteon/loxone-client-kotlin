@@ -1,6 +1,5 @@
 package cz.smarteon.loxone.message
 
-import cz.smarteon.loxone.Codec.JSON
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmStatic
@@ -15,6 +14,6 @@ data class ApiInfo(
 ) : LoxoneMsgVal {
     companion object {
         @JvmStatic
-        fun fromMessageValue(value: String): ApiInfo = JSON.decodeFromString(value.replace("'", "\""))
+        fun valueForDecoding(value: String): String = value.replace("'", "\"")
     }
 }

@@ -1,6 +1,8 @@
 package cz.smarteon.loxone
 
-import kotlin.reflect.KClass
+import cz.smarteon.loxone.Codec.loxJson
+import cz.smarteon.loxone.message.LoxoneMsg.Companion.CODE_OK
+import cz.smarteon.loxone.message.LoxoneMsgVal
 
 interface LoxoneClient {
 
@@ -12,4 +14,12 @@ interface LoxoneClient {
 
     fun close()
 
+}
+
+suspend inline fun <reified VAL : LoxoneMsgVal> LoxoneClient.callForMsg(command: LoxoneMsgCommand<VAL>): VAL {
+    val msg = call(command)
+    return when (msg.code) {
+        CODE_OK -> loxJson.decodeFromString<VAL>(msg.valueForDecoding(VAL::class))
+        else -> error("TODO")
+    }
 }

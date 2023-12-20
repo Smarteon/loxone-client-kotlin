@@ -4,7 +4,7 @@ import kotlinx.serialization.json.Json
 
 object Codec {
 
-    val JSON = Json {
+    val loxJson = Json {
         ignoreUnknownKeys = true
     }
 }
