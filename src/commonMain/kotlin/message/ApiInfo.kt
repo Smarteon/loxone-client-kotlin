@@ -14,6 +14,6 @@ data class ApiInfo(
 ) : LoxoneMsgVal {
     companion object {
         @JvmStatic
-        fun valueForDecoding(value: String): String = value.replace("'", "\"")
+        fun valueForDecoding(value: String): String = value.trim('"').replace("'", "\"")
     }
 }

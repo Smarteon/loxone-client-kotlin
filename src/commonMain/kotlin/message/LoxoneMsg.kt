@@ -6,7 +6,11 @@ import cz.smarteon.loxone.LoxoneResponse
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNames
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.JsonTransformingSerializer
 import kotlin.reflect.KClass
 
 
@@ -22,7 +26,7 @@ data class LoxoneMsg internal constructor(@SerialName("LL") private val content:
     data class Content(
         val control: String,
         @JsonNames("code", "Code") val code: String,
-        val value: String,
+        @Serializable(with = ContentAsStringSerializer::class) val value: String,
     )
 
     fun valueForDecoding(cls: KClass<out LoxoneMsgVal>): String = when(cls) {
@@ -40,4 +44,10 @@ data class LoxoneMsg internal constructor(@SerialName("LL") private val content:
     }
 }
 
+
+internal class ContentAsStringSerializer : JsonTransformingSerializer<String>(String.serializer()) {
+    override fun transformDeserialize(element: JsonElement): JsonElement {
+        return JsonPrimitive(element.toString())
+    }
+}
 interface LoxoneMsgVal
