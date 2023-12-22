@@ -6,7 +6,7 @@ import cz.smarteon.loxone.LoxoneEndpoint
 import cz.smarteon.loxone.LoxoneProfile
 import cz.smarteon.loxone.callForMsg
 import cz.smarteon.loxone.ktor.HttpLoxoneClient
-import cz.smarteon.loxone.message.apiInfoCmd
+import cz.smarteon.loxone.message.ApiInfo
 
 
 suspend fun main(args: Array<String>) {
@@ -18,8 +18,8 @@ suspend fun main(args: Array<String>) {
     )
 
     println(loxoneClient.callRaw("/jdev/cfg/api"))
-    println(loxoneClient.call(apiInfoCmd))
-    println(loxoneClient.callForMsg(apiInfoCmd))
+    println(loxoneClient.call(ApiInfo.command))
+    println(loxoneClient.callForMsg(ApiInfo.command))
 
     loxoneClient.close()
 }

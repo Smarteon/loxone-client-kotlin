@@ -8,4 +8,5 @@ data class SimpleLoxoneMsgCommand<out VAL : LoxoneMsgVal>(
     override val valueType: KClass<out VAL>
 ) : LoxoneMsgCommand<VAL>
 
-val apiInfoCmd = SimpleLoxoneMsgCommand(listOf("jdev", "cfg", "api"), ApiInfo::class)
+internal inline fun <reified VAL : LoxoneMsgVal> cfgCommand(path: String): LoxoneMsgCommand<VAL>
+    = SimpleLoxoneMsgCommand(listOf("jdev", "cfg", path), VAL::class)

@@ -17,3 +17,7 @@ interface LoxoneMsgCommand<out VALUE : LoxoneMsgVal> : Command<LoxoneMsg> {
 
     val valueType: KClass<out VALUE>
 }
+
+interface CommandSupplier<out R : LoxoneResponse, out C : Command<R>> {
+    val command: C
+}

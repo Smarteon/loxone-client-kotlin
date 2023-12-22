@@ -1,5 +1,7 @@
 package cz.smarteon.loxone.message
 
+import cz.smarteon.loxone.CommandSupplier
+import cz.smarteon.loxone.LoxoneMsgCommand
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmStatic
@@ -12,7 +14,10 @@ data class ApiInfo(
     val isInTrust: Boolean?,
     @SerialName("local") val isLocal: Boolean?
 ) : LoxoneMsgVal {
-    companion object {
+    companion object : CommandSupplier<LoxoneMsg, LoxoneMsgCommand<ApiInfo>> {
+
+        override val command = cfgCommand<ApiInfo>("api")
+
         @JvmStatic
         fun valueForDecoding(value: String): String = value.trim('"').replace("'", "\"")
     }
