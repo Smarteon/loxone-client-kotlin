@@ -10,3 +10,6 @@ data class SimpleLoxoneMsgCommand<out VAL : LoxoneMsgVal>(
 
 internal inline fun <reified VAL : LoxoneMsgVal> cfgCommand(path: String): LoxoneMsgCommand<VAL>
     = SimpleLoxoneMsgCommand(listOf("jdev", "cfg", path), VAL::class)
+
+internal inline fun <reified VAL : LoxoneMsgVal> sysCommand(vararg paths: String): LoxoneMsgCommand<VAL>
+    = SimpleLoxoneMsgCommand(listOf("jdev", "sys") + paths, VAL::class)
