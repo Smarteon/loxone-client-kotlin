@@ -4,16 +4,25 @@ import kotlinx.serialization.json.Json
 
 object Codec {
 
+    private const val SEPARATOR = ':'
+
     val loxJson = Json {
         ignoreUnknownKeys = true
     }
 
-    fun hexToBytes(hex: String): ByteArray {
-        check(hex.length % 2 == 0) { "Must have an even length" }
+    @OptIn(ExperimentalStdlibApi::class)
+    fun hexToBytes(hex: String): ByteArray = hex.hexToByteArray(HexFormat.UpperCase)
 
-        return hex.chunked(2)
-            .map { it.toInt(16).toByte() }
-            .toByteArray()
+    @OptIn(ExperimentalStdlibApi::class)
+    fun bytesToHex(bytes: ByteArray, format: HexFormat = HexFormat.Default): String
+        = bytes.toHexString(format)
+
+    internal fun concat(first: String, second: String): String {
+        return first + SEPARATOR + second
+    }
+
+    internal fun concatToBytes(first: String, second: String): ByteArray {
+        return concat(first, second).encodeToByteArray()
     }
 
 }

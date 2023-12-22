@@ -58,6 +58,11 @@ kotlin {
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
 
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+
+                implementation(libs.kotlincrypto.sha1)
+                implementation(libs.kotlincrypto.sha2)
+                implementation(libs.kotlincrypto.hmacsha1)
+                implementation(libs.kotlincrypto.hmacsha2)
             }
         }
         val commonTest by getting {

@@ -2,6 +2,7 @@
 kotlin = "1.9.21"
 coroutines = "1.7.1"
 kotest = "5.8.0"
+kotlincrypto = "0.4.0"
 
 [libraries]
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
@@ -10,6 +11,11 @@ kotest-framework-datatest = { module = "io.kotest:kotest-framework-datatest", ve
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+
+kotlincrypto-sha1 = { module = "org.kotlincrypto.hash:sha1", version.ref = "kotlincrypto" }
+kotlincrypto-sha2 = { module = "org.kotlincrypto.hash:sha2", version.ref = "kotlincrypto" }
+kotlincrypto-hmacsha1 = { module = "org.kotlincrypto.macs:hmac-sha1", version.ref = "kotlincrypto" }
+kotlincrypto-hmacsha2 = { module = "org.kotlincrypto.macs:hmac-sha2", version.ref = "kotlincrypto" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

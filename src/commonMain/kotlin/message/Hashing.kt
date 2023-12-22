@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class Hashing(
     @Serializable(HexSerializer::class) val key: ByteArray,
     val salt: String,
-    val hashAlg: String
+    val hashAlg: String?
 ) : LoxoneMsgVal {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
