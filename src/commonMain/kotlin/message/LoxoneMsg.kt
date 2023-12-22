@@ -29,10 +29,7 @@ data class LoxoneMsg internal constructor(@SerialName("LL") private val content:
         @Serializable(with = ContentAsStringSerializer::class) val value: String,
     )
 
-    fun valueForDecoding(cls: KClass<out LoxoneMsgVal>): String = when(cls) {
-        ApiInfo::class -> ApiInfo.valueForDecoding(value)
-        else -> value
-    }
+    fun valueForDecoding(cls: KClass<out LoxoneMsgVal>): String = loxoneMsgValDecoders[cls]?.invoke(value) ?: value
 
     companion object {
         const val CODE_OK = "200"
@@ -50,4 +47,3 @@ internal class ContentAsStringSerializer : JsonTransformingSerializer<String>(St
         return JsonPrimitive(element.toString())
     }
 }
-interface LoxoneMsgVal

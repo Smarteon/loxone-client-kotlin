@@ -16,9 +16,12 @@ data class ApiInfo(
 ) : LoxoneMsgVal {
     companion object : CommandSupplier<LoxoneMsg, LoxoneMsgCommand<ApiInfo>> {
 
-        override val command = cfgCommand<ApiInfo>("api")
+        init {
+            loxoneMsgValDecoders += ApiInfo::class to {
+                it.trim('"').replace("'", "\"")
+            }
+        }
 
-        @JvmStatic
-        fun valueForDecoding(value: String): String = value.trim('"').replace("'", "\"")
+        override val command = cfgCommand<ApiInfo>("api")
     }
 }
