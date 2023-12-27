@@ -10,9 +10,10 @@ class LoxoneMsgTest : FreeSpec({
 
     "should deserialize" - {
         withData("\"string\"", "12.3", "true", "{}") { value ->
-            loxJson.decodeFromString<LoxoneMsg>("""
-                {"LL": { "control": "dev/cfg/api", "value": ${value}, "Code": "200"}}
-            """) shouldBe LoxoneMsg("dev/cfg/api", "200", value)
+            loxJson.decodeFromString<LoxoneMsg>(
+                //language=JSON
+                """{"LL": { "control": "dev/cfg/api", "value": ${value}, "Code": "200"}}"""
+            ) shouldBe LoxoneMsg("dev/cfg/api", "200", value)
         }
     }
 
