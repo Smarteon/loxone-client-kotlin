@@ -9,6 +9,8 @@ interface Command<out RESPONSE : LoxoneResponse> {
     val pathSegments: List<String>
 
     val responseType: KClass<out RESPONSE>
+
+    val authenticated: Boolean
 }
 
 interface LoxoneMsgCommand<out VALUE : LoxoneMsgVal> : Command<LoxoneMsg> {

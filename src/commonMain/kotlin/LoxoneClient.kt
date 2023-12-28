@@ -6,8 +6,6 @@ import cz.smarteon.loxone.message.LoxoneMsgVal
 
 interface LoxoneClient {
 
-    val profile: LoxoneProfile
-
     suspend fun <RESPONSE : LoxoneResponse> call(command: Command<RESPONSE>): RESPONSE
 
     suspend fun callRaw(command: String): String

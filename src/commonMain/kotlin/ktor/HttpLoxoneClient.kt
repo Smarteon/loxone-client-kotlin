@@ -3,8 +3,9 @@ package cz.smarteon.loxone.ktor
 import cz.smarteon.loxone.Codec
 import cz.smarteon.loxone.Command
 import cz.smarteon.loxone.LoxoneClient
-import cz.smarteon.loxone.LoxoneProfile
+import cz.smarteon.loxone.LoxoneEndpoint
 import cz.smarteon.loxone.LoxoneResponse
+import cz.smarteon.loxone.LoxoneTokenAuthenticator
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.*
@@ -12,9 +13,11 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlin.jvm.JvmOverloads
 
-class HttpLoxoneClient(
-    override val profile: LoxoneProfile
+class HttpLoxoneClient @JvmOverloads constructor(
+    private val endpoint: LoxoneEndpoint,
+    private val authenticator: LoxoneTokenAuthenticator? = null
 ) : LoxoneClient {
 
 
@@ -23,34 +26,43 @@ class HttpLoxoneClient(
         install(ContentNegotiation) {
             json(Codec.loxJson)
         }
-
     }
 
-    override suspend fun <RESPONSE : LoxoneResponse> call(command: Command<RESPONSE>): RESPONSE = httpClient.get {
-        commandReuqest {
-            pathSegments = command.pathSegments
+    override suspend fun <RESPONSE : LoxoneResponse> call(command: Command<RESPONSE>): RESPONSE {
+        if (command.authenticated) {
+            authenticator?.ensureAuthenticated(this)
         }
-    }.body(command.responseType.typeInfo)
+
+        return httpClient.get {
+            commandRequest(command.authenticated) {
+                pathSegments = command.pathSegments
+            }
+        }.body(command.responseType.typeInfo)
+    }
 
 
-    override suspend fun callRaw(command: String): String = httpClient.get {
-        commandReuqest {
-            encodedPath = command
-        }
-    }.body()
+    override suspend fun callRaw(command: String): String {
+        authenticator?.ensureAuthenticated(this)
+        return httpClient.get {
+            commandRequest {
+                encodedPath = command
+            }
+        }.body()
+    }
 
     override fun close() {
         httpClient.close()
     }
 
-    private fun HttpRequestBuilder.commandReuqest(pathBuilder: URLBuilder.() -> Unit) {
+    private fun HttpRequestBuilder.commandRequest(addAuth: Boolean = true, pathBuilder: URLBuilder.() -> Unit) {
         url {
-            protocol = if (profile.endpoint.useSsl) URLProtocol.HTTPS else URLProtocol.HTTP
-            host = profile.endpoint.host
+            protocol = if (endpoint.useSsl) URLProtocol.HTTPS else URLProtocol.HTTP
+            host = endpoint.host
             pathBuilder()
-        }
-        profile.credentials?.let {
-            basicAuth(it.username, it.password)
+            if (addAuth && authenticator != null) {
+                parameters.append("autht", authenticator.tokenHash("http-autht"))
+                parameters.append("user", authenticator.user)
+            }
         }
     }
 }

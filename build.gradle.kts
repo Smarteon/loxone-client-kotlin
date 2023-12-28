@@ -63,6 +63,9 @@ kotlin {
                 implementation(libs.kotlincrypto.sha2)
                 implementation(libs.kotlincrypto.hmacsha1)
                 implementation(libs.kotlincrypto.hmacsha2)
+
+                implementation(libs.stately.collections)
+                implementation(libs.kotlinx.datetime)
             }
         }
         val commonTest by getting {

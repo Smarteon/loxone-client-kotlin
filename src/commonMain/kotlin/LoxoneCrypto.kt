@@ -4,6 +4,7 @@ import cz.smarteon.loxone.Codec.bytesToHex
 import cz.smarteon.loxone.Codec.concat
 import cz.smarteon.loxone.Codec.concatToBytes
 import cz.smarteon.loxone.message.Hashing
+import cz.smarteon.loxone.message.Token
 import org.kotlincrypto.hash.sha1.SHA1
 import org.kotlincrypto.hash.sha2.SHA256
 import org.kotlincrypto.macs.hmac.sha1.HmacSHA1
@@ -52,6 +53,14 @@ internal object LoxoneCrypto {
             else -> throw LoxoneException("Unsupported hashing algorithm \"${hashing.hashAlg}\"")
         }
         return bytesToHex(mac.doFinal(secret.encodeToByteArray())).also {
+            // TODO
+            // LOG.trace("{} final hash: {}", operation, finalHash)
+        }
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    fun loxoneHmac(token: Token, operation: String): String = token.withTokenAndKey { token, key ->
+        bytesToHex(HmacSHA256(key).doFinal(token.encodeToByteArray())).also {
             // TODO
             // LOG.trace("{} final hash: {}", operation, finalHash)
         }

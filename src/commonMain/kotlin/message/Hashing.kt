@@ -29,6 +29,6 @@ data class Hashing(
     }
 
     companion object {
-        fun commandForUser(user: String) = sysCommand<Hashing>("getkey2", user)
+        fun commandForUser(user: String) = sysCommand<Hashing>("getkey2", user, authenticated = false)
     }
 }
