@@ -1,17 +1,23 @@
 package cz.smarteon.loxone
 
-import kotlin.reflect.KClass
+import cz.smarteon.loxone.Codec.loxJson
+import cz.smarteon.loxone.message.LoxoneMsg.Companion.CODE_OK
+import cz.smarteon.loxone.message.LoxoneMsgVal
 
 interface LoxoneClient {
 
-    val profile: LoxoneProfile
+    suspend fun <RESPONSE : LoxoneResponse> call(command: Command<RESPONSE>): RESPONSE
 
-    suspend fun <R : LoxoneResponse> call(command: String, responseType: KClass<out R>): R
-
-    // can't use @JvmOverloads on interface
-    @Suppress("UNCHECKED_CAST")
-    suspend fun <R : LoxoneResponse> call(command: String): R = call(command, RawLoxoneResponse::class as KClass<out R>)
+    suspend fun callRaw(command: String): String
 
     fun close()
 
+}
+
+suspend inline fun <reified VAL : LoxoneMsgVal> LoxoneClient.callForMsg(command: LoxoneMsgCommand<VAL>): VAL {
+    val msg = call(command)
+    return when (msg.code) {
+        CODE_OK -> loxJson.decodeFromString<VAL>(msg.valueForDecoding(VAL::class))
+        else -> error("TODO")
+    }
 }

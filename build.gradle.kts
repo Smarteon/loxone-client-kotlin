@@ -1,10 +1,13 @@
 plugins {
-    kotlin("multiplatform") version "1.9.0"
+    `java-library`
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotest.multiplatform)
     `maven-publish`
 }
 
 group = "cz.smarteon.loxone"
-version = "1.0-SNAPSHOT"
+version = "0.1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -51,16 +54,39 @@ kotlin {
                 implementation(kotlin("reflect"))
 
                 implementation("io.ktor:ktor-client-core:$ktor_version")
+                implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
+                implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
 
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+
+                implementation(libs.kotlincrypto.sha1)
+                implementation(libs.kotlincrypto.sha2)
+                implementation(libs.kotlincrypto.hmacsha1)
+                implementation(libs.kotlincrypto.hmacsha2)
+
+                implementation(libs.stately.collections)
+                implementation(libs.kotlinx.datetime)
             }
         }
-        val commonTest by getting
+        val commonTest by getting {
+            dependencies {
+                implementation(libs.kotest.assertions.core)
+                implementation(libs.kotest.framework.engine)
+                implementation(libs.kotest.framework.datatest)
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+            }
+        }
         val jvmMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-client-cio:$ktor_version")
             }
         }
-        val jvmTest by getting
+        val jvmTest by getting {
+            dependencies {
+                implementation(libs.kotest.runner.junit5)
+            }
+        }
         val jsMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-client-js:$ktor_version")
