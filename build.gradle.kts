@@ -33,6 +33,10 @@ kotlin {
                     enabled.set(true)
                 }
             }
+            testTask {
+                // enabling needs headless browser, skipped for now
+                enabled = false
+            }
         }
     }
     val hostOs = System.getProperty("os.name")
