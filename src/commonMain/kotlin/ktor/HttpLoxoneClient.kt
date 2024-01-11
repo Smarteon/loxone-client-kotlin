@@ -21,7 +21,7 @@ class HttpLoxoneClient @JvmOverloads constructor(
 ) : LoxoneClient {
 
 
-    private val httpClient = HttpClient(clientEngineFactory) {
+    private val httpClient = HttpClient() {
         expectSuccess = true
         install(ContentNegotiation) {
             json(Codec.loxJson)
@@ -66,5 +66,3 @@ class HttpLoxoneClient @JvmOverloads constructor(
         }
     }
 }
-
-internal expect val clientEngineFactory: HttpClientEngineFactory<*>
