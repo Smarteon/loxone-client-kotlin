@@ -19,6 +19,12 @@ val ktor_version = "2.3.7"
 kotlin {
     jvm {
         jvmToolchain(17)
+        compilations.all {
+            kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()
+            java {
+                targetCompatibility = JavaVersion.VERSION_11
+            }
+        }
         withJava()
         testRuns.named("test") {
             executionTask.configure {
