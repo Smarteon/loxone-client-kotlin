@@ -35,7 +35,7 @@ class HttpLoxoneClient @JvmOverloads constructor(
 
         return httpClient.get {
             commandRequest(command.authenticated) {
-                pathSegments = command.pathSegments
+                appendPathSegments(command.pathSegments)
             }
         }.body(command.responseType.typeInfo)
     }
@@ -45,12 +45,12 @@ class HttpLoxoneClient @JvmOverloads constructor(
         authenticator?.ensureAuthenticated(this)
         return httpClient.get {
             commandRequest {
-                encodedPath = command
+                appendEncodedPathSegments(command)
             }
         }.body()
     }
 
-    override fun close() {
+    override suspend fun close() {
         httpClient.close()
     }
 
@@ -58,6 +58,7 @@ class HttpLoxoneClient @JvmOverloads constructor(
         url {
             protocol = if (endpoint.useSsl) URLProtocol.HTTPS else URLProtocol.HTTP
             host = endpoint.host
+            appendEncodedPathSegments(endpoint.path)
             pathBuilder()
             if (addAuth && authenticator != null) {
                 parameters.append("autht", authenticator.tokenHash("http-autht"))

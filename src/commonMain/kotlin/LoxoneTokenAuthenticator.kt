@@ -47,7 +47,7 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
                             settings.clientInfo
                         )
                     )
-                    println("got token")
+                    println("got token ${token}")
                 }
 
                 state.needsRefresh -> {

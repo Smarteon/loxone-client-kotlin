@@ -47,7 +47,7 @@ kotlin {
     }
     linuxArm64()
     linuxX64()
-    mingwX64()
+//    mingwX64()
 
     applyDefaultHierarchyTemplate()
 
@@ -59,8 +59,10 @@ kotlin {
                 implementation("io.ktor:ktor-client-core:$ktor_version")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+                implementation("io.ktor:ktor-client-websockets:$ktor_version")
 
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+                implementation(libs.buffer)
 
                 implementation(libs.kotlincrypto.sha1)
                 implementation(libs.kotlincrypto.sha2)
@@ -100,10 +102,10 @@ kotlin {
                 implementation("io.ktor:ktor-client-cio:$ktor_version")
             }
         }
-        val mingwMain by getting {
-            dependencies {
-                implementation("io.ktor:ktor-client-winhttp:$ktor_version")
-            }
-        }
+//        val mingwMain by getting {
+//            dependencies {
+//                implementation("io.ktor:ktor-client-winhttp:$ktor_version")
+//            }
+//        }
     }
 }

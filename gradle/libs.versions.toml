@@ -20,6 +20,8 @@ kotlincrypto-hmacsha2 = { module = "org.kotlincrypto.macs:hmac-sha2", version.re
 
 stately-collections = { module = "co.touchlab:stately-concurrent-collections", version = "2.0.6" }
 
+buffer = { module = "com.ditchoom:buffer", version = "1.3.36" }
+
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

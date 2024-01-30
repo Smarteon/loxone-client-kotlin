@@ -10,7 +10,7 @@ interface LoxoneClient {
 
     suspend fun callRaw(command: String): String
 
-    fun close()
+    suspend fun close()
 
 }
 
