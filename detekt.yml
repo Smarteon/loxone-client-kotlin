@@ -1,0 +1,5 @@
+build:
+  maxIssues: 200
+naming:
+  InvalidPackageDeclaration:
+    rootPackage: cz.smarteon.loxone
