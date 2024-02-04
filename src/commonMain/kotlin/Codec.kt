@@ -21,8 +21,7 @@ object Codec {
     fun hexToBytes(hex: String): ByteArray = hex.hexToByteArray(HexFormat.UpperCase)
 
     @OptIn(ExperimentalStdlibApi::class)
-    fun bytesToHex(bytes: ByteArray, format: HexFormat = HexFormat.Default): String
-        = bytes.toHexString(format)
+    fun bytesToHex(bytes: ByteArray, format: HexFormat = HexFormat.Default): String = bytes.toHexString(format)
 
     internal fun concat(first: String, second: String): String {
         return first + SEPARATOR + second
@@ -38,10 +37,7 @@ object Codec {
         val limit: Int = buffer.limit()
         val first: Byte = buffer.readByte()
         return if (limit != PAYLOAD_LENGTH || first != FIRST_BYTE) {
-            throw LoxoneException(
-                "Payload is not a valid loxone message header, size="
-                    + limit + ", firstByte=" + first
-            )
+            throw LoxoneException("Payload is not a valid loxone message header, size=$limit, firstByte=$first")
         } else {
             MessageHeader(
                 MessageKind.entries[buffer.readByte().toInt()],
@@ -50,5 +46,4 @@ object Codec {
             )
         }
     }
-
 }

@@ -11,7 +11,6 @@ interface LoxoneClient {
     suspend fun callRaw(command: String): String
 
     suspend fun close()
-
 }
 
 suspend inline fun <reified VAL : LoxoneMsgVal> LoxoneClient.callForMsg(command: LoxoneMsgCommand<VAL>): VAL {

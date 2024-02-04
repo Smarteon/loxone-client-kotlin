@@ -6,7 +6,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmStatic
 
-
 /**
  * Represents Loxone authentication token.
  *
@@ -33,11 +32,10 @@ data class Token(
      */
     fun secondsToExpireFromNow() = LoxoneTime.getUnixEpochSeconds(validUntil) - Clock.System.now().epochSeconds
 
-    fun <T> withTokenAndKey(block: (String, ByteArray) -> T): T =
-        if (filled)
-            block(token!!, key!!)
-        else
-            throw IllegalStateException("Can't invoke block(token, key) on nonfilled token")
+    fun <T> withTokenAndKey(block: (String, ByteArray) -> T): T {
+        check(filled) { "Can't invoke block(token, key) on nonfilled token" }
+        return block(token!!, key!!)
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -63,7 +61,6 @@ data class Token(
         result = 31 * result + filled.hashCode()
         return result
     }
-
 
     companion object {
 

@@ -1,5 +1,6 @@
 package cz.smarteon.loxone
 
+import cz.smarteon.loxone.LoxoneCrypto.loxoneHashing
 import cz.smarteon.loxone.message.Hashing
 import cz.smarteon.loxone.message.Hashing.Companion.commandForUser
 import cz.smarteon.loxone.message.Token
@@ -40,14 +41,14 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
                 state.isExpired -> {
                     token = client.callForMsg(
                         commandGetToken(
-                            LoxoneCrypto.loxoneHashing(profile.credentials!!.password, checkNotNull(hashing), "getttoken", user),
+                            loxoneHashing(profile.credentials!!.password, checkNotNull(hashing), "getttoken", user),
                             user,
                             settings.tokenPermission,
                             settings.clientId,
                             settings.clientInfo
                         )
                     )
-                    println("got token ${token}")
+                    println("got token $token")
                 }
 
                 state.needsRefresh -> {
@@ -58,7 +59,6 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
                     // TODO("send authwithtoken if websockets")
                 }
             }
-
         }
     }
 

@@ -42,7 +42,8 @@ class WebsocketLoxoneClient(
             authenticator?.ensureAuthenticated(this)
         }
 
-        session.send(command.pathSegments.joinToString(separator = "/")) // TODO is url encoding of segments needed here?
+        // TODO is url encoding of segments needed here?
+        session.send(command.pathSegments.joinToString(separator = "/"))
 
         @Suppress("UNCHECKED_CAST")
         return loxJson.decodeFromString(command.responseType.deserializer, textMessages.receive()) as RESPONSE
@@ -61,14 +62,17 @@ class WebsocketLoxoneClient(
     }
 
     private suspend fun ensureSession(): ClientWebSocketSession {
-        webSocketSession.compareAndSet(null, client.webSocketSession (
-            host = endpoint.host,
-            port = endpoint.port,
-            path = endpoint.path + WS_PATH,
-            block = {
-                url.protocol = if (endpoint.useSsl) URLProtocol.WSS else URLProtocol.WS
-            }
-        ))
+        webSocketSession.compareAndSet(
+            null,
+            client.webSocketSession(
+                host = endpoint.host,
+                port = endpoint.port,
+                path = endpoint.path + WS_PATH,
+                block = {
+                    url.protocol = if (endpoint.useSsl) URLProtocol.WSS else URLProtocol.WS
+                }
+            )
+        )
         return checkNotNull(webSocketSession.get()) { "WebSocketSession should not be null right after init" }
             .also { session ->
                 session.incoming.receiveAsFlow().onEach(::processFrame).launchIn(scope)
@@ -76,7 +80,7 @@ class WebsocketLoxoneClient(
     }
 
     private suspend fun processFrame(frame: Frame) {
-        when(frame.frameType) {
+        when (frame.frameType) {
             FrameType.BINARY -> println(Codec.readHeader(frame.data))
             FrameType.TEXT -> textMessages.send(frame.data.decodeToString())
             else -> error("Unexpected frame of type ${frame.frameType}")

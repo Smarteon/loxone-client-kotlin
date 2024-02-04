@@ -3,3 +3,10 @@ build:
 naming:
   InvalidPackageDeclaration:
     rootPackage: cz.smarteon.loxone
+formatting:
+  NoWildcardImports:
+    active: false
+style:
+  WildcardImport:
+    excludeImports:
+      - 'io.ktor.*'
