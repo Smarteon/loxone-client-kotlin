@@ -1,0 +1,12 @@
+---
+name: Loxone Client Kotlin check
+
+on:
+  pull_request:
+    paths:
+      - '.*gradle.*'
+      - 'src/**'
+
+jobs:
+  call-check:
+    uses: ./.github/workflows/check.yml
