@@ -1,0 +1,13 @@
+---
+name: Kotlin Example check
+
+on:
+  pull_request:
+    paths:
+      - 'examples/kotlin/**'
+
+jobs:
+  call-check:
+    uses: ./.github/workflows/check.yml
+    with:
+      projectDir: 'examples/kotlin'

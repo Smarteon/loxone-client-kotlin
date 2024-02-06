@@ -1,0 +1,13 @@
+---
+name: Java Example check
+
+on:
+  pull_request:
+    paths:
+      - 'examples/java/**'
+
+jobs:
+  call-check:
+    uses: ./.github/workflows/check.yml
+    with:
+      projectDir: 'examples/java'
