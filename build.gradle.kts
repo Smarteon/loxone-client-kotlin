@@ -72,8 +72,10 @@ kotlin {
                 implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
                 implementation("io.ktor:ktor-client-websockets:$ktor_version")
+                implementation("io.ktor:ktor-client-logging:$ktor_version")
 
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+                implementation(libs.kotlin.logging)
                 implementation(libs.buffer)
 
                 implementation(libs.kotlincrypto.sha1)

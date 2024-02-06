@@ -24,6 +24,8 @@ stately-collections = { module = "co.touchlab:stately-concurrent-collections", v
 buffer = { module = "com.ditchoom:buffer", version = "1.3.36" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 
+kotlin-logging = { module = "io.github.oshai:kotlin-logging", version = "6.0.3" }
+
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
