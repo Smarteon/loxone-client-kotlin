@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotest.multiplatform)
+    alias(libs.plugins.detekt)
     `maven-publish`
 }
 
@@ -11,6 +12,17 @@ version = "0.1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+}
+
+dependencies {
+    detektPlugins(libs.detekt.formatting)
+}
+
+detekt {
+    source.from("src/commonMain/kotlin")
+    toolVersion = libs.versions.detekt.get()
+    config.setFrom(file("detekt.yml"))
+    buildUponDefaultConfig = true
 }
 
 val ktor_version = "2.3.7"

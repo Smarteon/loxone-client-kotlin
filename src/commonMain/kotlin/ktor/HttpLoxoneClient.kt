@@ -8,7 +8,6 @@ import cz.smarteon.loxone.LoxoneResponse
 import cz.smarteon.loxone.LoxoneTokenAuthenticator
 import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.engine.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -20,8 +19,7 @@ class HttpLoxoneClient @JvmOverloads constructor(
     private val authenticator: LoxoneTokenAuthenticator? = null
 ) : LoxoneClient {
 
-
-    private val httpClient = HttpClient() {
+    private val httpClient = HttpClient {
         expectSuccess = true
         install(ContentNegotiation) {
             json(Codec.loxJson)
@@ -39,7 +37,6 @@ class HttpLoxoneClient @JvmOverloads constructor(
             }
         }.body(command.responseType.typeInfo)
     }
-
 
     override suspend fun callRaw(command: String): String {
         authenticator?.ensureAuthenticated(this)

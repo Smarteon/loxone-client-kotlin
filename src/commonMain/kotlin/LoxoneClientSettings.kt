@@ -3,7 +3,6 @@ package cz.smarteon.loxone
 import cz.smarteon.loxone.message.TokenPermission
 import kotlin.jvm.JvmOverloads
 
-
 data class LoxoneClientSettings @JvmOverloads constructor(
     val tokenPermission: TokenPermission = TokenPermission.APP,
     val clientId: String = DEFAULT_CLIENT_ID,

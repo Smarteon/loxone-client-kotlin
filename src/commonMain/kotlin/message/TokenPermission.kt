@@ -5,11 +5,14 @@ package cz.smarteon.loxone.message
  *
  * @property[id] numeric representation as used in Loxone API
  */
+@Suppress("MagicNumber")
 enum class TokenPermission(val id: Int) {
+
     /**
      * WEB permission - short token validity (lasts for hours).
      */
     WEB(2),
+
     /**
      * APP permission - long token validity (lasts for weeks).
      */

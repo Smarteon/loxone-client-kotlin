@@ -3,7 +3,6 @@ package cz.smarteon.loxone
 import co.touchlab.stately.collections.ConcurrentMutableMap
 import cz.smarteon.loxone.message.Token
 
-
 interface TokenRepository {
     /**
      * Get the token for profile from repository.

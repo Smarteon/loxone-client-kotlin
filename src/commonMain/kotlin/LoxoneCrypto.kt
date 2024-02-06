@@ -46,7 +46,7 @@ internal object LoxoneCrypto {
      * @return loxone hmac of given parameters
      */
     @OptIn(ExperimentalStdlibApi::class)
-    fun loxoneHmac(secret: String, hashing: Hashing, operation: String): String {
+    fun loxoneHmac(secret: String, hashing: Hashing, @Suppress("UnusedParameter") operation: String): String {
         val mac = when (hashing.hashAlg) {
             null, "SHA1" -> HmacSHA1(hashing.key)
             "SHA256" -> HmacSHA256(hashing.key)
@@ -59,12 +59,13 @@ internal object LoxoneCrypto {
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    fun loxoneHmac(token: Token, operation: String): String = token.withTokenAndKey { token, key ->
-        bytesToHex(HmacSHA256(key).doFinal(token.encodeToByteArray())).also {
-            // TODO
-            // LOG.trace("{} final hash: {}", operation, finalHash)
+    fun loxoneHmac(token: Token, @Suppress("UnusedParameter") operation: String): String =
+        token.withTokenAndKey { token, key ->
+            bytesToHex(HmacSHA256(key).doFinal(token.encodeToByteArray())).also {
+                // TODO
+                // LOG.trace("{} final hash: {}", operation, finalHash)
+            }
         }
-    }
 
     @OptIn(ExperimentalStdlibApi::class)
     private fun loxoneDigest(secret: String, hashing: Hashing): String {
@@ -78,5 +79,4 @@ internal object LoxoneCrypto {
             HexFormat.UpperCase
         )
     }
-
 }

@@ -13,7 +13,6 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.JsonTransformingSerializer
 import kotlin.reflect.KClass
 
-
 @Serializable
 data class LoxoneMsg internal constructor(@SerialName("LL") private val content: Content) : LoxoneResponse {
     val control: String = content.control
@@ -40,7 +39,6 @@ data class LoxoneMsg internal constructor(@SerialName("LL") private val content:
         const val CODE_UNAUTHORIZED = "500"
     }
 }
-
 
 internal class ContentAsStringSerializer : JsonTransformingSerializer<String>(String.serializer()) {
     override fun transformDeserialize(element: JsonElement): JsonElement {

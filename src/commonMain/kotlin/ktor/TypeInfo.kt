@@ -3,7 +3,6 @@ package cz.smarteon.loxone.ktor
 import cz.smarteon.loxone.LoxoneResponse
 import cz.smarteon.loxone.message.LoxoneMsg
 import io.ktor.util.reflect.*
-import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
 import kotlin.reflect.KClass

@@ -10,8 +10,7 @@ import kotlinx.serialization.encoding.Encoder
 
 object HexSerializer : KSerializer<ByteArray> {
 
-    override val descriptor: SerialDescriptor
-        = PrimitiveSerialDescriptor("hexString", PrimitiveKind.STRING)
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("hexString", PrimitiveKind.STRING)
 
     override fun deserialize(decoder: Decoder): ByteArray {
         return Codec.hexToBytes(decoder.decodeString())

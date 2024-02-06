@@ -1,6 +1,5 @@
 package cz.smarteon.loxone.message
 
-
 /**
  * Helper class for token state diagnostics.
  */
@@ -19,12 +18,14 @@ internal class TokenState(token: Token?) {
      * When [.isExpired] returns true, this method will return false.
      * Is true if token is close to expiry but not yet too close, false otherwise
      */
-    val needsRefresh: Boolean = secondsToExpire != null && REFRESH_THRESHOLD >= secondsToExpire && secondsToExpire > MAX_SECONDS_TO_EXPIRE
+    val needsRefresh: Boolean =
+        secondsToExpire != null && REFRESH_THRESHOLD >= secondsToExpire && secondsToExpire > MAX_SECONDS_TO_EXPIRE
 
     /**
      * Number of seconds remaining until [.needsRefresh] become true.
      */
-    val secondsToRefresh: Long = if (secondsToExpire == null || secondsToExpire < REFRESH_THRESHOLD) 0 else secondsToExpire - REFRESH_THRESHOLD
+    val secondsToRefresh: Long =
+        if (secondsToExpire == null || secondsToExpire < REFRESH_THRESHOLD) 0 else secondsToExpire - REFRESH_THRESHOLD
 
     /**
      * Check whether the token is still valid and doesn't need refresh.

@@ -4,7 +4,6 @@ import cz.smarteon.loxone.CommandSupplier
 import cz.smarteon.loxone.LoxoneMsgCommand
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmStatic
 
 @Serializable
 data class ApiInfo(

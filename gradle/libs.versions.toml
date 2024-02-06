@@ -3,6 +3,7 @@ kotlin = "1.9.22"
 coroutines = "1.7.1"
 kotest = "5.8.0"
 kotlincrypto = "0.4.0"
+detekt = "1.23.3"
 
 [libraries]
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
@@ -21,8 +22,10 @@ kotlincrypto-hmacsha2 = { module = "org.kotlincrypto.macs:hmac-sha2", version.re
 stately-collections = { module = "co.touchlab:stately-concurrent-collections", version = "2.0.6" }
 
 buffer = { module = "com.ditchoom:buffer", version = "1.3.36" }
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotest-multiplatform = { id = "io.kotest.multiplatform", version.ref = "kotest" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt"}
