@@ -29,7 +29,7 @@ class HttpLoxoneClient @JvmOverloads constructor(
             json(Codec.loxJson)
         }
         install(Logging) {
-            logger = object: Logger {
+            logger = object : Logger {
                 override fun log(message: String) {
                     this@HttpLoxoneClient.logger.debug { message }
                 }

@@ -56,7 +56,7 @@ internal object LoxoneCrypto {
             else -> throw LoxoneException("Unsupported hashing algorithm \"${hashing.hashAlg}\"")
         }
         return bytesToHex(mac.doFinal(secret.encodeToByteArray())).also { finalHash ->
-             logger.trace { "$operation final hash: $finalHash" }
+            logger.trace { "$operation final hash: $finalHash" }
         }
     }
 
