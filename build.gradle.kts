@@ -25,9 +25,6 @@ detekt {
     buildUponDefaultConfig = true
 }
 
-val ktor_version = "2.3.7"
-
-
 kotlin {
     jvm {
         jvmToolchain(17)
@@ -68,11 +65,11 @@ kotlin {
             dependencies {
                 implementation(kotlin("reflect"))
 
-                implementation("io.ktor:ktor-client-core:$ktor_version")
-                implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
-                implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
-                implementation("io.ktor:ktor-client-websockets:$ktor_version")
-                implementation("io.ktor:ktor-client-logging:$ktor_version")
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.content.negotiation)
+                implementation(libs.ktor.serialization.kotlinx.json)
+                implementation(libs.ktor.client.websockets)
+                implementation(libs.ktor.client.logging)
 
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
                 implementation(libs.kotlin.logging)
@@ -98,7 +95,7 @@ kotlin {
         }
         val jvmMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-client-cio:$ktor_version")
+                implementation(libs.ktor.client.cio)
             }
         }
         val jvmTest by getting {
@@ -108,12 +105,12 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-client-js:$ktor_version")
+                implementation(libs.ktor.client.js)
             }
         }
         val linuxMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-client-cio:$ktor_version")
+                implementation(libs.ktor.client.cio)
             }
         }
 //        val mingwMain by getting {
