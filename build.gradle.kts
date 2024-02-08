@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotest.multiplatform)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.kover)
     `maven-publish`
 }
 
