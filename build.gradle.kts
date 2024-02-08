@@ -72,7 +72,7 @@ kotlin {
                 implementation(libs.ktor.client.websockets)
                 implementation(libs.ktor.client.logging)
 
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+                implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kotlin.logging)
                 implementation(libs.buffer)
 
