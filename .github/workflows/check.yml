@@ -28,3 +28,13 @@ jobs:
 
       - name: Check with Gradle
         run: ./gradlew -p ${{ inputs.projectDir }} clean check
+
+      - name: Generate Coverage report
+        if: ${{ inputs.projectDir == '.' }}
+        run: ./gradlew -p ${{ inputs.projectDir }} koverXmlReport
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        if: ${{ inputs.projectDir == '.' }}
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
