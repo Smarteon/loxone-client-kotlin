@@ -5,12 +5,15 @@ import cz.smarteon.loxone.Codec.concat
 import cz.smarteon.loxone.Codec.concatToBytes
 import cz.smarteon.loxone.message.Hashing
 import cz.smarteon.loxone.message.Token
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.kotlincrypto.hash.sha1.SHA1
 import org.kotlincrypto.hash.sha2.SHA256
 import org.kotlincrypto.macs.hmac.sha1.HmacSHA1
 import org.kotlincrypto.macs.hmac.sha2.HmacSHA256
 
 internal object LoxoneCrypto {
+
+    private val logger = KotlinLogging.logger {}
 
     /**
      * Performs hashing algorithm as required by loxone specification.
@@ -30,7 +33,7 @@ internal object LoxoneCrypto {
     ): String {
         val secretHash = loxoneDigest(secret, hashing)
 
-//      TODO  LoxoneCrypto.LOG.trace("{} hash: {}", operation, secretHash)
+        logger.trace { "$operation hash: $secretHash" }
 
         val toFinalHash = loxoneUser?.let { concat(it, secretHash) } ?: secretHash
         return loxoneHmac(toFinalHash, hashing, operation)
@@ -46,24 +49,22 @@ internal object LoxoneCrypto {
      * @return loxone hmac of given parameters
      */
     @OptIn(ExperimentalStdlibApi::class)
-    fun loxoneHmac(secret: String, hashing: Hashing, @Suppress("UnusedParameter") operation: String): String {
+    fun loxoneHmac(secret: String, hashing: Hashing, operation: String): String {
         val mac = when (hashing.hashAlg) {
             null, "SHA1" -> HmacSHA1(hashing.key)
             "SHA256" -> HmacSHA256(hashing.key)
             else -> throw LoxoneException("Unsupported hashing algorithm \"${hashing.hashAlg}\"")
         }
-        return bytesToHex(mac.doFinal(secret.encodeToByteArray())).also {
-            // TODO
-            // LOG.trace("{} final hash: {}", operation, finalHash)
+        return bytesToHex(mac.doFinal(secret.encodeToByteArray())).also { finalHash ->
+            logger.trace { "$operation final hash: $finalHash" }
         }
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    fun loxoneHmac(token: Token, @Suppress("UnusedParameter") operation: String): String =
-        token.withTokenAndKey { token, key ->
-            bytesToHex(HmacSHA256(key).doFinal(token.encodeToByteArray())).also {
-                // TODO
-                // LOG.trace("{} final hash: {}", operation, finalHash)
+    fun loxoneHmac(token: Token, operation: String): String =
+        token.withTokenAndKey { tokenVal, key ->
+            bytesToHex(HmacSHA256(key).doFinal(tokenVal.encodeToByteArray())).also { finalHash ->
+                logger.trace { "$operation final hash: $finalHash" }
             }
         }
 

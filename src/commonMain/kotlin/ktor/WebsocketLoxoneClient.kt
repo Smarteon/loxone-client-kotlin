@@ -8,6 +8,7 @@ import cz.smarteon.loxone.LoxoneClient
 import cz.smarteon.loxone.LoxoneEndpoint
 import cz.smarteon.loxone.LoxoneResponse
 import cz.smarteon.loxone.LoxoneTokenAuthenticator
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.http.*
@@ -26,6 +27,8 @@ class WebsocketLoxoneClient(
     private val authenticator: LoxoneTokenAuthenticator? = null
 ) : LoxoneClient {
 
+    private val logger = KotlinLogging.logger {}
+
     private val client = HttpClient {
         install(WebSockets)
     }
@@ -43,7 +46,9 @@ class WebsocketLoxoneClient(
         }
 
         // TODO is url encoding of segments needed here?
-        session.send(command.pathSegments.joinToString(separator = "/"))
+        val joinedCmd = command.pathSegments.joinToString(separator = "/")
+        logger.trace { "Sending command: $joinedCmd" }
+        session.send(joinedCmd)
 
         @Suppress("UNCHECKED_CAST")
         return loxJson.decodeFromString(command.responseType.deserializer, textMessages.receive()) as RESPONSE
@@ -52,6 +57,7 @@ class WebsocketLoxoneClient(
     override suspend fun callRaw(command: String): String {
         val session = ensureSession()
         authenticator?.ensureAuthenticated(this)
+        logger.trace { "Sending command: $command" }
         session.send(command)
         return textMessages.receive()
     }
@@ -81,8 +87,15 @@ class WebsocketLoxoneClient(
 
     private suspend fun processFrame(frame: Frame) {
         when (frame.frameType) {
-            FrameType.BINARY -> println(Codec.readHeader(frame.data))
-            FrameType.TEXT -> textMessages.send(frame.data.decodeToString())
+            FrameType.BINARY -> {
+                val header = Codec.readHeader(frame.data)
+                logger.trace { "Incoming message header: $header" }
+            }
+            FrameType.TEXT -> {
+                val textData = frame.data.decodeToString()
+                logger.trace { "Incoming message: $textData" }
+                textMessages.send(textData)
+            }
             else -> error("Unexpected frame of type ${frame.frameType}")
         }
     }

@@ -6,6 +6,7 @@ import cz.smarteon.loxone.message.Hashing.Companion.commandForUser
 import cz.smarteon.loxone.message.Token
 import cz.smarteon.loxone.message.Token.Companion.commandGetToken
 import cz.smarteon.loxone.message.TokenState
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.jvm.JvmOverloads
@@ -16,6 +17,9 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
     private val repository: TokenRepository = DEFAULT_TOKEN_REPO,
     private val settings: LoxoneClientSettings = LoxoneClientSettings()
 ) {
+
+    private val logger = KotlinLogging.logger {}
+
     val user: String = requireNotNull(profile.credentials) {
         "Credentials can't be null for authenticator"
     }.username
@@ -39,6 +43,7 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
             val state = TokenState(token)
             when {
                 state.isExpired -> {
+                    logger.debug { "Token expired, requesting new one" }
                     token = client.callForMsg(
                         commandGetToken(
                             loxoneHashing(profile.credentials!!.password, checkNotNull(hashing), "getttoken", user),
@@ -48,7 +53,7 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
                             settings.clientInfo
                         )
                     )
-                    println("got token $token")
+                    logger.debug { "Received token: $token" }
                 }
 
                 state.needsRefresh -> {
