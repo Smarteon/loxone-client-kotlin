@@ -8,6 +8,7 @@ import cz.smarteon.loxone.LoxoneClient
 import cz.smarteon.loxone.LoxoneEndpoint
 import cz.smarteon.loxone.LoxoneResponse
 import cz.smarteon.loxone.LoxoneTokenAuthenticator
+import cz.smarteon.loxone.message.MessageHeader
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
@@ -21,6 +22,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.withTimeout
 
 class WebsocketLoxoneClient(
     private val endpoint: LoxoneEndpoint,
@@ -37,6 +39,7 @@ class WebsocketLoxoneClient(
 
     private val scope = CoroutineScope(Dispatchers.Default) // TODO think more about correct dispacthers
 
+    private val textHeader = Channel<MessageHeader>(capacity = 1)
     private val textMessages = Channel<String>(capacity = 10)
 
     override suspend fun <RESPONSE : LoxoneResponse> call(command: Command<RESPONSE>): RESPONSE {
@@ -51,7 +54,7 @@ class WebsocketLoxoneClient(
         session.send(joinedCmd)
 
         @Suppress("UNCHECKED_CAST")
-        return loxJson.decodeFromString(command.responseType.deserializer, textMessages.receive()) as RESPONSE
+        return loxJson.decodeFromString(command.responseType.deserializer, receiveTextMessage()) as RESPONSE
     }
 
     override suspend fun callRaw(command: String): String {
@@ -59,7 +62,7 @@ class WebsocketLoxoneClient(
         authenticator?.ensureAuthenticated(this)
         logger.trace { "Sending command: $command" }
         session.send(command)
-        return textMessages.receive()
+        return receiveTextMessage()
     }
 
     override suspend fun close() {
@@ -90,6 +93,7 @@ class WebsocketLoxoneClient(
             FrameType.BINARY -> {
                 val header = Codec.readHeader(frame.data)
                 logger.trace { "Incoming message header: $header" }
+                textHeader.send(header)
             }
             FrameType.TEXT -> {
                 val textData = frame.data.decodeToString()
@@ -100,7 +104,13 @@ class WebsocketLoxoneClient(
         }
     }
 
+    private suspend fun receiveTextMessage() = withTimeout(RCV_TXT_MSG_TIMEOUT_MILLIS) {
+        textHeader.receive()
+        textMessages.receive()
+    }
+
     companion object {
         private const val WS_PATH = "/ws/rfc6455"
+        private const val RCV_TXT_MSG_TIMEOUT_MILLIS = 10000L
     }
 }
