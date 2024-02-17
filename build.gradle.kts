@@ -6,13 +6,22 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.kover)
     alias(libs.plugins.dokka)
+    alias(libs.plugins.axion.release)
     `maven-publish`
     signing
     alias(libs.plugins.nexus.publish)
 }
 
 group = "cz.smarteon.loxone"
-version = "0.1.0-SNAPSHOT"
+
+scmVersion {
+    tag {
+        prefix.set(project.name)
+        versionSeparator.set("-")
+    }
+}
+
+project.version = scmVersion.version
 
 repositories {
     mavenCentral()
