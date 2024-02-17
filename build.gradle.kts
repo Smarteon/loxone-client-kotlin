@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotest.multiplatform)
     alias(libs.plugins.detekt)
     alias(libs.plugins.kover)
+    alias(libs.plugins.dokka)
     `maven-publish`
 }
 
@@ -122,9 +123,16 @@ kotlin {
     }
 }
 
+val dokkaJar by tasks.creating(Jar::class) {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    archiveClassifier.set("javadoc")
+    from(tasks.getByName("dokkaHtml"))
+}
+
 publishing {
     publications.configureEach {
         if (this is MavenPublication) {
+            artifact(dokkaJar)
             pom {
                 name.set(project.name)
                 url.set("https://github.com/Smarteon/loxone-client-kotlin")
