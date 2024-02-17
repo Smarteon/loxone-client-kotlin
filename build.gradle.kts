@@ -121,3 +121,41 @@ kotlin {
 //        }
     }
 }
+
+publishing {
+    publications.configureEach {
+        if (this is MavenPublication) {
+            pom {
+                name.set(project.name)
+                url.set("https://github.com/Smarteon/loxone-client-kotlin")
+                description.set("Kotlin implementation of the Loxone&trade; communication protocol")
+                organization {
+                    name.set("Smarteon Systems s.r.o")
+                    url.set("https://smarteon.cz")
+                }
+                licenses {
+                    license {
+                        name.set("3-Clause BSD License")
+                        url.set("https://opensource.org/licenses/BSD-3-Clause")
+                        distribution.set("repo")
+                    }
+                }
+                developers {
+                    developer {
+                        name.set("Jiří Mikulášek")
+                        email.set("jiri.mikulasek@smarteon.cz")
+                    }
+                    developer {
+                        name.set("Tomáš Knotek")
+                        email.set("tomas.knotek@smarteon.cz")
+                    }
+                }
+                scm {
+                    url.set("git@github.com:Smarteon/loxone-client-kotlin.git")
+                    connection.set("scm:git:git@github.com:Smarteon/loxone-client-kotlin.git")
+                    tag.set(project.version.toString())
+                }
+            }
+        }
+    }
+}
