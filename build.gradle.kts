@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kover)
     alias(libs.plugins.dokka)
     `maven-publish`
+    signing
 }
 
 group = "cz.smarteon.loxone"
@@ -165,5 +166,20 @@ publishing {
                 }
             }
         }
+    }
+}
+
+val signingKey: String? = System.getenv("SIGNING_KEY")
+val signingPassword: String? = System.getenv("SIGNING_PASS")
+if (signingKey != null && signingPassword != null) {
+    signing {
+        isRequired = !project.version.toString().endsWith("-SNAPSHOT")
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign(publishing.publications)
+    }
+
+    // workaround for https://github.com/gradle/gradle/issues/26091
+    tasks.withType<AbstractPublishToMaven>().configureEach {
+        dependsOn(tasks.withType<Sign>())
     }
 }
