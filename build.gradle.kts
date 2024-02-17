@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.dokka)
     `maven-publish`
     signing
+    alias(libs.plugins.nexus.publish)
 }
 
 group = "cz.smarteon.loxone"
@@ -181,5 +182,18 @@ if (signingKey != null && signingPassword != null) {
     // workaround for https://github.com/gradle/gradle/issues/26091
     tasks.withType<AbstractPublishToMaven>().configureEach {
         dependsOn(tasks.withType<Sign>())
+    }
+}
+
+val ossUser: String? = System.getenv("OSS_USER")
+val ossPass: String? = System.getenv("OSS_PASS")
+if (ossUser != null && ossPass != null) {
+    nexusPublishing {
+        repositories {
+            sonatype {
+                username.set(ossUser)
+                password.set(ossPass)
+            }
+        }
     }
 }
