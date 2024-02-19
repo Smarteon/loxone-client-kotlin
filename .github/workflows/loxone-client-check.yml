@@ -4,7 +4,8 @@ name: Loxone Client Kotlin check
 on:
   pull_request:
     paths:
-      - '.*gradle.*'
+      - '**/*.versions.toml'
+      - '*.gradle.*'
       - 'src/**'
 
 jobs:
