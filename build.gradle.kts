@@ -69,66 +69,48 @@ kotlin {
     }
     linuxArm64()
     linuxX64()
-//    mingwX64()
 
     applyDefaultHierarchyTemplate()
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(kotlin("reflect"))
+        commonMain.dependencies {
+            implementation(kotlin("reflect"))
 
-                implementation(libs.ktor.client.core)
-                implementation(libs.ktor.client.content.negotiation)
-                implementation(libs.ktor.serialization.kotlinx.json)
-                implementation(libs.ktor.client.websockets)
-                implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.websockets)
+            implementation(libs.ktor.client.logging)
 
-                implementation(libs.kotlinx.serialization.json)
-                implementation(libs.kotlin.logging)
-                implementation(libs.buffer)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlin.logging)
+            implementation(libs.buffer)
 
-                implementation(libs.kotlincrypto.sha1)
-                implementation(libs.kotlincrypto.sha2)
-                implementation(libs.kotlincrypto.hmacsha1)
-                implementation(libs.kotlincrypto.hmacsha2)
+            implementation(libs.kotlincrypto.sha1)
+            implementation(libs.kotlincrypto.sha2)
+            implementation(libs.kotlincrypto.hmacsha1)
+            implementation(libs.kotlincrypto.hmacsha2)
 
-                implementation(libs.stately.collections)
-                implementation(libs.kotlinx.datetime)
-            }
+            implementation(libs.stately.collections)
+            implementation(libs.kotlinx.datetime)
         }
-        val commonTest by getting {
-            dependencies {
-                implementation(libs.kotest.assertions.core)
-                implementation(libs.kotest.framework.engine)
-                implementation(libs.kotest.framework.datatest)
-            }
+        commonTest.dependencies {
+            implementation(libs.kotest.assertions.core)
+            implementation(libs.kotest.framework.engine)
+            implementation(libs.kotest.framework.datatest)
         }
-        val jvmMain by getting {
-            dependencies {
-                implementation(libs.ktor.client.cio)
-            }
+        jvmMain.dependencies {
+            implementation(libs.ktor.client.cio)
         }
-        val jvmTest by getting {
-            dependencies {
-                implementation(libs.kotest.runner.junit5)
-            }
+        jvmTest.dependencies {
+            implementation(libs.kotest.runner.junit5)
         }
-        val jsMain by getting {
-            dependencies {
-                implementation(libs.ktor.client.js)
-            }
+        jsMain.dependencies {
+            implementation(libs.ktor.client.js)
         }
-        val linuxMain by getting {
-            dependencies {
-                implementation(libs.ktor.client.cio)
-            }
+        linuxMain.dependencies {
+            implementation(libs.ktor.client.cio)
         }
-//        val mingwMain by getting {
-//            dependencies {
-//                implementation("io.ktor:ktor-client-winhttp:$ktor_version")
-//            }
-//        }
     }
 }
 
