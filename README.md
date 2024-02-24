@@ -1,4 +1,4 @@
-# Loxone Kotlin Client
+# Loxone Kotlin Client [![Maven Central](https://maven-badges.herokuapp.com/maven-central/cz.smarteon.loxone/loxone-client-kotlin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/cz-smarteon-loxone/loxone-client-kotlin) [![codecov](https://codecov.io/gh/Smarteon/loxone-client-kotlin/branch/master/graph/badge.svg)](https://codecov.io/gh/Smarteon/loxone-client-kotlin)
 Experimental Kotlin implementation of the Loxone™ communication protocol.
 
 * *Supported miniservers*: miniserver gen. 1, miniserver gen. 2, miniserver GO
