@@ -16,7 +16,7 @@ This is an experimental project, which means:
 Any feedback or help is welcomed.
  
 ## Usage
-Currently, there is no artifact published to maven central, so in order to use it first build and publish it locally:
+In order to use version from aster which is not released, it's needed build and publish it locally first:
 ```bash
 ./gradlew build publishToMavenLocal
 ```
