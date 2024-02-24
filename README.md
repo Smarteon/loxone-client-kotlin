@@ -31,7 +31,7 @@ In order to use version from aster which is not released, it's needed build and 
 ```
 
 ### Gradle
-```
+```groovy
 compile group: 'cz.smarteon.loxone', name: 'loxone-client-kotlin', version: 'desired version'
 ```
 or
