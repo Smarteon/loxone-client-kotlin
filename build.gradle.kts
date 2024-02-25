@@ -48,11 +48,41 @@ kotlin {
             }
         }
         withJava()
-        testRuns.named("test") {
-            executionTask.configure {
-                useJUnitPlatform()
+        compilations {
+            val main by getting
+            val test by getting
+
+            create("acceptanceTest") {
+
+                defaultSourceSet {
+                    dependsOn(sourceSets.commonMain.get())
+                    dependencies {
+                        implementation(libs.kotest.assertions.core)
+                        implementation(libs.kotest.framework.engine)
+                    }
+                }
+
+                tasks.register<Test>("jvmAcceptanceTest") {
+                    group = LifecycleBasePlugin.VERIFICATION_GROUP
+                    classpath = main.compileDependencyFiles +
+                        main.runtimeDependencyFiles +
+                        output.allOutputs +
+
+                        // TODO do not understand why this is needed
+                        test.compileDependencyFiles +
+                        test.runtimeDependencyFiles
+
+                    testClassesDirs = output.classesDirs
+
+                    doFirst {
+                        if (listOf("LOX_ADDRESS", "LOX_USER", "LOX_PASS").any { System.getenv(it) == null }) {
+                            throw GradleException("Missing environment variables for Loxone acceptance tests, please set LOX_ADDRESS, LOX_USER and LOX_PASS")
+                        }
+                    }
+                }
             }
         }
+        tasks.withType<Test>().configureEach { useJUnitPlatform() }
     }
     js {
         browser {
