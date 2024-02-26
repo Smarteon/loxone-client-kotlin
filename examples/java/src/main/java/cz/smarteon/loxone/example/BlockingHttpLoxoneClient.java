@@ -47,6 +47,13 @@ public class BlockingHttpLoxoneClient {
     }
 
     public void close() {
-        wrappedClient.close();
+        try {
+            BuildersKt.runBlocking(
+                    EmptyCoroutineContext.INSTANCE,
+                    (scope, continuation) -> wrappedClient.close(continuation)
+            );
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
