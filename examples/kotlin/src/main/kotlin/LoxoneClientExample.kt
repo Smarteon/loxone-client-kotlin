@@ -11,7 +11,7 @@ import cz.smarteon.loxone.message.ApiInfo
 
 
 suspend fun main(args: Array<String>) {
-    val endpoint = LoxoneEndpoint(args[0], useSsl = true)
+    val endpoint = LoxoneEndpoint.fromUrl(args[0])
     val loxoneClient: LoxoneClient = HttpLoxoneClient(
         endpoint,
         LoxoneTokenAuthenticator(
