@@ -146,6 +146,14 @@ kotlin {
     }
 }
 
+koverReport {
+    filters {
+        excludes {
+            classes("cz.smarteon.loxone.*AT*")
+        }
+    }
+}
+
 val dokkaJar by tasks.creating(Jar::class) {
     group = JavaBasePlugin.DOCUMENTATION_GROUP
     archiveClassifier.set("javadoc")
