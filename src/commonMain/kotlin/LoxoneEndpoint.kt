@@ -39,8 +39,6 @@ data class LoxoneEndpoint @JvmOverloads constructor(
                 parsed.protocol.isSecure() -> HTTPS_PORT
                 else -> HTTP_PORT
             }
-            println(parsed)
-            println(parsed.encodedPath)
             return LoxoneEndpoint(parsed.host, port, parsed.protocol.isSecure(), parsed.encodedPath)
         }
 
