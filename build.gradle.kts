@@ -128,18 +128,28 @@ kotlin {
             implementation(libs.kotest.assertions.core)
             implementation(libs.kotest.framework.engine)
             implementation(libs.kotest.framework.datatest)
+            implementation(libs.ktor.client.mock)
         }
         jvmMain.dependencies {
             implementation(libs.ktor.client.cio)
         }
         jvmTest.dependencies {
             implementation(libs.kotest.runner.junit5)
+            runtimeOnly(libs.slf4j.simple)
         }
         jsMain.dependencies {
             implementation(libs.ktor.client.js)
         }
         linuxMain.dependencies {
             implementation(libs.ktor.client.cio)
+        }
+    }
+}
+
+koverReport {
+    filters {
+        excludes {
+            classes("cz.smarteon.loxone.*AT*")
         }
     }
 }

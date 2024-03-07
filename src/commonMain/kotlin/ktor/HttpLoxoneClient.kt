@@ -9,6 +9,7 @@ import cz.smarteon.loxone.LoxoneTokenAuthenticator
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.engine.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
@@ -16,14 +17,22 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlin.jvm.JvmOverloads
 
-class HttpLoxoneClient @JvmOverloads constructor(
+class HttpLoxoneClient internal constructor(
     private val endpoint: LoxoneEndpoint,
-    private val authenticator: LoxoneTokenAuthenticator? = null
+    private val authenticator: LoxoneTokenAuthenticator? = null,
+    httpClientEngine: HttpClientEngine? = null
 ) : LoxoneClient {
+
+    @JvmOverloads constructor(
+        endpoint: LoxoneEndpoint,
+        authenticator: LoxoneTokenAuthenticator? = null
+    ) : this(endpoint, authenticator, null)
 
     private val logger = KotlinLogging.logger {}
 
-    private val httpClient = HttpClient {
+    private val httpClient = httpClientEngine?.let { HttpClient(it) { configure() } } ?: HttpClient { configure() }
+
+    private fun HttpClientConfig<*>.configure() {
         expectSuccess = true
         install(ContentNegotiation) {
             json(Codec.loxJson)

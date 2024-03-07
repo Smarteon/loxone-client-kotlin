@@ -13,6 +13,14 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.JsonTransformingSerializer
 import kotlin.reflect.KClass
 
+/**
+ * Represents a message from Loxone Miniserver.
+ * @property control control of the message, always without 'j' prefix,
+ * even if it is a response to a JSON request (e.g. 'dev/cfg/api')
+ * @property code status code of the message, e.g. '200' for OK
+ * @property value value of the message in serialized form
+ * - for instance in case of JSON it can be `"string"`, `12.3`, `true`, `{}`
+ */
 @Serializable
 data class LoxoneMsg internal constructor(@SerialName("LL") private val content: Content) : LoxoneResponse {
     val control: String = content.control
