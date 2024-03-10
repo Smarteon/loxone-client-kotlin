@@ -2,6 +2,7 @@ package cz.smarteon.loxone
 
 import com.ditchoom.buffer.ByteOrder
 import com.ditchoom.buffer.PlatformBuffer
+import com.ditchoom.buffer.allocate
 import com.ditchoom.buffer.wrap
 import cz.smarteon.loxone.message.MessageHeader
 import cz.smarteon.loxone.message.MessageHeader.Companion.FIRST_BYTE
@@ -55,5 +56,14 @@ object Codec {
                 buffer.getUnsignedInt(MSG_SIZE_POSITION).toLong()
             )
         }
+    }
+
+    internal fun writeHeader(header: MessageHeader): ByteArray {
+        val buffer = PlatformBuffer.allocate(PAYLOAD_LENGTH, byteOrder = ByteOrder.LITTLE_ENDIAN)
+        buffer[0] = FIRST_BYTE
+        buffer[1] = header.kind.ordinal.toByte()
+        buffer[2] = (if (header.sizeEstimated) 1 else 0).toByte()
+        buffer[MSG_SIZE_POSITION] = header.messageSize.toUInt()
+        return buffer.readByteArray(PAYLOAD_LENGTH)
     }
 }
