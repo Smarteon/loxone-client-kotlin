@@ -136,6 +136,8 @@ kotlin {
         jvmTest.dependencies {
             implementation(libs.kotest.runner.junit5)
             runtimeOnly(libs.slf4j.simple)
+            implementation(libs.ktor.server.websockets)
+            implementation(libs.ktor.server.test.host)
         }
         jsMain.dependencies {
             implementation(libs.ktor.client.js)

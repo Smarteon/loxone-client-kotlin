@@ -23,17 +23,20 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.withTimeout
+import kotlin.jvm.JvmOverloads
 
-class WebsocketLoxoneClient(
-    private val endpoint: LoxoneEndpoint,
+class WebsocketLoxoneClient internal constructor(
+    private val client: HttpClient,
+    private val endpoint: LoxoneEndpoint? = null,
     private val authenticator: LoxoneTokenAuthenticator? = null
 ) : LoxoneClient {
 
-    private val logger = KotlinLogging.logger {}
+    @JvmOverloads constructor(
+        endpoint: LoxoneEndpoint,
+        authenticator: LoxoneTokenAuthenticator? = null
+    ) : this(HttpClient { install(WebSockets) }, endpoint, authenticator)
 
-    private val client = HttpClient {
-        install(WebSockets)
-    }
+    private val logger = KotlinLogging.logger {}
 
     private val webSocketSession = AtomicReference<ClientWebSocketSession?>(null)
 
@@ -74,11 +77,11 @@ class WebsocketLoxoneClient(
         webSocketSession.compareAndSet(
             null,
             client.webSocketSession(
-                host = endpoint.host,
-                port = endpoint.port,
-                path = endpoint.path + WS_PATH,
+                host = endpoint?.host,
+                port = endpoint?.port,
+                path = if (endpoint != null) endpoint.path + WS_PATH else WS_PATH,
                 block = {
-                    url.protocol = if (endpoint.useSsl) URLProtocol.WSS else URLProtocol.WS
+                    url.protocol = if (endpoint?.useSsl == true) URLProtocol.WSS else URLProtocol.WS
                 }
             )
         )
