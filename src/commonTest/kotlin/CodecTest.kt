@@ -18,6 +18,6 @@ class CodecTest : StringSpec({
 
     "should read header" {
         val header = Codec.readHeader(Codec.hexToBytes("03000000ab000000"))
-        header shouldBe MessageHeader(MessageKind.TEXT, false, 43776)
+        header shouldBe MessageHeader(MessageKind.TEXT, false, 171)
     }
 })

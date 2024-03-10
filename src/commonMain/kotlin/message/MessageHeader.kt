@@ -9,6 +9,7 @@ internal data class MessageHeader(
     companion object {
         const val PAYLOAD_LENGTH = 8
         const val FIRST_BYTE: Byte = 0x03
+        const val MSG_SIZE_POSITION = 4
     }
 }
 
