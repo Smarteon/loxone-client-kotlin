@@ -4,10 +4,12 @@ import cz.smarteon.loxone.Codec
 import cz.smarteon.loxone.Codec.loxJson
 import cz.smarteon.loxone.Command
 import cz.smarteon.loxone.LoxoneClient
+import cz.smarteon.loxone.LoxoneCommands
 import cz.smarteon.loxone.LoxoneEndpoint
 import cz.smarteon.loxone.LoxoneResponse
 import cz.smarteon.loxone.LoxoneTokenAuthenticator
 import cz.smarteon.loxone.message.MessageHeader
+import cz.smarteon.loxone.message.MessageKind
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
@@ -18,13 +20,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.jvm.JvmOverloads
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 class WebsocketLoxoneClient internal constructor(
     private val client: HttpClient,
@@ -42,9 +49,14 @@ class WebsocketLoxoneClient internal constructor(
     private val sessionMutex = Mutex()
     private var session: ClientWebSocketSession? = null
 
+    /**
+     * Scope used for all background tasks in the client. Should not be used for executing commands (call* functions).
+     */
     private val scope = CoroutineScope(Dispatchers.Default) // TODO think more about correct dispacthers
 
-    private val textHeader = Channel<MessageHeader>(capacity = 1)
+    private val keepAliveHeader = Channel<MessageHeader>(capacity = 1)
+    private val textMsgHeader = Channel<MessageHeader>(capacity = 1)
+    private val binaryMsgHeader = Channel<MessageHeader>(capacity = 1)
     private val textMessages = Channel<String>(capacity = 10)
 
     override suspend fun <RESPONSE : LoxoneResponse> call(command: Command<RESPONSE>): RESPONSE {
@@ -53,10 +65,7 @@ class WebsocketLoxoneClient internal constructor(
             authenticator?.ensureAuthenticated(this)
         }
 
-        // TODO is url encoding of segments needed here?
-        val joinedCmd = command.pathSegments.joinToString(separator = "/")
-        logger.trace { "Sending command: $joinedCmd" }
-        session.send(joinedCmd)
+        session.send(command)
 
         @Suppress("UNCHECKED_CAST")
         return loxJson.decodeFromString(command.responseType.deserializer, receiveTextMessage()) as RESPONSE
@@ -89,6 +98,7 @@ class WebsocketLoxoneClient internal constructor(
                     logger.debug { "WebSocketSession session created" }
                     session = newSession
                     newSession.incoming.receiveAsFlow().onEach(::processFrame).launchIn(scope)
+                    startKeepAlive(newSession)
                 }
             }
         }
@@ -98,9 +108,19 @@ class WebsocketLoxoneClient internal constructor(
     private suspend fun processFrame(frame: Frame) {
         when (frame.frameType) {
             FrameType.BINARY -> {
-                val header = Codec.readHeader(frame.data)
-                logger.trace { "Incoming message header: $header" }
-                textHeader.send(header)
+                val incomingBinaryMsgHeader = binaryMsgHeader.tryReceive()
+                if (incomingBinaryMsgHeader.isSuccess) {
+                    logger.trace { "Incoming binary message" }
+                    // TODO process binary message
+                } else {
+                    val header = Codec.readHeader(frame.data)
+                    logger.trace { "Incoming message header: $header" }
+                    when (header.kind) {
+                        MessageKind.KEEP_ALIVE -> keepAliveHeader.send(header)
+                        MessageKind.TEXT -> textMsgHeader.send(header)
+                        else -> binaryMsgHeader.send(header)
+                    }
+                }
             }
             FrameType.TEXT -> {
                 val textData = frame.data.decodeToString()
@@ -111,13 +131,36 @@ class WebsocketLoxoneClient internal constructor(
         }
     }
 
-    private suspend fun receiveTextMessage() = withTimeout(RCV_TXT_MSG_TIMEOUT_MILLIS) {
-        textHeader.receive()
+    private suspend fun receiveTextMessage() = withTimeout(RCV_TXT_MSG_TIMEOUT) {
+        textMsgHeader.receive()
         textMessages.receive()
+    }
+
+    private suspend fun startKeepAlive(session: ClientWebSocketSession) = scope.launch {
+        while (true) {
+            session.send(LoxoneCommands.KEEP_ALIVE)
+            val keepAliveResponse = withTimeoutOrNull(KEEP_ALIVE_RESPONSE_TIMEOUT) {
+                keepAliveHeader.receive()
+            }
+            if (keepAliveResponse == null) {
+                logger.info { "Keepalive response not received within timeout, closing connection" }
+                close()
+            }
+            delay(KEEP_ALIVE_INTERVAL)
+        }
+    }
+
+    private suspend fun ClientWebSocketSession.send(command: Command<*>) {
+        // TODO is url encoding of segments needed here?
+        val joinedCmd = command.pathSegments.joinToString(separator = "/")
+        logger.trace { "Sending command: $joinedCmd" }
+        send(joinedCmd)
     }
 
     companion object {
         private const val WS_PATH = "/ws/rfc6455"
-        private const val RCV_TXT_MSG_TIMEOUT_MILLIS = 10000L
+        private val RCV_TXT_MSG_TIMEOUT = 10.seconds
+        private val KEEP_ALIVE_INTERVAL = 4.minutes
+        private val KEEP_ALIVE_RESPONSE_TIMEOUT = 30.seconds
     }
 }

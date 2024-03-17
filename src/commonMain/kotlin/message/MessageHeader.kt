@@ -10,6 +10,11 @@ internal data class MessageHeader(
         const val PAYLOAD_LENGTH = 8
         const val FIRST_BYTE: Byte = 0x03
         const val MSG_SIZE_POSITION = 4
+
+        /**
+         * Keep alive message header, received from miniserver as response to keep alive command.
+         */
+        val KEEP_ALIVE = MessageHeader(MessageKind.KEEP_ALIVE, false, 0)
     }
 }
 

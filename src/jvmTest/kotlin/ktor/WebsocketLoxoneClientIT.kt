@@ -7,6 +7,7 @@ import cz.smarteon.loxone.message.MessageKind.TEXT
 import cz.smarteon.loxone.message.TestingLoxValues.API_INFO_MSG_VAL
 import cz.smarteon.loxone.message.TestingMessages.okMsg
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import io.ktor.client.*
 import io.ktor.server.application.*
@@ -21,7 +22,7 @@ class WebsocketLoxoneClientIT : StringSpec({
 
     "should call simple command" {
         testWebsocket {
-            val client = WebsocketLoxoneClient(this)
+            val client = WebsocketLoxoneClient(testedClient)
 
             client.callRaw("jdev/cfg/api") shouldBe okMsg("dev/cfg/api", API_INFO_MSG_VAL)
 
@@ -29,19 +30,27 @@ class WebsocketLoxoneClientIT : StringSpec({
             response.code shouldBe "200"
             response.value shouldBe API_INFO_MSG_VAL
             response.control shouldBe "dev/cfg/api"
+
+            received shouldContain "jdev/cfg/api"
+            received shouldContain "keepalive"
+
         }
     }
 
 })
 
-private suspend fun testWebsocket(test: suspend HttpClient.() -> Unit) = testApplication {
+private suspend fun testWebsocket(test: suspend ClientTestContext.() -> Unit) = testApplication {
     application { install(ServerWebsockets) }
+
+    val receivedMsgs = mutableListOf<String>()
 
     routing {
         webSocketRaw(path = "/ws/rfc6455") {
             incoming.consumeEach { frame ->
                 if (frame is Frame.Text) {
-                    when (frame.readText()) {
+                    val payload = frame.readText()
+                    receivedMsgs.add(payload)
+                    when (payload) {
                         "jdev/cfg/api" -> {
                             val text = okMsg("dev/cfg/api", API_INFO_MSG_VAL).encodeToByteArray()
                             send(Frame.Binary(true, Codec.writeHeader(MessageHeader(TEXT, false, text.size.toLong()))))
@@ -53,5 +62,7 @@ private suspend fun testWebsocket(test: suspend HttpClient.() -> Unit) = testApp
         }
     }
 
-    createClient { install(ClientWebsockets) }.use { it.test() }
+    createClient { install(ClientWebsockets) }.use { ClientTestContext(it, receivedMsgs).test() }
 }
+
+class ClientTestContext(val testedClient: HttpClient, val received: List<String>)

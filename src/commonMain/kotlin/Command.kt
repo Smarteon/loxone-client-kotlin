@@ -2,6 +2,7 @@ package cz.smarteon.loxone
 
 import cz.smarteon.loxone.message.LoxoneMsg
 import cz.smarteon.loxone.message.LoxoneMsgVal
+import kotlin.jvm.JvmOverloads
 import kotlin.reflect.KClass
 
 interface Command<out RESPONSE : LoxoneResponse> {
@@ -11,6 +12,24 @@ interface Command<out RESPONSE : LoxoneResponse> {
     val responseType: KClass<out RESPONSE>
 
     val authenticated: Boolean
+}
+
+/**
+ * Skeleton for commands which have no response from Loxone miniserver.
+ */
+abstract class NoResponseCommand @JvmOverloads constructor(
+    override val pathSegments: List<String>,
+    override val authenticated: Boolean = false
+) : Command<Nothing> {
+
+    @JvmOverloads
+    constructor(vararg pathSegments: String, authenticated: Boolean = false) : this(
+        pathSegments.toList(),
+        authenticated
+    )
+
+    override val responseType
+        get() = Nothing::class
 }
 
 interface LoxoneMsgCommand<out VALUE : LoxoneMsgVal> : Command<LoxoneMsg> {
