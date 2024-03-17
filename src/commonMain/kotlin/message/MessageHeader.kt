@@ -1,5 +1,13 @@
 package cz.smarteon.loxone.message
 
+/**
+ * Message header used to identify websocket message kind and size.
+ *
+ * @param kind message kind
+ * @param sizeEstimated whether message size is estimated or calculated, `false` if message size is exact
+ * @param messageSize number of bytes in message payload
+ * @see[cz.smarteon.loxone.ktor.WebsocketLoxoneClient]
+ */
 internal data class MessageHeader(
     val kind: MessageKind,
     val sizeEstimated: Boolean,
