@@ -25,4 +25,9 @@ class CodecTest : StringSpec({
         val header = MessageHeader(MessageKind.TEXT, false, 171)
         Codec.writeHeader(header) shouldBe Codec.hexToBytes("03000000ab000000")
     }
+
+    "should read KEEP_ALIVE header" {
+        val header = Codec.readHeader(Codec.hexToBytes("0306000000000000"))
+        header shouldBe MessageHeader.KEEP_ALIVE
+    }
 })
