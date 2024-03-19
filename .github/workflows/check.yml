@@ -25,6 +25,8 @@ jobs:
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
       - name: Check with Gradle
         run: ./gradlew -p ${{ inputs.projectDir }} clean check
