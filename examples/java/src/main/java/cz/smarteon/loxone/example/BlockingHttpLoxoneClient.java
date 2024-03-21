@@ -3,14 +3,9 @@ package cz.smarteon.loxone.example;
 import cz.smarteon.loxone.Command;
 import cz.smarteon.loxone.LoxoneClient;
 import cz.smarteon.loxone.LoxoneResponse;
-import kotlin.coroutines.Continuation;
 import kotlin.coroutines.EmptyCoroutineContext;
 import kotlinx.coroutines.BuildersKt;
-import kotlinx.coroutines.CoroutineScope;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 

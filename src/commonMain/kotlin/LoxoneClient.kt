@@ -13,7 +13,21 @@ interface LoxoneClient {
     suspend fun close()
 }
 
-interface HttpLoxoneClient : LoxoneClient
+/**
+ * Loxone client using HTTP for communication.
+ */
+interface HttpLoxoneClient : LoxoneClient {
+    /**
+     * Sends given [payload] to [command]'s endpoint using HTTP POST to Loxone and returns
+     * the response body as text.
+     *
+     * @param command Command to call.
+     * @param payload Payload to send.
+     * @return Response body as text.
+     */
+    suspend fun postRaw(command: String, payload: ByteArray): String
+}
+
 interface WebsocketLoxoneClient : LoxoneClient
 
 suspend inline fun <reified VAL : LoxoneMsgVal> LoxoneClient.callForMsg(command: LoxoneMsgCommand<VAL>): VAL {
