@@ -68,6 +68,16 @@ class HttpLoxoneClient internal constructor(
         }.body()
     }
 
+    suspend fun post(command: String, payload: ByteArray) {
+        authenticator?.ensureAuthenticated(this)
+        httpClient.post {
+            commandRequest {
+                appendPathSegments(command)
+            }
+            setBody(payload)
+        }
+    }
+
     override suspend fun close() {
         httpClient.close()
     }
