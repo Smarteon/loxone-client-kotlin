@@ -10,3 +10,6 @@ plugins {
 }
 
 rootProject.name = "loxone-client-kotlin"
+
+includeBuild("examples/kotlin")
+includeBuild("examples/java")
