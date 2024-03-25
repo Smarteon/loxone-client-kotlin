@@ -16,6 +16,7 @@ import io.ktor.client.plugins.websocket.*
 import io.ktor.http.*
 import io.ktor.websocket.*
 import io.ktor.websocket.CloseReason.Codes.*
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -36,7 +37,8 @@ import kotlin.time.Duration.Companion.seconds
 class WebsocketLoxoneClient internal constructor(
     private val client: HttpClient,
     private val endpoint: LoxoneEndpoint? = null,
-    private val authenticator: LoxoneTokenAuthenticator? = null
+    private val authenticator: LoxoneTokenAuthenticator? = null,
+    dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : LoxoneClient {
 
     @JvmOverloads constructor(
@@ -52,7 +54,7 @@ class WebsocketLoxoneClient internal constructor(
     /**
      * Scope used for all background tasks in the client. Should not be used for executing commands (call* functions).
      */
-    private val scope = CoroutineScope(Dispatchers.Default) // TODO think more about correct dispacthers
+    private val scope = CoroutineScope(dispatcher)
 
     private val keepAliveHeader = Channel<MessageHeader>(capacity = 1)
     private val textMsgHeader = Channel<MessageHeader>(capacity = 1)
@@ -138,6 +140,7 @@ class WebsocketLoxoneClient internal constructor(
 
     private suspend fun startKeepAlive(session: ClientWebSocketSession) = scope.launch {
         while (true) {
+            delay(KEEP_ALIVE_INTERVAL)
             session.send(LoxoneCommands.KEEP_ALIVE)
             val keepAliveResponse = withTimeoutOrNull(KEEP_ALIVE_RESPONSE_TIMEOUT) {
                 keepAliveHeader.receive()
@@ -146,7 +149,6 @@ class WebsocketLoxoneClient internal constructor(
                 logger.info { "Keepalive response not received within timeout, closing connection" }
                 close()
             }
-            delay(KEEP_ALIVE_INTERVAL)
         }
     }
 
