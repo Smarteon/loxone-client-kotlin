@@ -44,16 +44,16 @@ class LoxoneClientAT : WordSpec() {
         val password = getLoxEnv("PASS")
 
         // TODO adjust LoxoneEndpoint to parse address properly
-        val endpoint = LoxoneEndpoint(address, useSsl = false)
+        val endpoint = LoxoneEndpoint.fromUrl(address)
         val authenticator = LoxoneTokenAuthenticator(LoxoneProfile(endpoint, LoxoneCredentials(user, password)))
 
         httpClient = HttpLoxoneClient(endpoint, authenticator)
         websocketClient = WebsocketLoxoneClient(endpoint, authenticator)
 
-        // TODO websocket client is failing when both clients are tested
-        // it's probably related to authentication, however works fine in examples
-        include(commonAT(httpClient))
+        // TODO websocket client is failing when both clients are tested in the reverse order than below
+        // it's probably because of the missing authWithToken implementation in the websocket client
         include(commonAT(websocketClient))
+        include(commonAT(httpClient))
     }
 
     private fun getLoxEnv(name: String) = "LOX_$name".let { requireNotNull(System.getenv(it)) { "Please set $it env" } }

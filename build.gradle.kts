@@ -48,6 +48,18 @@ kotlin {
             }
         }
         withJava()
+
+        configurations.all {
+            resolutionStrategy.eachDependency {
+                if (requested.group == "org.slf4j") {
+                    useVersion(libs.versions.slf4j.get())
+                    because("Align all slf4j artifacts to avoid logging binding/provider problems. " +
+                        "It's safe to use 2.X.X version if dependency has been compiled against 1.X.X. " +
+                        "But the 2.X.X logging providers does not work with 1.X.X api.")
+                }
+            }
+        }
+
         compilations {
             val main by getting
             val test by getting
@@ -59,6 +71,7 @@ kotlin {
                     dependencies {
                         implementation(libs.kotest.assertions.core)
                         implementation(libs.kotest.framework.engine)
+                        runtimeOnly(libs.slf4j.simple)
                     }
                 }
 
@@ -138,6 +151,7 @@ kotlin {
             runtimeOnly(libs.slf4j.simple)
             implementation(libs.ktor.server.websockets)
             implementation(libs.ktor.server.test.host)
+            implementation(libs.kotlinx.coroutines.test)
         }
         jsMain.dependencies {
             implementation(libs.ktor.client.js)
