@@ -6,65 +6,58 @@ import cz.smarteon.loxone.message.MessageHeader
 import cz.smarteon.loxone.message.MessageKind.TEXT
 import cz.smarteon.loxone.message.TestingLoxValues.API_INFO_MSG_VAL
 import cz.smarteon.loxone.message.TestingMessages.okMsg
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.core.test.testCoroutineScheduler
-import io.kotest.matchers.collections.shouldContain
+import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.ktor.client.*
 import io.ktor.server.application.*
 import io.ktor.server.testing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.minutes
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlin.time.Duration.Companion.seconds
 import io.ktor.client.plugins.websocket.WebSockets as ClientWebsockets
 import io.ktor.server.websocket.WebSockets as ServerWebsockets
 
-@OptIn(ExperimentalStdlibApi::class, ExperimentalCoroutinesApi::class)
-class WebsocketLoxoneClientIT : ShouldSpec({
+@OptIn(ExperimentalCoroutinesApi::class)
+class WebsocketLoxoneClientIT : StringSpec({
 
-    should("call simple command").config(coroutineTestScope = true) {
-        testWebsocket {
-            val client = WebsocketLoxoneClient(testedClient, dispatcher = coroutineContext[CoroutineDispatcher]!!)
+    "should call simple command" {
+        val ctx = startTestWebsocketServer()
+        val bgDispatcher = UnconfinedTestDispatcher()
+        val client = WebsocketLoxoneClient(ctx.testedClient, dispatcher = bgDispatcher)
 
-            client.callRaw("jdev/cfg/api") shouldBe okMsg("dev/cfg/api", API_INFO_MSG_VAL)
+        client.callRaw("jdev/cfg/api") shouldBe okMsg("dev/cfg/api", API_INFO_MSG_VAL)
+        ctx.received.receive() shouldBe "jdev/cfg/api"
 
-            val response = async(Dispatchers.Default) { client.call(ApiInfo.command) }.await()
-            response.code shouldBe "200"
-            response.value shouldBe API_INFO_MSG_VAL
-            response.control shouldBe "dev/cfg/api"
+        val response = client.call(ApiInfo.command)
+        response.code shouldBe "200"
+        response.value shouldBe API_INFO_MSG_VAL
+        response.control shouldBe "dev/cfg/api"
+        ctx.received.receive() shouldBe "jdev/cfg/api"
 
-            received shouldContain "jdev/cfg/api"
-
-            testCoroutineScheduler.advanceTimeBy(5.minutes)
-            received shouldContain "keepalive"
-        }
+        // keepalive is sent every 4 minutes
+        bgDispatcher.scheduler.advanceTimeBy(245.seconds)
+        ctx.received.receive() shouldBe "keepalive"
     }
 })
 
-// We can't share the inner WebsocketLoxoneClient dispatcher with the server part, they would block each other.
-// However, to test the client with virtual time we pass the test dispatcher to the client.
-// Therefore, we use GlobalScope.launch to run the server part in a separate dispatcher.
-@OptIn(DelicateCoroutinesApi::class)
-private suspend fun testWebsocket(test: suspend ClientTestContext.() -> Unit) = GlobalScope.launch {
-    testApplication {
+private suspend fun startTestWebsocketServer(): ClientTestContext {
+    lateinit var clientTestContext: ClientTestContext
+
+    ApplicationTestBuilder().apply {
         application { install(ServerWebsockets) }
 
-        val receivedMsgs = mutableListOf<String>()
+        val receivedMsgs = Channel<String>(capacity = Channel.BUFFERED)
 
         routing {
             webSocketRaw(path = "/ws/rfc6455") {
                 incoming.consumeEach { frame ->
                     if (frame is Frame.Text) {
                         val payload = frame.readText()
-                        receivedMsgs.add(payload)
+                        receivedMsgs.send(payload)
                         when (payload) {
                             "jdev/cfg/api" -> {
                                 val text = okMsg("dev/cfg/api", API_INFO_MSG_VAL).encodeToByteArray()
@@ -81,8 +74,11 @@ private suspend fun testWebsocket(test: suspend ClientTestContext.() -> Unit) = 
             }
         }
 
-        createClient { install(ClientWebsockets) }.use { ClientTestContext(it, receivedMsgs).test() }
+        val client = createClient { install(ClientWebsockets) }
+        clientTestContext = ClientTestContext(client, receivedMsgs)
     }
+
+    return clientTestContext
 }
 
-class ClientTestContext(val testedClient: HttpClient, val received: List<String>)
+private class ClientTestContext(val testedClient: HttpClient, val received: Channel<String>)
