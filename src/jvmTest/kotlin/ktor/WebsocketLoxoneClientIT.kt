@@ -41,6 +41,8 @@ class WebsocketLoxoneClientIT : StringSpec({
         // keepalive is sent every 4 minutes
         bgDispatcher.scheduler.advanceTimeBy(245.seconds)
         ctx.received.receive() shouldBe "keepalive"
+
+        client.close()
     }
 })
 
