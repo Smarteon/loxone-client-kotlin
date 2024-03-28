@@ -43,7 +43,6 @@ class LoxoneClientAT : WordSpec() {
         val user = getLoxEnv("USER")
         val password = getLoxEnv("PASS")
 
-        // TODO adjust LoxoneEndpoint to parse address properly
         val endpoint = LoxoneEndpoint.fromUrl(address)
         val authenticator = LoxoneTokenAuthenticator(LoxoneProfile(endpoint, LoxoneCredentials(user, password)))
 

@@ -1,12 +1,14 @@
 package cz.smarteon.loxone.message
 
 import cz.smarteon.loxone.LoxoneMsgCommand
+import kotlin.jvm.JvmOverloads
 import kotlin.reflect.KClass
 
-data class SimpleLoxoneMsgCommand<out VAL : LoxoneMsgVal>(
+data class SimpleLoxoneMsgCommand<out VAL : LoxoneMsgVal> @JvmOverloads constructor(
     override val pathSegments: List<String>,
     override val valueType: KClass<out VAL>,
-    override val authenticated: Boolean
+    override val authenticated: Boolean = true,
+    override val expectedCode: String = LoxoneMsg.CODE_OK
 ) : LoxoneMsgCommand<VAL>
 
 internal inline fun <reified VAL : LoxoneMsgVal> cfgCommand(path: String): LoxoneMsgCommand<VAL> =
@@ -14,5 +16,7 @@ internal inline fun <reified VAL : LoxoneMsgVal> cfgCommand(path: String): Loxon
 
 internal inline fun <reified VAL : LoxoneMsgVal> sysCommand(
     vararg paths: String,
-    authenticated: Boolean = true
-): LoxoneMsgCommand<VAL> = SimpleLoxoneMsgCommand(listOf("jdev", "sys") + paths, VAL::class, authenticated)
+    authenticated: Boolean = true,
+    expectedCode: String = LoxoneMsg.CODE_OK
+): LoxoneMsgCommand<VAL> =
+    SimpleLoxoneMsgCommand(listOf("jdev", "sys") + paths, VAL::class, authenticated, expectedCode)

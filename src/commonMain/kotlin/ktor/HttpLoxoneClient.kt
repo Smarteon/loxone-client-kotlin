@@ -68,7 +68,15 @@ class HttpLoxoneClient internal constructor(
         }.body()
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun close() {
+        try {
+            logger.debug { "Closing authenticator" }
+            authenticator?.close(this@HttpLoxoneClient)
+        } catch (e: Exception) {
+            logger.error(e) { "Error closing authenticator" }
+        }
+        logger.debug { "Closing http client" }
         httpClient.close()
     }
 
