@@ -3,8 +3,8 @@ package cz.smarteon.loxone.ktor
 import cz.smarteon.loxone.LoxoneCredentials
 import cz.smarteon.loxone.LoxoneEndpoint.Companion.local
 import cz.smarteon.loxone.LoxoneProfile
-import cz.smarteon.loxone.LoxoneTime
 import cz.smarteon.loxone.LoxoneTokenAuthenticator
+import cz.smarteon.loxone.TimeUtils
 import cz.smarteon.loxone.message.ApiInfo
 import cz.smarteon.loxone.message.LoxoneMsgVal
 import cz.smarteon.loxone.message.TestingLoxValues.API_INFO_MSG_VAL
@@ -19,7 +19,6 @@ import io.kotest.matchers.shouldBe
 import io.ktor.client.engine.mock.*
 import io.ktor.client.plugins.*
 import io.ktor.http.*
-import kotlinx.datetime.Clock
 
 class HttpLoxoneClientTest : WordSpec({
 
@@ -43,7 +42,7 @@ class HttpLoxoneClientTest : WordSpec({
             path == "/jdev/sys/getkey2/user" -> respondJson(okMsg("dev/sys/getkey2/user", HASHING))
 
             path.startsWith("/jdev/sys/getjwt") -> {
-                val validUntil = Clock.System.now().epochSeconds.plus(60) - LoxoneTime.LOXONE_EPOCH_BEGIN
+                val validUntil = TimeUtils.currentLoxoneSeconds().plus(60)
                 respondJson(okMsg(path, token(validUntil)))
             }
 

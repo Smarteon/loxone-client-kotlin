@@ -1,5 +1,6 @@
 package cz.smarteon.loxone
 
+import cz.smarteon.loxone.LoxoneCommands.Tokens
 import cz.smarteon.loxone.LoxoneCrypto.loxoneHashing
 import cz.smarteon.loxone.message.Hashing
 import cz.smarteon.loxone.message.Hashing.Companion.commandForUser
@@ -29,43 +30,67 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
     private var hashing: Hashing? = null
 
     private var token: Token? by Delegates.observable(repository.getToken(profile)) { _, _, newValue ->
-        checkNotNull(newValue) {
-            "token can't be set to null"
+        if (newValue != null) {
+            repository.putToken(profile, newValue)
+        } else {
+            repository.removeToken(profile)
         }
-        repository.putToken(profile, newValue)
     }
 
-    suspend fun ensureAuthenticated(client: LoxoneClient) {
-        mutex.withLock {
-            if (hashing == null) {
-                hashing = client.callForMsg(commandForUser(user))
-            }
-            val state = TokenState(token)
-            when {
-                state.isExpired -> {
-                    logger.debug { "Token expired, requesting new one" }
-                    token = client.callForMsg(
-                        commandGetToken(
-                            loxoneHashing(profile.credentials!!.password, checkNotNull(hashing), "getttoken", user),
-                            user,
-                            settings.tokenPermission,
-                            settings.clientId,
-                            settings.clientInfo
-                        )
+    suspend fun ensureAuthenticated(client: LoxoneClient) = execConditionalWithMutex({ !TokenState(token).isUsable }) {
+        if (hashing == null) {
+            hashing = client.callForMsg(commandForUser(user))
+        }
+
+        val state = TokenState(token)
+
+        when {
+            state.isExpired -> {
+                logger.debug { "Token expired, requesting new one" }
+                token = client.callForMsg(
+                    commandGetToken(
+                        loxoneHashing(profile.credentials!!.password, checkNotNull(hashing), "getttoken", user),
+                        user,
+                        settings.tokenPermission,
+                        settings.clientId,
+                        settings.clientInfo
                     )
-                    logger.debug { "Received token: $token" }
-                }
-
-                state.needsRefresh -> {
-                    TODO("refresh and merge token")
-                }
-
-                else -> {
-                    // TODO("send authwithtoken if websockets")
-                }
+                )
+                logger.debug { "Received token: $token" }
             }
+
+            state.needsRefresh -> {
+                TODO("refresh and merge token")
+            }
+
+            else -> {
+                // TODO("send authwithtoken if websockets")
+            }
+        }
+    }
+
+    suspend fun killToken(client: LoxoneClient) = execConditionalWithMutex({ TokenState(token).isUsable }) {
+        logger.debug { "Going to kill token $token" }
+        client.callForMsg(Tokens.kill(tokenHash("killtoken"), user))
+        logger.info { "Token killed" }
+        token = null
+    }
+
+    suspend fun close(client: LoxoneClient) {
+        if (settings.killTokenOnClose) {
+            killToken(client)
         }
     }
 
     fun tokenHash(operation: String) = LoxoneCrypto.loxoneHmac(checkNotNull(token), operation)
+
+    private suspend fun execConditionalWithMutex(condition: () -> Boolean, block: suspend () -> Unit) {
+        if (condition()) {
+            mutex.withLock {
+                if (condition()) {
+                    block()
+                }
+            }
+        }
+    }
 }

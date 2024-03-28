@@ -36,6 +36,9 @@ interface LoxoneMsgCommand<out VALUE : LoxoneMsgVal> : Command<LoxoneMsg> {
     override val responseType
         get() = LoxoneMsg::class
 
+    val expectedCode: String
+        get() = LoxoneMsg.CODE_OK
+
     val valueType: KClass<out VALUE>
 }
 

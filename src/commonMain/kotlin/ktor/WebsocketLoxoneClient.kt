@@ -81,9 +81,17 @@ class WebsocketLoxoneClient internal constructor(
         return receiveTextMessage()
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun close() {
-        scope.cancel("Closing the connection")
+        try {
+            logger.debug { "Closing authenticator" }
+            authenticator?.close(this@WebsocketLoxoneClient)
+        } catch (e: Exception) {
+            logger.error(e) { "Error closing authenticator" }
+        }
+        logger.debug { "Closing session" }
         session?.close(CloseReason(NORMAL, "LoxoneKotlin finished"))
+        scope.cancel("Closing the connection")
     }
 
     private suspend fun ensureSession(): ClientWebSocketSession {
