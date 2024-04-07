@@ -4,7 +4,6 @@ import cz.smarteon.loxone.LoxoneTime
 import kotlinx.datetime.Clock
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmStatic
 
 /**
  * Represents Loxone authentication token.
@@ -60,26 +59,5 @@ data class Token(
         result = 31 * result + unsecurePassword.hashCode()
         result = 31 * result + filled.hashCode()
         return result
-    }
-
-    companion object {
-
-        @JvmStatic
-        fun commandGetToken(
-            tokenHash: String,
-            user: String,
-            permission: TokenPermission,
-            clientId: String,
-            clientInfo: String
-        ) =
-            sysCommand<Token>(
-                "getjwt",
-                tokenHash,
-                user,
-                permission.id.toString(),
-                clientId,
-                clientInfo,
-                authenticated = false
-            )
     }
 }

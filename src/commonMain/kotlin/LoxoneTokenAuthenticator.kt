@@ -5,7 +5,6 @@ import cz.smarteon.loxone.LoxoneCrypto.loxoneHashing
 import cz.smarteon.loxone.message.Hashing
 import cz.smarteon.loxone.message.Hashing.Companion.commandForUser
 import cz.smarteon.loxone.message.Token
-import cz.smarteon.loxone.message.Token.Companion.commandGetToken
 import cz.smarteon.loxone.message.TokenState
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.sync.Mutex
@@ -48,7 +47,7 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
             state.isExpired -> {
                 logger.debug { "Token expired, requesting new one" }
                 token = client.callForMsg(
-                    commandGetToken(
+                    Tokens.get(
                         loxoneHashing(profile.credentials!!.password, checkNotNull(hashing), "getttoken", user),
                         user,
                         settings.tokenPermission,
