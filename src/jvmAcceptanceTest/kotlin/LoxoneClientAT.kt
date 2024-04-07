@@ -49,10 +49,8 @@ class LoxoneClientAT : WordSpec() {
         httpClient = KtorHttpLoxoneClient(endpoint, authenticator)
         websocketClient = KtorWebsocketLoxoneClient(endpoint, authenticator)
 
-        // TODO websocket client is failing when both clients are tested in the reverse order than below
-        // it's probably because of the missing authWithToken implementation in the websocket client
-        include(commonAT(websocketClient))
         include(commonAT(httpClient))
+        include(commonAT(websocketClient))
     }
 
     private fun getLoxEnv(name: String) = "LOX_$name".let { requireNotNull(System.getenv(it)) { "Please set $it env" } }

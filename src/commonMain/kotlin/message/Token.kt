@@ -16,8 +16,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class Token(
-    val token: String?,
-    @Serializable(HexSerializer::class) val key: ByteArray?,
+    val token: String? = null,
+    @Serializable(HexSerializer::class) val key: ByteArray? = null,
     val validUntil: Long,
     @SerialName("tokenRights") val rights: Int,
     @SerialName("unsecurePass") val unsecurePassword: Boolean
@@ -35,6 +35,27 @@ data class Token(
         check(filled) { "Can't invoke block(token, key) on nonfilled token" }
         return block(token!!, key!!)
     }
+
+    /**
+     * Merges the given token to this one and returns the merged token. The [Token.token] and [Token.key] are taken
+     * from given token only if they are not null, otherwise the values from this token are used. Other properties are
+     * always taken from given token.
+     *
+     * @param other token to merge
+     * @return new merged token
+     */
+    fun merge(other: Token): Token =
+        if (this == other) {
+            this
+        } else {
+            Token(
+                token = other.token ?: token,
+                key = other.key ?: key,
+                validUntil = other.validUntil,
+                rights = other.rights,
+                unsecurePassword = other.unsecurePassword
+            )
+        }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

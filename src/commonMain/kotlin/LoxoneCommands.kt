@@ -2,6 +2,7 @@ package cz.smarteon.loxone
 
 import cz.smarteon.loxone.message.EmptyLoxoneMsgVal
 import cz.smarteon.loxone.message.LoxoneMsg
+import cz.smarteon.loxone.message.SimpleLoxoneMsgCommand
 import cz.smarteon.loxone.message.Token
 import cz.smarteon.loxone.message.TokenPermission
 import cz.smarteon.loxone.message.sysCommand
@@ -51,6 +52,18 @@ object LoxoneCommands {
             permission.id.toString(),
             clientId,
             clientInfo,
+            authenticated = false
+        )
+
+        /**
+         * Command to authenticate with token.
+         * @param tokenHash The token hash to authenticate with.
+         * @param user The user to authenticate as.
+         */
+        @JvmStatic
+        fun auth(tokenHash: String, user: String) = SimpleLoxoneMsgCommand(
+            listOf("authwithtoken", tokenHash, user),
+            Token::class,
             authenticated = false
         )
 
