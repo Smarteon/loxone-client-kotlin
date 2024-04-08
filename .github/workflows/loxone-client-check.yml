@@ -14,3 +14,4 @@ on:
 jobs:
   call-check:
     uses: ./.github/workflows/check.yml
+    secrets: inherit

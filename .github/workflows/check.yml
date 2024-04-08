@@ -9,6 +9,11 @@ on:
         type: string
         required: false
         default: '.'
+    secrets:
+      GRADLE_ENCRYPTION_KEY:
+        required: true
+      CODECOV_TOKEN:
+        required: false
 
 jobs:
   gradle-check:
