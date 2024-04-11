@@ -51,7 +51,7 @@ class HttpLoxoneClientTest : WordSpec({
     }
 
     "not authenticated client" should {
-        val client = HttpLoxoneClient(local("10.0.1.77"), null, mockEngine)
+        val client = KtorHttpLoxoneClient(local("10.0.1.77"), null, mockEngine)
 
         "call raw" {
             client.callRaw("jdev/cfg/api") shouldBe okMsg("dev/cfg/api", API_INFO_MSG_VAL)
@@ -76,7 +76,7 @@ class HttpLoxoneClientTest : WordSpec({
     "authenticated client" should {
         val endpoint = local("10.0.1.77")
         val profile = LoxoneProfile(endpoint, LoxoneCredentials("user", "pass"))
-        val client = HttpLoxoneClient(endpoint, LoxoneTokenAuthenticator(profile), mockEngine)
+        val client = KtorHttpLoxoneClient(endpoint, LoxoneTokenAuthenticator(profile), mockEngine)
 
         "call authenticated" {
             val response = client.call(sysCommand<LoxoneMsgVal>("authTest"))

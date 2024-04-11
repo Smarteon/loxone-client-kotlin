@@ -2,7 +2,7 @@ package cz.smarteon.loxone.ktor
 
 import cz.smarteon.loxone.Codec
 import cz.smarteon.loxone.Command
-import cz.smarteon.loxone.LoxoneClient
+import cz.smarteon.loxone.HttpLoxoneClient
 import cz.smarteon.loxone.LoxoneEndpoint
 import cz.smarteon.loxone.LoxoneResponse
 import cz.smarteon.loxone.LoxoneTokenAuthenticator
@@ -17,11 +17,11 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlin.jvm.JvmOverloads
 
-class HttpLoxoneClient internal constructor(
+class KtorHttpLoxoneClient internal constructor(
     private val endpoint: LoxoneEndpoint,
     private val authenticator: LoxoneTokenAuthenticator? = null,
     httpClientEngine: HttpClientEngine? = null
-) : LoxoneClient {
+) : HttpLoxoneClient {
 
     @JvmOverloads constructor(
         endpoint: LoxoneEndpoint,
@@ -40,7 +40,7 @@ class HttpLoxoneClient internal constructor(
         install(Logging) {
             logger = object : Logger {
                 override fun log(message: String) {
-                    this@HttpLoxoneClient.logger.debug { message }
+                    this@KtorHttpLoxoneClient.logger.debug { message }
                 }
             }
             level = LogLevel.ALL
@@ -72,7 +72,7 @@ class HttpLoxoneClient internal constructor(
     override suspend fun close() {
         try {
             logger.debug { "Closing authenticator" }
-            authenticator?.close(this@HttpLoxoneClient)
+            authenticator?.close(this@KtorHttpLoxoneClient)
         } catch (e: Exception) {
             logger.error(e) { "Error closing authenticator" }
         }

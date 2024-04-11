@@ -1,7 +1,7 @@
 package cz.smarteon.loxone
 
-import cz.smarteon.loxone.ktor.HttpLoxoneClient
-import cz.smarteon.loxone.ktor.WebsocketLoxoneClient
+import cz.smarteon.loxone.ktor.KtorHttpLoxoneClient
+import cz.smarteon.loxone.ktor.KtorWebsocketLoxoneClient
 import cz.smarteon.loxone.message.ApiInfo
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.WordSpec
@@ -29,8 +29,8 @@ fun commonAT(loxoneClient: LoxoneClient) = wordSpec {
 }
 
 class LoxoneClientAT : WordSpec() {
-    private val httpClient: HttpLoxoneClient
-    private val websocketClient: WebsocketLoxoneClient
+    private val httpClient: KtorHttpLoxoneClient
+    private val websocketClient: KtorWebsocketLoxoneClient
 
     override suspend fun afterSpec(spec: Spec) {
         super.afterSpec(spec)
@@ -46,8 +46,8 @@ class LoxoneClientAT : WordSpec() {
         val endpoint = LoxoneEndpoint.fromUrl(address)
         val authenticator = LoxoneTokenAuthenticator(LoxoneProfile(endpoint, LoxoneCredentials(user, password)))
 
-        httpClient = HttpLoxoneClient(endpoint, authenticator)
-        websocketClient = WebsocketLoxoneClient(endpoint, authenticator)
+        httpClient = KtorHttpLoxoneClient(endpoint, authenticator)
+        websocketClient = KtorWebsocketLoxoneClient(endpoint, authenticator)
 
         // TODO websocket client is failing when both clients are tested in the reverse order than below
         // it's probably because of the missing authWithToken implementation in the websocket client

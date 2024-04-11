@@ -18,7 +18,7 @@ import kotlin.jvm.JvmStatic
 object LoxoneCommands {
 
     /**
-     * Keep alive command used solely in [cz.smarteon.loxone.ktor.WebsocketLoxoneClient] to ensure connection alive
+     * Keep alive command used solely in [cz.smarteon.loxone.WebsocketLoxoneClient] to ensure connection alive
      * functionality.
      */
     val KEEP_ALIVE = object : NoResponseCommand("keepalive") {}
