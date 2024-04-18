@@ -9,6 +9,11 @@ on:
         type: string
         required: false
         default: '.'
+    secrets:
+      GRADLE_ENCRYPTION_KEY:
+        required: true
+      CODECOV_TOKEN:
+        required: false
 
 jobs:
   gradle-check:
@@ -36,7 +41,7 @@ jobs:
         run: ./gradlew -p ${{ inputs.projectDir }} koverXmlReport
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         if: ${{ inputs.projectDir == '.' }}
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

@@ -27,7 +27,7 @@ class WebsocketLoxoneClientIT : StringSpec({
     "should call simple command" {
         val ctx = startTestWebsocketServer()
         val bgDispatcher = UnconfinedTestDispatcher()
-        val client = WebsocketLoxoneClient(ctx.testedClient, dispatcher = bgDispatcher)
+        val client = KtorWebsocketLoxoneClient(ctx.testedClient, dispatcher = bgDispatcher)
 
         client.callRaw("jdev/cfg/api") shouldBe okMsg("dev/cfg/api", API_INFO_MSG_VAL)
         ctx.received.receive() shouldBe "jdev/cfg/api"

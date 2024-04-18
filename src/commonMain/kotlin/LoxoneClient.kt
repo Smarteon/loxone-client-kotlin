@@ -13,6 +13,9 @@ interface LoxoneClient {
     suspend fun close()
 }
 
+interface HttpLoxoneClient : LoxoneClient
+interface WebsocketLoxoneClient : LoxoneClient
+
 suspend inline fun <reified VAL : LoxoneMsgVal> LoxoneClient.callForMsg(command: LoxoneMsgCommand<VAL>): VAL {
     val msg = call(command)
     return if (msg.code == command.expectedCode) {

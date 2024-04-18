@@ -2,6 +2,9 @@ package cz.smarteon.loxone
 
 import cz.smarteon.loxone.message.EmptyLoxoneMsgVal
 import cz.smarteon.loxone.message.LoxoneMsg
+import cz.smarteon.loxone.message.SimpleLoxoneMsgCommand
+import cz.smarteon.loxone.message.Token
+import cz.smarteon.loxone.message.TokenPermission
 import cz.smarteon.loxone.message.sysCommand
 import kotlin.jvm.JvmStatic
 
@@ -16,7 +19,7 @@ import kotlin.jvm.JvmStatic
 object LoxoneCommands {
 
     /**
-     * Keep alive command used solely in [cz.smarteon.loxone.ktor.WebsocketLoxoneClient] to ensure connection alive
+     * Keep alive command used solely in [cz.smarteon.loxone.WebsocketLoxoneClient] to ensure connection alive
      * functionality.
      */
     val KEEP_ALIVE = object : NoResponseCommand("keepalive") {}
@@ -25,6 +28,44 @@ object LoxoneCommands {
      * Commands related to tokens management.
      */
     object Tokens {
+
+        /**
+         * Command to get new token.
+         * @param credentialsHash The credentials hash obtained by [LoxoneCrypto.loxoneHashing]
+         * from [LoxoneCredentials].
+         * @param user The user to get the token for.
+         * @param permission The permission of the token.
+         * @param clientId Unique identifier of this client.
+         * @param clientInfo Information about this client.
+         */
+        @JvmStatic
+        fun get(
+            credentialsHash: String,
+            user: String,
+            permission: TokenPermission,
+            clientId: String = LoxoneClientSettings.DEFAULT_CLIENT_ID,
+            clientInfo: String = LoxoneClientSettings.DEFAULT_CLIENT_INFO
+        ) = sysCommand<Token>(
+            "getjwt",
+            credentialsHash,
+            user,
+            permission.id.toString(),
+            clientId,
+            clientInfo,
+            authenticated = false
+        )
+
+        /**
+         * Command to authenticate with token.
+         * @param tokenHash The token hash to authenticate with.
+         * @param user The user to authenticate as.
+         */
+        @JvmStatic
+        fun auth(tokenHash: String, user: String) = SimpleLoxoneMsgCommand(
+            listOf("authwithtoken", tokenHash, user),
+            Token::class,
+            authenticated = false
+        )
 
         /**
          * Command to kill token.

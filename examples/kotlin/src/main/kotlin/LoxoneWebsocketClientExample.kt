@@ -6,13 +6,13 @@ import cz.smarteon.loxone.LoxoneEndpoint
 import cz.smarteon.loxone.LoxoneProfile
 import cz.smarteon.loxone.LoxoneTokenAuthenticator
 import cz.smarteon.loxone.callForMsg
-import cz.smarteon.loxone.ktor.WebsocketLoxoneClient
+import cz.smarteon.loxone.ktor.KtorWebsocketLoxoneClient
 import cz.smarteon.loxone.message.ApiInfo
 
 
 suspend fun main(args: Array<String>) {
     val endpoint = LoxoneEndpoint.fromUrl(args[0])
-    val loxoneClient: LoxoneClient = WebsocketLoxoneClient(
+    val loxoneClient: LoxoneClient = KtorWebsocketLoxoneClient(
         endpoint,
         LoxoneTokenAuthenticator(
             LoxoneProfile(

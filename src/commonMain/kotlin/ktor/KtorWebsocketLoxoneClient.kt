@@ -3,11 +3,11 @@ package cz.smarteon.loxone.ktor
 import cz.smarteon.loxone.Codec
 import cz.smarteon.loxone.Codec.loxJson
 import cz.smarteon.loxone.Command
-import cz.smarteon.loxone.LoxoneClient
 import cz.smarteon.loxone.LoxoneCommands
 import cz.smarteon.loxone.LoxoneEndpoint
 import cz.smarteon.loxone.LoxoneResponse
 import cz.smarteon.loxone.LoxoneTokenAuthenticator
+import cz.smarteon.loxone.WebsocketLoxoneClient
 import cz.smarteon.loxone.message.MessageHeader
 import cz.smarteon.loxone.message.MessageKind
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -34,12 +34,12 @@ import kotlin.jvm.JvmOverloads
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-class WebsocketLoxoneClient internal constructor(
+class KtorWebsocketLoxoneClient internal constructor(
     private val client: HttpClient,
     private val endpoint: LoxoneEndpoint? = null,
     private val authenticator: LoxoneTokenAuthenticator? = null,
     dispatcher: CoroutineDispatcher = Dispatchers.Default
-) : LoxoneClient {
+) : WebsocketLoxoneClient {
 
     @JvmOverloads constructor(
         endpoint: LoxoneEndpoint,
@@ -85,7 +85,7 @@ class WebsocketLoxoneClient internal constructor(
     override suspend fun close() {
         try {
             logger.debug { "Closing authenticator" }
-            authenticator?.close(this@WebsocketLoxoneClient)
+            authenticator?.close(this@KtorWebsocketLoxoneClient)
         } catch (e: Exception) {
             logger.error(e) { "Error closing authenticator" }
         }

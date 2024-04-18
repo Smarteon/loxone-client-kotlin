@@ -4,7 +4,6 @@ import cz.smarteon.loxone.LoxoneTime
 import kotlinx.datetime.Clock
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmStatic
 
 /**
  * Represents Loxone authentication token.
@@ -17,8 +16,8 @@ import kotlin.jvm.JvmStatic
  */
 @Serializable
 data class Token(
-    val token: String?,
-    @Serializable(HexSerializer::class) val key: ByteArray?,
+    val token: String? = null,
+    @Serializable(HexSerializer::class) val key: ByteArray? = null,
     val validUntil: Long,
     @SerialName("tokenRights") val rights: Int,
     @SerialName("unsecurePass") val unsecurePassword: Boolean
@@ -36,6 +35,27 @@ data class Token(
         check(filled) { "Can't invoke block(token, key) on nonfilled token" }
         return block(token!!, key!!)
     }
+
+    /**
+     * Merges the given token to this one and returns the merged token. The [Token.token] and [Token.key] are taken
+     * from given token only if they are not null, otherwise the values from this token are used. Other properties are
+     * always taken from given token.
+     *
+     * @param other token to merge
+     * @return new merged token
+     */
+    fun merge(other: Token): Token =
+        if (this == other) {
+            this
+        } else {
+            Token(
+                token = other.token ?: token,
+                key = other.key ?: key,
+                validUntil = other.validUntil,
+                rights = other.rights,
+                unsecurePassword = other.unsecurePassword
+            )
+        }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -60,26 +80,5 @@ data class Token(
         result = 31 * result + unsecurePassword.hashCode()
         result = 31 * result + filled.hashCode()
         return result
-    }
-
-    companion object {
-
-        @JvmStatic
-        fun commandGetToken(
-            tokenHash: String,
-            user: String,
-            permission: TokenPermission,
-            clientId: String,
-            clientInfo: String
-        ) =
-            sysCommand<Token>(
-                "getjwt",
-                tokenHash,
-                user,
-                permission.id.toString(),
-                clientId,
-                clientInfo,
-                authenticated = false
-            )
     }
 }

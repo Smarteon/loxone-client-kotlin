@@ -6,7 +6,7 @@ package cz.smarteon.loxone.message
  * @param kind message kind
  * @param sizeEstimated whether message size is estimated or calculated, `false` if message size is exact
  * @param messageSize number of bytes in message payload
- * @see[cz.smarteon.loxone.ktor.WebsocketLoxoneClient]
+ * @see[cz.smarteon.loxone.WebsocketLoxoneClient]
  */
 internal data class MessageHeader(
     val kind: MessageKind,
