@@ -163,9 +163,11 @@ kotlin {
 }
 
 kover {
-    filters {
-        excludes {
-            classes("cz.smarteon.loxone.*AT*")
+    reports {
+        filters {
+            excludes {
+                classes("cz.smarteon.loxone.*AT*")
+            }
         }
     }
 }
