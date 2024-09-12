@@ -22,6 +22,7 @@ import kotlin.reflect.KClass
  * - for instance in case of JSON it can be `"string"`, `12.3`, `true`, `{}`
  */
 @Serializable
+@ConsistentCopyVisibility
 data class LoxoneMsg internal constructor(@SerialName("LL") private val content: Content) : LoxoneResponse {
     val control: String = content.control
     val code: String = content.code

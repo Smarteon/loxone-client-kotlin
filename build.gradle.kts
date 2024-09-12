@@ -1,5 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
-    `java-library`
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotest.multiplatform)
@@ -25,6 +26,8 @@ project.version = scmVersion.version
 
 repositories {
     mavenCentral()
+
+    maven("https://oss.sonatype.org/content/repositories/snapshots")
 }
 
 dependencies {
@@ -41,13 +44,9 @@ detekt {
 kotlin {
     jvmToolchain(21)
     jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
-            java {
-                targetCompatibility = JavaVersion.VERSION_17
-            }
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
         }
-        withJava()
 
         configurations.all {
             resolutionStrategy.eachDependency {
@@ -141,7 +140,6 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotest.assertions.core)
             implementation(libs.kotest.framework.engine)
-            implementation(libs.kotest.framework.datatest)
             implementation(libs.ktor.client.mock)
         }
         jvmMain.dependencies {
