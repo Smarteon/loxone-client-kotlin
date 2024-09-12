@@ -7,10 +7,7 @@ import cz.smarteon.loxone.message.SimpleLoxoneMsgCommand
 import cz.smarteon.loxone.message.TestingLoxValues.API_INFO_MSG_VAL
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import org.kodein.mock.Mocker
-import org.kodein.mock.UsesMocks
 
-@UsesMocks(LoxoneClient::class)
 class LoxoneClientTest : StringSpec({
 
     "should call for ApiInfo" {
@@ -27,9 +24,9 @@ class LoxoneClientTest : StringSpec({
     }
 })
 
-private suspend fun mockClientCall(command: Command<LoxoneMsg>, value: LoxoneMsg): LoxoneClient {
-    val mocker = Mocker()
-    val client: LoxoneClient = MockLoxoneClient(mocker)
-    mocker.everySuspending { client.call(command) } returns value
+private fun mockClientCall(command: Command<LoxoneMsg>, value: LoxoneMsg): LoxoneClient {
+    val client: LoxoneClient = MockLoxoneClient().apply {
+        stubCall(value) { it === command }
+    }
     return client
 }

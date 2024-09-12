@@ -1,7 +1,6 @@
 package cz.smarteon.loxone
 
 import cz.smarteon.loxone.LoxoneEndpoint.Companion.local
-import cz.smarteon.loxone.message.EmptyLoxoneMsgVal
 import cz.smarteon.loxone.message.Hashing.Companion.commandForUser
 import cz.smarteon.loxone.message.LoxoneMsg
 import cz.smarteon.loxone.message.TestingLoxValues.HASHING
@@ -12,10 +11,7 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import org.kodein.mock.Mocker
-import org.kodein.mock.UsesMocks
 
-@UsesMocks(WebsocketLoxoneClient::class)
 class LoxoneTokenAuthenticatorTest : ShouldSpec({
 
     context("with valid token") {
@@ -25,17 +21,13 @@ class LoxoneTokenAuthenticatorTest : ShouldSpec({
 
         val authenticator = LoxoneTokenAuthenticator(profile, repository)
 
-        val mocker = Mocker()
-        val client: WebsocketLoxoneClient = MockWebsocketLoxoneClient(mocker)
-        mocker.everySuspending {
-            client.call(commandForUser(USER))
-        } returns LoxoneMsg("jdev/sys/getkey2/$USER", "200", HASHING)
-
+        val client = MockLoxoneClient()
+        client.stubCall(LoxoneMsg("jdev/sys/getkey2/$USER", "200", HASHING)) { it == commandForUser(USER) }
 
         should("authenticate with token") {
-            mocker.everySuspending {
-                client.call(isLoxMsgCmdContaining<Token>("authwithtoken"))
-            } returns LoxoneMsg("authwithtoken", "200", tokenAuthResponse(TimeUtils.currentLoxoneSeconds().plus(320)))
+            val verification = client.stubCall(LoxoneMsg("authwithtoken", "200", tokenAuthResponse(TimeUtils.currentLoxoneSeconds().plus(320)))) {
+                it.pathSegments.contains("authwithtoken")
+            }
 
             authenticator.ensureAuthenticated(client)
 
@@ -44,18 +36,18 @@ class LoxoneTokenAuthenticatorTest : ShouldSpec({
                 it.key shouldBe token.key
                 it.validUntil shouldBeGreaterThan token.validUntil
             }
-            mocker.verifyWithSuspend(exhaustive = false) { client.call(isNotNull<LoxoneMsgCommand<Token>>()) }
+            verification.matches.size shouldBe 1
         }
 
         should("kill token on close") {
-            mocker.everySuspending {
-                client.call(isLoxMsgCmdContaining<EmptyLoxoneMsgVal>("killtoken"))
-            } returns LoxoneMsg("killtoken", "401", "")
+            val verification = client.stubCall(LoxoneMsg("killtoken", "401", "")) {
+                it.pathSegments.contains("killtoken")
+            }
 
             authenticator.close(client)
 
             repository.getToken(profile) shouldBe null
-            mocker.verifyWithSuspend(exhaustive = false) { client.call(isNotNull<LoxoneMsgCommand<EmptyLoxoneMsgVal>>()) }
+            verification.matches.size shouldBe 1
         }
     }
 }) {
