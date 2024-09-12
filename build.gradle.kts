@@ -10,7 +10,6 @@ plugins {
     `maven-publish`
     signing
     alias(libs.plugins.nexus.publish)
-    alias(libs.plugins.mockmp)
 }
 
 group = "cz.smarteon.loxone"
@@ -40,8 +39,8 @@ detekt {
 }
 
 kotlin {
+    jvmToolchain(17)
     jvm {
-        jvmToolchain(17)
         compilations.all {
             kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()
             java {
@@ -68,7 +67,7 @@ kotlin {
             create("acceptanceTest") {
 
                 defaultSourceSet {
-                    dependsOn(sourceSets.commonMain.get())
+                    dependsOn(main.defaultSourceSet)
                     dependencies {
                         implementation(libs.kotest.assertions.core)
                         implementation(libs.kotest.framework.engine)
@@ -163,14 +162,12 @@ kotlin {
     }
 }
 
-mockmp {
-    installWorkaround()
-}
-
-koverReport {
-    filters {
-        excludes {
-            classes("cz.smarteon.loxone.*AT*")
+kover {
+    reports {
+        filters {
+            excludes {
+                classes("cz.smarteon.loxone.*AT*")
+            }
         }
     }
 }
