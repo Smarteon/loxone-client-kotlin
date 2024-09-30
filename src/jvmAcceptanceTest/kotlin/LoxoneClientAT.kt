@@ -46,7 +46,7 @@ class LoxoneClientAT : WordSpec() {
         val endpoint = LoxoneEndpoint.fromUrl(address)
         val authenticator = LoxoneTokenAuthenticator(LoxoneProfile(endpoint, LoxoneCredentials(user, password)))
 
-        httpClient = KtorHttpLoxoneClient(endpoint, authenticator)
+        httpClient = KtorHttpLoxoneClient(endpoint, LoxoneAuth.Token(authenticator))
         websocketClient = KtorWebsocketLoxoneClient(endpoint, authenticator)
 
         include(commonAT(httpClient))

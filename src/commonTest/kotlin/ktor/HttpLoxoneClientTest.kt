@@ -1,5 +1,6 @@
 package cz.smarteon.loxone.ktor
 
+import cz.smarteon.loxone.LoxoneAuth
 import cz.smarteon.loxone.LoxoneCredentials
 import cz.smarteon.loxone.LoxoneEndpoint.Companion.local
 import cz.smarteon.loxone.LoxoneProfile
@@ -22,7 +23,7 @@ import io.ktor.http.*
 
 class HttpLoxoneClientTest : WordSpec({
 
-    val mockEngine = MockEngine {request ->
+    val mockEngine = MockEngine { request ->
         fun respondJson(body: String) = respond(body, headers = headersOf("Content-Type", "application/json"))
         fun respondHtmlError(status: HttpStatusCode) =
             respondError(status, htmlError(status), headersOf("Content-Type", "text/html"))
@@ -31,9 +32,17 @@ class HttpLoxoneClientTest : WordSpec({
         when {
             path == "/jdev/cfg/api" -> respondJson(okMsg("dev/cfg/api", API_INFO_MSG_VAL))
 
-            path == "/jdev/sys/authTest" -> {
+            path == "/jdev/sys/tokenAuthTest" -> {
                 if (request.url.encodedQuery.contains("autht")) {
-                    respondJson(okMsg("dev/sys/authTest", "authenticated"))
+                    respondJson(okMsg("dev/sys/tokenAuthTest", "authenticated"))
+                } else {
+                    respondHtmlError(HttpStatusCode.Unauthorized)
+                }
+            }
+
+            path == "/jdev/sys/basicAuthTest" -> {
+                if (request.headers.contains("Authorization")) {
+                    respondJson(okMsg("dev/sys/basicAuthTest", "authenticated"))
                 } else {
                     respondHtmlError(HttpStatusCode.Unauthorized)
                 }
@@ -51,7 +60,7 @@ class HttpLoxoneClientTest : WordSpec({
     }
 
     "not authenticated client" should {
-        val client = KtorHttpLoxoneClient(local("10.0.1.77"), null, mockEngine)
+        val client = KtorHttpLoxoneClient(local("10.0.1.77"), LoxoneAuth.None, mockEngine)
 
         "call raw" {
             client.callRaw("jdev/cfg/api") shouldBe okMsg("dev/cfg/api", API_INFO_MSG_VAL)
@@ -76,14 +85,22 @@ class HttpLoxoneClientTest : WordSpec({
     "authenticated client" should {
         val endpoint = local("10.0.1.77")
         val profile = LoxoneProfile(endpoint, LoxoneCredentials("user", "pass"))
-        val client = KtorHttpLoxoneClient(endpoint, LoxoneTokenAuthenticator(profile), mockEngine)
 
-        "call authenticated" {
-            val response = client.call(sysCommand<LoxoneMsgVal>("authTest"))
+        "call authenticated by token" {
+            val client =
+                KtorHttpLoxoneClient(endpoint, LoxoneAuth.Token(LoxoneTokenAuthenticator(profile)), mockEngine)
+            val response = client.call(sysCommand<LoxoneMsgVal>("tokenAuthTest"))
             response.code shouldBe "200"
+            client.close()
         }
 
-        client.close()
+        "call authenticated by basic auth" {
+            val client =
+                KtorHttpLoxoneClient(endpoint, LoxoneAuth.Basic(profile), mockEngine)
+            val response = client.call(sysCommand<LoxoneMsgVal>("basicAuthTest"))
+            response.code shouldBe "200"
+            client.close()
+        }
     }
 
 })
