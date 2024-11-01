@@ -58,4 +58,4 @@ jobs:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASS: ${{ secrets.SIGNING_PASS }}
         run: |
-          ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
+          ./gradlew --no-configuration-cache publishToSonatype closeAndReleaseSonatypeStagingRepository
