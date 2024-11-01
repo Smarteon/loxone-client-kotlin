@@ -20,6 +20,7 @@ import io.kotest.matchers.shouldBe
 import io.ktor.client.engine.mock.*
 import io.ktor.client.plugins.*
 import io.ktor.http.*
+import io.ktor.utils.io.core.*
 
 class HttpLoxoneClientTest : WordSpec({
 
@@ -52,7 +53,12 @@ class HttpLoxoneClientTest : WordSpec({
 
             path.startsWith("/jdev/sys/getjwt") -> {
                 val validUntil = TimeUtils.currentLoxoneSeconds().plus(60)
-                respondJson(okMsg(path, token(validUntil)))
+                respondJson(okMsg(path.substring(1), token(validUntil)))
+            }
+
+            request.method == HttpMethod.Post && path.startsWith("/dev/fsput") -> {
+                val payloadSize = request.body.toByteArray().size
+                respondJson(okMsg(path.substring(1), payloadSize.toString()))
             }
 
             else -> respondHtmlError(HttpStatusCode.NotFound)
@@ -99,6 +105,13 @@ class HttpLoxoneClientTest : WordSpec({
                 KtorHttpLoxoneClient(endpoint, LoxoneAuth.Basic(profile), mockEngine)
             val response = client.call(sysCommand<LoxoneMsgVal>("basicAuthTest"))
             response.code shouldBe "200"
+            client.close()
+        }
+
+        "call post" {
+            val client = KtorHttpLoxoneClient(endpoint, LoxoneAuth.Basic(profile), mockEngine)
+            val response = client.postRaw("dev/fsput/test", "test".toByteArray())
+            response shouldBe okMsg("dev/fsput/test", "4")
             client.close()
         }
     }

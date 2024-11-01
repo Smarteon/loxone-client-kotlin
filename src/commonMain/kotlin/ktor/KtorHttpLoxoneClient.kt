@@ -13,6 +13,7 @@ import io.ktor.client.engine.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlin.jvm.JvmOverloads
@@ -66,6 +67,16 @@ class KtorHttpLoxoneClient internal constructor(
                 appendEncodedPathSegments(command)
             }
         }.body()
+    }
+
+    override suspend fun postRaw(command: String, payload: ByteArray): String {
+        authentication.tokenAuthenticator?.ensureAuthenticated(this)
+        return httpClient.post {
+            commandRequest {
+                appendPathSegments(command)
+            }
+            setBody(payload)
+        }.bodyAsText()
     }
 
     @Suppress("TooGenericExceptionCaught")
