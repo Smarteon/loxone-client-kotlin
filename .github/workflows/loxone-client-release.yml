@@ -53,7 +53,7 @@ jobs:
       - name: Publish to OSS Sonatype
         shell: bash
         env:
-          OSS_USER: smarteon
+          OSS_USER: ${{ secrets.OSS_USER }}
           OSS_PASS: ${{ secrets.OSS_PASS }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASS: ${{ secrets.SIGNING_PASS }}
