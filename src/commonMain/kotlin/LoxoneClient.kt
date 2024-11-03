@@ -10,6 +10,14 @@ interface LoxoneClient {
 
     suspend fun callRaw(command: String): String
 
+    /**
+     * Call given [command] and return response as raw data.
+     * Can be used to retrieve files, icons, etc.
+     *
+     * @param command Command to call.
+     */
+    suspend fun callRawForData(command: String): ByteArray
+
     suspend fun close()
 }
 

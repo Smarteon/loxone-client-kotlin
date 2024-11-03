@@ -61,6 +61,8 @@ class HttpLoxoneClientTest : WordSpec({
                 respondJson(okMsg(path.substring(1), payloadSize.toString()))
             }
 
+            path == "/jdev/fsget/test" -> respond("success".toByteArray(), status = HttpStatusCode.OK)
+
             else -> respondHtmlError(HttpStatusCode.NotFound)
         }
     }
@@ -92,27 +94,41 @@ class HttpLoxoneClientTest : WordSpec({
         val endpoint = local("10.0.1.77")
         val profile = LoxoneProfile(endpoint, LoxoneCredentials("user", "pass"))
 
-        "call authenticated by token" {
-            val client =
-                KtorHttpLoxoneClient(endpoint, LoxoneAuth.Token(LoxoneTokenAuthenticator(profile)), mockEngine)
-            val response = client.call(sysCommand<LoxoneMsgVal>("tokenAuthTest"))
-            response.code shouldBe "200"
+        suspend fun withClient(
+            auth: LoxoneAuth = LoxoneAuth.Basic(profile),
+            block: suspend KtorHttpLoxoneClient.() -> Unit
+        ) {
+            val client = KtorHttpLoxoneClient(endpoint, auth, mockEngine)
+            client.block()
             client.close()
+        }
+
+        "call authenticated by token" {
+            withClient(LoxoneAuth.Token(LoxoneTokenAuthenticator(profile))) {
+                val response = call(sysCommand<LoxoneMsgVal>("tokenAuthTest"))
+                response.code shouldBe "200"
+            }
         }
 
         "call authenticated by basic auth" {
-            val client =
-                KtorHttpLoxoneClient(endpoint, LoxoneAuth.Basic(profile), mockEngine)
-            val response = client.call(sysCommand<LoxoneMsgVal>("basicAuthTest"))
-            response.code shouldBe "200"
-            client.close()
+            withClient {
+                val response = call(sysCommand<LoxoneMsgVal>("basicAuthTest"))
+                response.code shouldBe "200"
+            }
         }
 
         "call post" {
-            val client = KtorHttpLoxoneClient(endpoint, LoxoneAuth.Basic(profile), mockEngine)
-            val response = client.postRaw("dev/fsput/test", "test".toByteArray())
-            response shouldBe okMsg("dev/fsput/test", "4")
-            client.close()
+            withClient {
+                val response = postRaw("dev/fsput/test", "test".toByteArray())
+                response shouldBe okMsg("dev/fsput/test", "4")
+            }
+        }
+
+        "call raw for data" {
+            withClient {
+                val response = callRawForData("jdev/fsget/test")
+                response shouldBe "success".toByteArray()
+            }
         }
     }
 

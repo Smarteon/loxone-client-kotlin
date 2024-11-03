@@ -60,13 +60,17 @@ class KtorHttpLoxoneClient internal constructor(
         }.body(command.responseType.typeInfo)
     }
 
-    override suspend fun callRaw(command: String): String {
+    override suspend fun callRaw(command: String): String = callRawForResponse(command).body()
+
+    override suspend fun callRawForData(command: String): ByteArray = callRawForResponse(command).body()
+
+    private suspend fun callRawForResponse(command: String): HttpResponse {
         authentication.tokenAuthenticator?.ensureAuthenticated(this)
         return httpClient.get {
             commandRequest {
                 appendEncodedPathSegments(command)
             }
-        }.body()
+        }
     }
 
     override suspend fun postRaw(command: String, payload: ByteArray): String {
