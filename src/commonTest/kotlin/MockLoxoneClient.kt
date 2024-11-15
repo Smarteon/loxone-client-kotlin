@@ -23,6 +23,10 @@ internal class MockLoxoneClient : WebsocketLoxoneClient {
         TODO("Not yet implemented")
     }
 
+    override suspend fun callRawForData(command: String): ByteArray {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun close() {
         TODO("Not yet implemented")
     }

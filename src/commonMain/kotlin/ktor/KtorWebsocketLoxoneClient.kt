@@ -81,6 +81,10 @@ class KtorWebsocketLoxoneClient internal constructor(
         return receiveTextMessage()
     }
 
+    override suspend fun callRawForData(command: String): ByteArray {
+        TODO("Not yet implemented")
+    }
+
     @Suppress("TooGenericExceptionCaught")
     override suspend fun close() {
         try {

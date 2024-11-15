@@ -18,7 +18,7 @@ Any feedback or help is welcomed.
 The predecessor of this project is [loxone-java](https://github.com/Smarteon/loxone-java) library. For more complete experience on JVM, consider using it. There is a plan to merge both projects in the future in some way.
  
 ## Usage
-In order to use version from aster which is not released, it's needed build and publish it locally first:
+In order to use version from master which is not released, it's needed build and publish it locally first:
 ```bash
 ./gradlew build publishToMavenLocal
 ```
