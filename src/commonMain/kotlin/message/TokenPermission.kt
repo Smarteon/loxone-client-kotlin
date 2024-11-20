@@ -9,6 +9,11 @@ package cz.smarteon.loxone.message
 enum class TokenPermission(val id: Int) {
 
     /**
+     * ADMIN permission.
+     */
+    ADMIN(1),
+
+    /**
      * WEB permission - short token validity (lasts for hours).
      */
     WEB(2),
@@ -16,5 +21,10 @@ enum class TokenPermission(val id: Int) {
     /**
      * APP permission - long token validity (lasts for weeks).
      */
-    APP(4)
+    APP(4),
+
+    /**
+     * CONFIG permission - used to connect like Loxone Config application.
+     */
+    CONFIG(12)
 }
