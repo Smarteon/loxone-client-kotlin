@@ -63,6 +63,10 @@ class HttpLoxoneClientTest : WordSpec({
 
             path == "/jdev/fsget/test" -> respond("success".toByteArray(), status = HttpStatusCode.OK)
 
+            path.startsWith("/testRedirect") -> {
+                respondRedirect("http://test.xyz/${path.substringAfter("Redirect/")}")
+            }
+
             else -> respondHtmlError(HttpStatusCode.NotFound)
         }
     }
@@ -114,6 +118,13 @@ class HttpLoxoneClientTest : WordSpec({
             withClient {
                 val response = call(sysCommand<LoxoneMsgVal>("basicAuthTest"))
                 response.code shouldBe "200"
+            }
+        }
+
+        "call basic auth with redirect" {
+            withClient {
+                val response = callRaw("testRedirect/jdev/sys/basicAuthTest")
+                response shouldBe okMsg("dev/sys/basicAuthTest", "authenticated")
             }
         }
 

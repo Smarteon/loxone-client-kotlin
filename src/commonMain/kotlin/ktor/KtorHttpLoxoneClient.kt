@@ -10,6 +10,8 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.*
+import io.ktor.client.plugins.auth.*
+import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
@@ -45,6 +47,13 @@ class KtorHttpLoxoneClient internal constructor(
                 }
             }
             level = LogLevel.ALL
+        }
+        if (authentication is LoxoneAuth.Basic) {
+            install(Auth) {
+                basic {
+                    credentials { BasicAuthCredentials(authentication.username, authentication.password) }
+                }
+            }
         }
     }
 
@@ -96,9 +105,6 @@ class KtorHttpLoxoneClient internal constructor(
     }
 
     private fun HttpRequestBuilder.commandRequest(addAuth: Boolean = true, pathBuilder: URLBuilder.() -> Unit) {
-        if (addAuth && authentication is LoxoneAuth.Basic) {
-            basicAuth(authentication.username, authentication.password)
-        }
         url {
             protocol = if (endpoint.useSsl) URLProtocol.HTTPS else URLProtocol.HTTP
             host = endpoint.host
