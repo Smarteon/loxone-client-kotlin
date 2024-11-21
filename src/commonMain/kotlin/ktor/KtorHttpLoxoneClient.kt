@@ -108,6 +108,7 @@ class KtorHttpLoxoneClient internal constructor(
         url {
             protocol = if (endpoint.useSsl) URLProtocol.HTTPS else URLProtocol.HTTP
             host = endpoint.host
+            port = endpoint.port
             appendEncodedPathSegments(endpoint.path)
             pathBuilder()
             if (addAuth && authentication is LoxoneAuth.Token) {
