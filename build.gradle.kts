@@ -118,6 +118,7 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.websockets)
             implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.client.auth)
 
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlin.logging)
