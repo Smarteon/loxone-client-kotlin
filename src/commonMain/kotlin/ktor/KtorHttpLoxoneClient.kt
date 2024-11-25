@@ -10,6 +10,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.*
+import io.ktor.client.plugins.*
 import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -54,6 +55,9 @@ class KtorHttpLoxoneClient internal constructor(
                     credentials { BasicAuthCredentials(authentication.username, authentication.password) }
                 }
             }
+        }
+        install(HttpRedirect) {
+            checkHttpMethod = false
         }
     }
 
