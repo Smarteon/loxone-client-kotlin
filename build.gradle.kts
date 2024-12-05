@@ -41,6 +41,12 @@ detekt {
 kotlin {
     jvmToolchain(21)
     jvm {
+        compilations.all {
+            kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
+            java {
+                targetCompatibility = JavaVersion.VERSION_17
+            }
+        }
         withJava()
 
         configurations.all {
