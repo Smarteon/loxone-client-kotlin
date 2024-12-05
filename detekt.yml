@@ -2,7 +2,7 @@ build:
   maxIssues: 0
 naming:
   InvalidPackageDeclaration:
-    rootPackage: cz.smarteon.loxone
+    rootPackage: cz.smarteon.loxkt
 formatting:
   NoWildcardImports:
     active: false

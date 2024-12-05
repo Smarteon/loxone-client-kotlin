@@ -1,14 +1,14 @@
-package cz.smarteon.loxone
+package cz.smarteon.loxkt
 
 import com.ditchoom.buffer.ByteOrder
 import com.ditchoom.buffer.PlatformBuffer
 import com.ditchoom.buffer.allocate
 import com.ditchoom.buffer.wrap
-import cz.smarteon.loxone.message.MessageHeader
-import cz.smarteon.loxone.message.MessageHeader.Companion.FIRST_BYTE
-import cz.smarteon.loxone.message.MessageHeader.Companion.MSG_SIZE_POSITION
-import cz.smarteon.loxone.message.MessageHeader.Companion.PAYLOAD_LENGTH
-import cz.smarteon.loxone.message.MessageKind
+import cz.smarteon.loxkt.message.MessageHeader
+import cz.smarteon.loxkt.message.MessageHeader.Companion.FIRST_BYTE
+import cz.smarteon.loxkt.message.MessageHeader.Companion.MSG_SIZE_POSITION
+import cz.smarteon.loxkt.message.MessageHeader.Companion.PAYLOAD_LENGTH
+import cz.smarteon.loxkt.message.MessageKind
 import kotlinx.serialization.json.Json
 
 object Codec {

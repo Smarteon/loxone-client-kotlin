@@ -1,11 +1,11 @@
-package cz.smarteon.loxone.ktor
+package cz.smarteon.loxkt.ktor
 
-import cz.smarteon.loxone.Codec
-import cz.smarteon.loxone.Command
-import cz.smarteon.loxone.HttpLoxoneClient
-import cz.smarteon.loxone.LoxoneAuth
-import cz.smarteon.loxone.LoxoneEndpoint
-import cz.smarteon.loxone.LoxoneResponse
+import cz.smarteon.loxkt.Codec
+import cz.smarteon.loxkt.Command
+import cz.smarteon.loxkt.HttpLoxoneClient
+import cz.smarteon.loxkt.LoxoneAuth
+import cz.smarteon.loxkt.LoxoneEndpoint
+import cz.smarteon.loxkt.LoxoneResponse
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.call.*

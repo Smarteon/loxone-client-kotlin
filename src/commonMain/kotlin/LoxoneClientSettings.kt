@@ -1,6 +1,6 @@
-package cz.smarteon.loxone
+package cz.smarteon.loxkt
 
-import cz.smarteon.loxone.message.TokenPermission
+import cz.smarteon.loxkt.message.TokenPermission
 import kotlin.jvm.JvmOverloads
 
 data class LoxoneClientSettings @JvmOverloads constructor(

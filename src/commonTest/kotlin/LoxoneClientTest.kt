@@ -1,10 +1,10 @@
-package cz.smarteon.loxone
+package cz.smarteon.loxkt
 
-import cz.smarteon.loxone.message.ApiInfo
-import cz.smarteon.loxone.message.EmptyLoxoneMsgVal
-import cz.smarteon.loxone.message.LoxoneMsg
-import cz.smarteon.loxone.message.SimpleLoxoneMsgCommand
-import cz.smarteon.loxone.message.TestingLoxValues.API_INFO_MSG_VAL
+import cz.smarteon.loxkt.message.ApiInfo
+import cz.smarteon.loxkt.message.EmptyLoxoneMsgVal
+import cz.smarteon.loxkt.message.LoxoneMsg
+import cz.smarteon.loxkt.message.SimpleLoxoneMsgCommand
+import cz.smarteon.loxkt.message.TestingLoxValues.API_INFO_MSG_VAL
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 

@@ -1,6 +1,6 @@
-package cz.smarteon.loxone.message
+package cz.smarteon.loxkt.message
 
-import cz.smarteon.loxone.Codec.loxJson
+import cz.smarteon.loxkt.Codec.loxJson
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe

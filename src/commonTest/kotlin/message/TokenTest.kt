@@ -1,8 +1,8 @@
-package cz.smarteon.loxone.message
+package cz.smarteon.loxkt.message
 
-import cz.smarteon.loxone.Codec.loxJson
-import cz.smarteon.loxone.message.TestingLoxValues.token
-import cz.smarteon.loxone.message.TestingLoxValues.tokenAuthResponse
+import cz.smarteon.loxkt.Codec.loxJson
+import cz.smarteon.loxkt.message.TestingLoxValues.token
+import cz.smarteon.loxkt.message.TestingLoxValues.tokenAuthResponse
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 

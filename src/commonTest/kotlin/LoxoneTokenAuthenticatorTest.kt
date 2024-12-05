@@ -1,11 +1,11 @@
-package cz.smarteon.loxone
+package cz.smarteon.loxkt
 
-import cz.smarteon.loxone.LoxoneEndpoint.Companion.local
-import cz.smarteon.loxone.message.Hashing.Companion.commandForUser
-import cz.smarteon.loxone.message.LoxoneMsg
-import cz.smarteon.loxone.message.TestingLoxValues.HASHING
-import cz.smarteon.loxone.message.TestingLoxValues.tokenAuthResponse
-import cz.smarteon.loxone.message.Token
+import cz.smarteon.loxkt.LoxoneEndpoint.Companion.local
+import cz.smarteon.loxkt.message.Hashing.Companion.commandForUser
+import cz.smarteon.loxkt.message.LoxoneMsg
+import cz.smarteon.loxkt.message.TestingLoxValues.HASHING
+import cz.smarteon.loxkt.message.TestingLoxValues.tokenAuthResponse
+import cz.smarteon.loxkt.message.Token
 import io.kotest.assertions.asClue
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.longs.shouldBeGreaterThan

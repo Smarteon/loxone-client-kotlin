@@ -1,3 +1,3 @@
-package cz.smarteon.loxone
+package cz.smarteon.loxkt
 
 interface LoxoneResponse

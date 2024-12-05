@@ -1,6 +1,6 @@
-package cz.smarteon.loxone.message
+package cz.smarteon.loxkt.message
 
-import cz.smarteon.loxone.LoxoneTime
+import cz.smarteon.loxkt.LoxoneTime
 import kotlinx.datetime.Clock
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

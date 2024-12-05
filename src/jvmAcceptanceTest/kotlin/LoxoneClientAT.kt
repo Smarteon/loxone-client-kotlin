@@ -1,8 +1,8 @@
-package cz.smarteon.loxone
+package cz.smarteon.loxkt
 
-import cz.smarteon.loxone.ktor.KtorHttpLoxoneClient
-import cz.smarteon.loxone.ktor.KtorWebsocketLoxoneClient
-import cz.smarteon.loxone.message.ApiInfo
+import cz.smarteon.loxkt.ktor.KtorHttpLoxoneClient
+import cz.smarteon.loxkt.ktor.KtorWebsocketLoxoneClient
+import cz.smarteon.loxkt.message.ApiInfo
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.spec.style.wordSpec

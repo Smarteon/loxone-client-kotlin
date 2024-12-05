@@ -1,4 +1,4 @@
-package cz.smarteon.loxone.message
+package cz.smarteon.loxkt.message
 
 import io.ktor.http.*
 

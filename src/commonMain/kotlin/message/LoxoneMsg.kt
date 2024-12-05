@@ -1,8 +1,8 @@
 @file:OptIn(ExperimentalSerializationApi::class)
 
-package cz.smarteon.loxone.message
+package cz.smarteon.loxkt.message
 
-import cz.smarteon.loxone.LoxoneResponse
+import cz.smarteon.loxkt.LoxoneResponse
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

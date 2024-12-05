@@ -1,4 +1,4 @@
-package cz.smarteon.loxone
+package cz.smarteon.loxkt
 
 import io.ktor.http.*
 import kotlin.jvm.JvmOverloads

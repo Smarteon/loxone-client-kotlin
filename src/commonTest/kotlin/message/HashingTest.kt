@@ -1,7 +1,7 @@
-package cz.smarteon.loxone.message
+package cz.smarteon.loxkt.message
 
-import cz.smarteon.loxone.Codec.loxJson
-import cz.smarteon.loxone.message.TestingLoxValues.HASHING
+import cz.smarteon.loxkt.Codec.loxJson
+import cz.smarteon.loxkt.message.TestingLoxValues.HASHING
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 

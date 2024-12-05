@@ -1,7 +1,7 @@
-package cz.smarteon.loxone.message
+package cz.smarteon.loxkt.message
 
 
-import cz.smarteon.loxone.Codec
+import cz.smarteon.loxkt.Codec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.maps.shouldContainKey
 import io.kotest.matchers.shouldBe

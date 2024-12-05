@@ -1,4 +1,4 @@
-package cz.smarteon.loxone
+package cz.smarteon.loxkt
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec

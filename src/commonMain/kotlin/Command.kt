@@ -1,7 +1,7 @@
-package cz.smarteon.loxone
+package cz.smarteon.loxkt
 
-import cz.smarteon.loxone.message.LoxoneMsg
-import cz.smarteon.loxone.message.LoxoneMsgVal
+import cz.smarteon.loxkt.message.LoxoneMsg
+import cz.smarteon.loxkt.message.LoxoneMsgVal
 import kotlin.jvm.JvmOverloads
 import kotlin.reflect.KClass
 
