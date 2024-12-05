@@ -40,10 +40,14 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
         }
     }
 
+    // Websockets that are authenticated
     private val authWebsockets = mutableSetOf<WebsocketLoxoneClient>()
 
     suspend fun ensureAuthenticated(client: LoxoneClient) =
-        execConditionalWithMutex({ !TokenState(token).isUsable || !authWebsockets.contains(client) }) {
+        execConditionalWithMutex({
+            // Token is not usable or websocket client is not authenticated
+            !TokenState(token).isUsable || (client is WebsocketLoxoneClient && !authWebsockets.contains(client))
+        }) {
             if (hashing == null) {
                 hashing = client.callForMsg(commandForUser(user))
             }
