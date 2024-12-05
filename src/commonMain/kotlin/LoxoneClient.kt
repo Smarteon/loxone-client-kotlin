@@ -1,8 +1,8 @@
-package cz.smarteon.loxone
+package cz.smarteon.loxkt
 
-import cz.smarteon.loxone.Codec.loxJson
-import cz.smarteon.loxone.message.EmptyLoxoneMsgVal
-import cz.smarteon.loxone.message.LoxoneMsgVal
+import cz.smarteon.loxkt.Codec.loxJson
+import cz.smarteon.loxkt.message.EmptyLoxoneMsgVal
+import cz.smarteon.loxkt.message.LoxoneMsgVal
 
 interface LoxoneClient {
 

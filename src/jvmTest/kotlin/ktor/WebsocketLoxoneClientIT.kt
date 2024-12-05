@@ -1,11 +1,11 @@
-package cz.smarteon.loxone.ktor
+package cz.smarteon.loxkt.ktor
 
-import cz.smarteon.loxone.Codec.writeHeader
-import cz.smarteon.loxone.message.ApiInfo
-import cz.smarteon.loxone.message.MessageHeader
-import cz.smarteon.loxone.message.MessageKind.TEXT
-import cz.smarteon.loxone.message.TestingLoxValues.API_INFO_MSG_VAL
-import cz.smarteon.loxone.message.TestingMessages.okMsg
+import cz.smarteon.loxkt.Codec.writeHeader
+import cz.smarteon.loxkt.message.ApiInfo
+import cz.smarteon.loxkt.message.MessageHeader
+import cz.smarteon.loxkt.message.MessageKind.TEXT
+import cz.smarteon.loxkt.message.TestingLoxValues.API_INFO_MSG_VAL
+import cz.smarteon.loxkt.message.TestingMessages.okMsg
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.ktor.client.*

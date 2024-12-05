@@ -1,8 +1,8 @@
-package cz.smarteon.loxone.example;
+package cz.smarteon.loxkt.example;
 
-import cz.smarteon.loxone.Command;
-import cz.smarteon.loxone.LoxoneClient;
-import cz.smarteon.loxone.LoxoneResponse;
+import cz.smarteon.loxkt.Command;
+import cz.smarteon.loxkt.LoxoneClient;
+import cz.smarteon.loxkt.LoxoneResponse;
 import kotlin.coroutines.EmptyCoroutineContext;
 import kotlinx.coroutines.BuildersKt;
 import org.jetbrains.annotations.NotNull;

@@ -1,7 +1,7 @@
-package cz.smarteon.loxone.ktor
+package cz.smarteon.loxkt.ktor
 
-import cz.smarteon.loxone.LoxoneResponse
-import cz.smarteon.loxone.message.LoxoneMsg
+import cz.smarteon.loxkt.LoxoneResponse
+import cz.smarteon.loxkt.message.LoxoneMsg
 import io.ktor.util.reflect.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer

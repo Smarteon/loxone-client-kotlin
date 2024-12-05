@@ -1,13 +1,13 @@
-package cz.smarteon.loxone.example
+package cz.smarteon.loxkt.example
 
-import cz.smarteon.loxone.LoxoneClient
-import cz.smarteon.loxone.LoxoneCredentials
-import cz.smarteon.loxone.LoxoneEndpoint
-import cz.smarteon.loxone.LoxoneProfile
-import cz.smarteon.loxone.LoxoneTokenAuthenticator
-import cz.smarteon.loxone.callForMsg
-import cz.smarteon.loxone.ktor.KtorWebsocketLoxoneClient
-import cz.smarteon.loxone.message.ApiInfo
+import cz.smarteon.loxkt.LoxoneClient
+import cz.smarteon.loxkt.LoxoneCredentials
+import cz.smarteon.loxkt.LoxoneEndpoint
+import cz.smarteon.loxkt.LoxoneProfile
+import cz.smarteon.loxkt.LoxoneTokenAuthenticator
+import cz.smarteon.loxkt.callForMsg
+import cz.smarteon.loxkt.ktor.KtorWebsocketLoxoneClient
+import cz.smarteon.loxkt.message.ApiInfo
 
 
 suspend fun main(args: Array<String>) {

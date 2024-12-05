@@ -1,11 +1,11 @@
-package cz.smarteon.loxone
+package cz.smarteon.loxkt
 
-import cz.smarteon.loxone.message.EmptyLoxoneMsgVal
-import cz.smarteon.loxone.message.LoxoneMsg
-import cz.smarteon.loxone.message.SimpleLoxoneMsgCommand
-import cz.smarteon.loxone.message.Token
-import cz.smarteon.loxone.message.TokenPermission
-import cz.smarteon.loxone.message.sysCommand
+import cz.smarteon.loxkt.message.EmptyLoxoneMsgVal
+import cz.smarteon.loxkt.message.LoxoneMsg
+import cz.smarteon.loxkt.message.SimpleLoxoneMsgCommand
+import cz.smarteon.loxkt.message.Token
+import cz.smarteon.loxkt.message.TokenPermission
+import cz.smarteon.loxkt.message.sysCommand
 import kotlin.jvm.JvmStatic
 
 /**

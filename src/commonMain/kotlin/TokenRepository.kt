@@ -1,7 +1,7 @@
-package cz.smarteon.loxone
+package cz.smarteon.loxkt
 
 import co.touchlab.stately.collections.ConcurrentMutableMap
-import cz.smarteon.loxone.message.Token
+import cz.smarteon.loxkt.message.Token
 
 interface TokenRepository {
     /**

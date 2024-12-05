@@ -1,8 +1,8 @@
-package cz.smarteon.loxone
+package cz.smarteon.loxkt
 
-import cz.smarteon.loxone.message.EmptyLoxoneMsgVal
-import cz.smarteon.loxone.message.Token
-import cz.smarteon.loxone.message.TokenPermission
+import cz.smarteon.loxkt.message.EmptyLoxoneMsgVal
+import cz.smarteon.loxkt.message.Token
+import cz.smarteon.loxkt.message.TokenPermission
 import io.kotest.assertions.asClue
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe

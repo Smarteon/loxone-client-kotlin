@@ -1,4 +1,4 @@
-package cz.smarteon.loxone.message
+package cz.smarteon.loxkt.message
 
 /**
  * Message header used to identify websocket message kind and size.

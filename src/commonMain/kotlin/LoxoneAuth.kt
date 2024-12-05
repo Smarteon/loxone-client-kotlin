@@ -1,4 +1,4 @@
-package cz.smarteon.loxone
+package cz.smarteon.loxkt
 
 /**
  * Represents Loxone authentication method.

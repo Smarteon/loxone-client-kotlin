@@ -1,10 +1,10 @@
-package cz.smarteon.loxone
+package cz.smarteon.loxkt
 
-import cz.smarteon.loxone.Codec.bytesToHex
-import cz.smarteon.loxone.Codec.concat
-import cz.smarteon.loxone.Codec.concatToBytes
-import cz.smarteon.loxone.message.Hashing
-import cz.smarteon.loxone.message.Token
+import cz.smarteon.loxkt.Codec.bytesToHex
+import cz.smarteon.loxkt.Codec.concat
+import cz.smarteon.loxkt.Codec.concatToBytes
+import cz.smarteon.loxkt.message.Hashing
+import cz.smarteon.loxkt.message.Token
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.kotlincrypto.hash.sha1.SHA1
 import org.kotlincrypto.hash.sha2.SHA256
