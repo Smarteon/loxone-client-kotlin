@@ -60,13 +60,8 @@ internal object LoxoneCrypto {
         }
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
-    fun loxoneHmac(token: Token, operation: String): String =
-        token.withTokenAndKey { tokenVal, key ->
-            bytesToHex(HmacSHA256(key).doFinal(tokenVal.encodeToByteArray())).also { finalHash ->
-                logger.trace { "$operation final hash: $finalHash" }
-            }
-        }
+    fun loxoneHmac(token: Token, hashing: Hashing, operation: String): String =
+        loxoneHmac(checkNotNull(token.token) { "Can't hash non-filled token" }, hashing, operation)
 
     @OptIn(ExperimentalStdlibApi::class)
     private fun loxoneDigest(secret: String, hashing: Hashing): String {

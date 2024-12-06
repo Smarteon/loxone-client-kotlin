@@ -108,17 +108,23 @@ class KtorHttpLoxoneClient internal constructor(
         httpClient.close()
     }
 
-    private fun HttpRequestBuilder.commandRequest(addAuth: Boolean = true, pathBuilder: URLBuilder.() -> Unit) {
+    private suspend fun HttpRequestBuilder.commandRequest(addAuth: Boolean = true, pathBuilder: URLBuilder.() -> Unit) {
+        val userAndHash = if (addAuth && authentication is LoxoneAuth.Token) {
+            val authenticator = authentication.authenticator
+            authenticator.user to authenticator.tokenHash(this@KtorHttpLoxoneClient, "http-autht")
+        } else {
+            null
+        }
+
         url {
             protocol = if (endpoint.useSsl) URLProtocol.HTTPS else URLProtocol.HTTP
             host = endpoint.host
             port = endpoint.port
             appendEncodedPathSegments(endpoint.path)
             pathBuilder()
-            if (addAuth && authentication is LoxoneAuth.Token) {
-                val authenticator = authentication.authenticator
-                parameters.append("autht", authenticator.tokenHash("http-autht"))
-                parameters.append("user", authenticator.user)
+            if (userAndHash != null) {
+                parameters.append("user", userAndHash.first)
+                parameters.append("autht", userAndHash.second)
             }
         }
     }
