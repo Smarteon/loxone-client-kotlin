@@ -2,7 +2,6 @@ package cz.smarteon.loxkt
 
 import cz.smarteon.loxkt.LoxoneCommands.Tokens
 import cz.smarteon.loxkt.LoxoneCrypto.loxoneHashing
-import cz.smarteon.loxkt.message.Hashing
 import cz.smarteon.loxkt.message.Hashing.Companion.commandForUser
 import cz.smarteon.loxkt.message.Token
 import cz.smarteon.loxkt.message.TokenState
@@ -26,8 +25,6 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
 
     private val mutex = Mutex()
 
-    private var hashing: Hashing? = null
-
     private var token: Token? by Delegates.observable(repository.getToken(profile)) { _, _, newValue ->
         if (newValue != null) {
             logger.info {
@@ -45,21 +42,17 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
 
     suspend fun ensureAuthenticated(client: LoxoneClient) =
         execConditionalWithMutex({
-            // Token is not usable or websocket client is not authenticated
-            !TokenState(token).isUsable || (client is WebsocketLoxoneClient && !authWebsockets.contains(client))
+            !TokenState(token).isUsable ||
+                (client is WebsocketLoxoneClient && !authWebsockets.contains(client))
         }) {
-            if (hashing == null) {
-                hashing = client.callForMsg(commandForUser(user))
-            }
-
+            val hashing = client.callForMsg(commandForUser(user))
             val state = TokenState(token)
-
             when {
                 state.isExpired -> {
                     logger.debug { "Token expired, requesting new one" }
                     token = client.callForMsg(
                         Tokens.get(
-                            loxoneHashing(profile.credentials!!.password, checkNotNull(hashing), "getttoken", user),
+                            loxoneHashing(profile.credentials!!.password, hashing, "getttoken", user),
                             user,
                             settings.tokenPermission,
                             settings.clientId,
@@ -79,7 +72,7 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
                 else -> {
                     if (client is WebsocketLoxoneClient) {
                         logger.debug { "Authenticating websocket with token $token" }
-                        val authResponse = client.callForMsg(Tokens.auth(tokenHash("authenticate"), user))
+                        val authResponse = client.callForMsg(Tokens.auth(tokenHash(client, "authenticate"), user))
                         token = token!!.merge(authResponse)
                         authWebsockets.add(client)
                     }
@@ -89,7 +82,7 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
 
     suspend fun killToken(client: LoxoneClient) = execConditionalWithMutex({ TokenState(token).isUsable }) {
         logger.debug { "Going to kill token $token" }
-        client.callForMsg(Tokens.kill(tokenHash("killtoken"), user))
+        client.callForMsg(Tokens.kill(tokenHash(client, "killtoken"), user))
         logger.info { "Token killed" }
         token = null
         authWebsockets.remove(client)
@@ -101,7 +94,12 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
         }
     }
 
-    fun tokenHash(operation: String) = LoxoneCrypto.loxoneHmac(checkNotNull(token), operation)
+    suspend fun tokenHash(client: LoxoneClient, operation: String) =
+        LoxoneCrypto.loxoneHmac(
+            checkNotNull(token) { "Token must be present for hashing" },
+            client.callForMsg(commandForUser(user)),
+            operation
+        )
 
     private suspend fun execConditionalWithMutex(condition: () -> Boolean, block: suspend () -> Unit) {
         if (condition()) {

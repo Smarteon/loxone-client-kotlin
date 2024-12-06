@@ -31,11 +31,6 @@ data class Token(
      */
     fun secondsToExpireFromNow() = LoxoneTime.getUnixEpochSeconds(validUntil) - Clock.System.now().epochSeconds
 
-    fun <T> withTokenAndKey(block: (String, ByteArray) -> T): T {
-        check(filled) { "Can't invoke block(token, key) on nonfilled token" }
-        return block(token!!, key!!)
-    }
-
     /**
      * Merges the given token to this one and returns the merged token. The [Token.token] and [Token.key] are taken
      * from given token only if they are not null, otherwise the values from this token are used. Other properties are
