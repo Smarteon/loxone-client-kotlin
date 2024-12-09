@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 /**
  * Represents Loxone authentication token.
  *
- * @roperty[token] The actual token value. May be null in case of response to refresh token or `authwithtoken`
+ * @property[token] The actual token value. May be null in case of response to refresh token or `authwithtoken`
  * @property[key] The token key value. May be null in case of response to refresh token or authwithtoken.
  * @property[validUntil] Seconds since loxone epoch (1.1.2009) to which the token is valid.
  * @property[rights]
@@ -30,11 +30,6 @@ data class Token(
      * @return seconds to expire
      */
     fun secondsToExpireFromNow() = LoxoneTime.getUnixEpochSeconds(validUntil) - Clock.System.now().epochSeconds
-
-    fun <T> withTokenAndKey(block: (String, ByteArray) -> T): T {
-        check(filled) { "Can't invoke block(token, key) on nonfilled token" }
-        return block(token!!, key!!)
-    }
 
     /**
      * Merges the given token to this one and returns the merged token. The [Token.token] and [Token.key] are taken
