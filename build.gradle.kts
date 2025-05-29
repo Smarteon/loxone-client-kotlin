@@ -65,22 +65,25 @@ kotlin {
 
             create("acceptanceTest") {
 
-                defaultSourceSet {
-                    dependsOn(main.defaultSourceSet)
-                    dependencies {
-                        implementation(libs.kotest.assertions.core)
-                        implementation(libs.kotest.framework.engine)
-                        runtimeOnly(libs.slf4j.simple)
-                    }
+                associateWith(main)
+
+                attributes {
+                    attribute(DocsType.DOCS_TYPE_ATTRIBUTE, objects.named(DocsType.SOURCES))
+                    attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_RUNTIME))
+                }
+
+                dependencies {
+                    implementation(libs.kotest.assertions.core)
+                    implementation(libs.kotest.framework.engine)
+                    runtimeOnly(libs.slf4j.simple)
                 }
 
                 tasks.register<Test>("jvmAcceptanceTest") {
                     group = LifecycleBasePlugin.VERIFICATION_GROUP
+
                     classpath = main.compileDependencyFiles +
                         main.runtimeDependencyFiles +
                         output.allOutputs +
-
-                        // TODO do not understand why this is needed
                         test.compileDependencyFiles +
                         test.runtimeDependencyFiles
 
@@ -88,7 +91,8 @@ kotlin {
 
                     doFirst {
                         if (listOf("LOX_ADDRESS", "LOX_USER", "LOX_PASS").any { System.getenv(it) == null }) {
-                            throw GradleException("Missing environment variables for Loxone acceptance tests, please set LOX_ADDRESS, LOX_USER and LOX_PASS")
+                            throw GradleException("Missing environment variables for Loxone acceptance " +
+                                "tests, please set LOX_ADDRESS, LOX_USER and LOX_PASS")
                         }
                     }
                 }
