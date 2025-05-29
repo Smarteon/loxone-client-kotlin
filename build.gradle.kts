@@ -171,7 +171,7 @@ kover {
     }
 }
 
-val dokkaJar by tasks.creating(Jar::class) {
+val dokkaJar by tasks.registering(Jar::class) {
     group = JavaBasePlugin.DOCUMENTATION_GROUP
     archiveClassifier.set("javadoc")
     from(tasks.getByName("dokkaHtml"))
