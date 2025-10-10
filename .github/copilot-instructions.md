@@ -47,7 +47,10 @@ The project uses Gradle with Kotlin DSL (`.gradle.kts` files) and modern Gradle 
 - Add new dependencies to the version catalog first
 - Use `libs.` prefix to reference catalog dependencies
 
-**JVM Toolchain:** Project requires JDK 21 for builds but targets JVM 17 for runtime compatibility
+**JVM Toolchain:** Project requires JDK 21 for builds but compiles to JVM 17 bytecode
+- Build requires: JDK 21 (for Gradle and build tools)
+- Runtime target: JVM 17 bytecode (for broader compatibility)
+- This allows using modern build tools while maintaining compatibility with JVM 17+ environments
 
 ### Common Build Commands
 
@@ -258,8 +261,8 @@ Refer to `examples/kotlin` and `examples/java` directories for usage examples de
 
 ### JavaScript Target
 - Browser-only support
-- Uses JS engine for Ktor
-- Limited testing (browser tests disabled)
+- Uses Ktor JavaScript client engine for browser environments
+- Limited testing (browser tests disabled due to headless browser requirements)
 
 ### Native Targets
 - Linux x64 and ARM64
