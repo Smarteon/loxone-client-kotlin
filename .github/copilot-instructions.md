@@ -47,9 +47,9 @@ The project uses Gradle with Kotlin DSL (`.gradle.kts` files) and modern Gradle 
 - Add new dependencies to the version catalog first
 - Use `libs.` prefix to reference catalog dependencies
 
-**JVM Toolchain:** Project requires JDK 21 for builds but compiles to JVM 17 bytecode
+**JVM Toolchain:** Project requires JDK 21 for builds but produces JVM 17 compatible bytecode
 - Build requires: JDK 21 (for Gradle and build tools)
-- Runtime target: JVM 17 bytecode (for broader compatibility)
+- Runtime target: JVM 17 compatible bytecode (for broader compatibility)
 - This allows using modern build tools while maintaining compatibility with JVM 17+ environments
 
 ### Common Build Commands
