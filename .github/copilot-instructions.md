@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is a Kotlin Multiplatform library implementing the Loxone™ communication protocol. The library supports multiple targets including JVM, JavaScript (browser), and Linux native (x64, ARM64).
+This is a Kotlin Multiplatform library implementing the Loxone™ communication protocol. The library supports multiple targets including JVM, JavaScript (browser), and Linux native (x64, ARM64). The Loxone communication is for convenience transformed into markdown and stored in [docs/loxone](docs/loxone/CommunicatingWithMiniserver.md).
 
 **Key Characteristics:**
 - Experimental Kotlin multiplatform client for Loxone miniserver communication
