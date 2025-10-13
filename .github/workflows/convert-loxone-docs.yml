@@ -1,0 +1,149 @@
+---
+name: Convert Loxone Communication Documentation
+
+on:
+  workflow_dispatch:
+    inputs:
+      pdf_url:
+        description: "URL to the Loxone Communication PDF"
+        required: false
+        default: "https://www.loxone.com/wp-content/uploads/datasheets/CommunicatingWithMiniserver.pdf"
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  convert-pdf-to-markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install PDF conversion tool
+        run: |
+          pip install pymupdf4llm
+
+      - name: Create docs directory
+        run: |
+          mkdir -p docs/loxone
+
+      - name: Download PDF
+        run: |
+          curl -L -o /tmp/loxone-communication.pdf "${{ inputs.pdf_url }}"
+
+      - name: Convert PDF to Markdown
+        run: |
+          python3 << 'EOF'
+          import pymupdf4llm
+          import os
+          
+          pdf_path = "/tmp/loxone-communication.pdf"
+          output_path = "docs/loxone/CommunicatingWithMiniserver.md"
+          
+          # Convert PDF to markdown
+          md_text = pymupdf4llm.to_markdown(pdf_path)
+          
+          # Write to file
+          with open(output_path, 'w', encoding='utf-8') as f:
+              f.write(md_text)
+          
+          print(f"✅ Successfully converted PDF to Markdown")
+          print(f"📝 Output file: {output_path}")
+          print(f"📊 File size: {os.path.getsize(output_path)} bytes")
+          EOF
+
+      - name: Add metadata to markdown
+        run: |
+          TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          # Create a temporary file with header
+          cat > /tmp/header.md << EOF
+          # Communicating with Miniserver
+          
+          > **Note:** This document is automatically generated from the official Loxone PDF documentation.
+          > Last updated: ${TIMESTAMP}
+          > Source: ${{ inputs.pdf_url }}
+          
+          ---
+          
+          EOF
+          
+          # Prepend header to the converted markdown
+          cat /tmp/header.md docs/loxone/CommunicatingWithMiniserver.md > /tmp/final.md
+          mv /tmp/final.md docs/loxone/CommunicatingWithMiniserver.md
+
+      - name: Create README for docs
+        run: |
+          cat > docs/loxone/README.md << 'EOF'
+          # Loxone Communication Documentation
+          
+          This directory contains the Loxone Miniserver communication protocol documentation converted from the official PDF to Markdown format.
+          
+          ## Files
+          
+          - **CommunicatingWithMiniserver.md** - The main communication protocol documentation
+          
+          ## Source
+          
+          The documentation is converted from the official Loxone PDF available at:
+          https://www.loxone.com/wp-content/uploads/datasheets/CommunicatingWithMiniserver.pdf
+          
+          ## Regenerating the Documentation
+          
+          To regenerate the markdown documentation from the latest PDF:
+          
+          1. Go to the [Actions tab](../../actions/workflows/convert-loxone-docs.yml)
+          2. Click "Run workflow"
+          3. Optionally provide a custom PDF URL
+          4. Wait for the workflow to complete and create a pull request
+          5. Review and merge the pull request
+          
+          ## Conversion Tool
+          
+          The conversion is performed using [pymupdf4llm](https://github.com/pymupdf/PyMuPDF-Utilities/tree/main/pymupdf4llm), which provides high-quality PDF to Markdown conversion with good handling of:
+          - Text extraction
+          - Tables
+          - Images
+          - Formatting preservation
+          EOF
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "docs: update Loxone communication documentation from PDF"
+          branch: docs/loxone-communication-update
+          delete-branch: true
+          title: "docs: Update Loxone Communication Documentation"
+          body: |
+            ## 📚 Documentation Update
+            
+            This PR updates the Loxone Communication documentation by converting the official PDF to Markdown format.
+            
+            ### Changes
+            - Converted PDF to Markdown using pymupdf4llm
+            - Updated documentation in `docs/loxone/CommunicatingWithMiniserver.md`
+            - Added README for documentation directory
+            
+            ### Source
+            PDF URL: ${{ inputs.pdf_url }}
+            
+            ### How to Review
+            1. Check the converted markdown file for formatting issues
+            2. Verify that important information from the PDF is preserved
+            3. Ensure code examples and tables are properly formatted
+            
+            ---
+            
+            *This PR was automatically generated by the Convert Loxone Documentation workflow.*
+          labels: |
+            documentation
+            automated
