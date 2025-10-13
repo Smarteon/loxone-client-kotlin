@@ -6,7 +6,10 @@ Experimental Kotlin implementation of the Loxone™ communication protocol.
 
 Most of the library is trying to behave according to 
 [Loxone API documentation](https://www.loxone.com/enen/kb/api/) 
-and [Loxone webservices](https://www.loxone.com/enen/kb/web-services/).  
+and [Loxone webservices](https://www.loxone.com/enen/kb/web-services/).
+
+For the detailed Loxone communication protocol specification, see the [documentation](docs/loxone/) which includes a markdown version of the official PDF.
+  
 
 *Disclaimer:*
 This is an experimental project, which means:
