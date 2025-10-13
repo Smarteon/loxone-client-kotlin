@@ -80,9 +80,10 @@ jobs:
           cat /tmp/header.md docs/loxone/CommunicatingWithMiniserver.md > /tmp/final.md
           mv /tmp/final.md docs/loxone/CommunicatingWithMiniserver.md
 
-      - name: Create README for docs
+      - name: Create README for docs (if not exists)
         run: |
-          cat > docs/loxone/README.md << 'EOF'
+          if [ ! -f docs/loxone/README.md ]; then
+            cat > docs/loxone/README.md << 'EOF'
           # Loxone Communication Documentation
           
           This directory contains the Loxone Miniserver communication protocol documentation converted from the official PDF to Markdown format.
@@ -114,6 +115,7 @@ jobs:
           - Images
           - Formatting preservation
           EOF
+          fi
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
