@@ -17,9 +17,8 @@ To regenerate the markdown documentation from the latest PDF:
 
 1. Go to the [Actions tab](../../actions/workflows/convert-loxone-docs.yml)
 2. Click "Run workflow"
-3. Optionally provide a custom PDF URL
-4. Wait for the workflow to complete and create a pull request
-5. Review and merge the pull request
+3. Wait for the workflow to complete and create a pull request
+4. Review and merge the pull request
 
 ## Conversion Tool
 
