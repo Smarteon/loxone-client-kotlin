@@ -80,9 +80,11 @@ jobs:
           cat /tmp/header.md docs/loxone/CommunicatingWithMiniserver.md > /tmp/final.md
           mv /tmp/final.md docs/loxone/CommunicatingWithMiniserver.md
 
-      - name: Create README for docs (if not exists)
+      - name: Create or preserve README for docs directory
         run: |
+          # Only create README if it doesn't exist (preserves manual edits)
           if [ ! -f docs/loxone/README.md ]; then
+            echo "Creating new README.md..."
             cat > docs/loxone/README.md << 'EOF'
           # Loxone Communication Documentation
           
@@ -115,6 +117,8 @@ jobs:
           - Images
           - Formatting preservation
           EOF
+          else
+            echo "Preserving existing README.md"
           fi
 
       - name: Create Pull Request
