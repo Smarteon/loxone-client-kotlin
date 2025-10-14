@@ -9,7 +9,28 @@ Most of the library is trying to behave according to
 and [Loxone webservices](https://www.loxone.com/enen/kb/web-services/).
 
 For the detailed Loxone communication protocol specification, see the [documentation](docs/loxone/) which includes a markdown version of the official PDF.
-  
+
+## Protocol Coverage
+
+This library implements core features of the Loxone protocol including token-based authentication, WebSocket/HTTP communication, and keep-alive functionality. For a comprehensive analysis of protocol coverage and planned features, see:
+
+- **[Protocol Gap Analysis](docs/protocol-gap-analysis.md)** - Detailed comparison with the official protocol
+- **[GitHub Issue Templates](docs/github-issues-templates.md)** - Ready-to-use templates for implementing missing features
+
+Key implemented features:
+- ✅ Token-based authentication (JWT)
+- ✅ WebSocket and HTTP clients
+- ✅ Keep-alive mechanism
+- ✅ Basic API commands
+- ✅ Multiplatform support (JVM, JS, Linux Native)
+
+Notable gaps (contributions welcome):
+- ⏳ Binary event processing (real-time state updates)
+- ⏳ Structure file parsing
+- ⏳ Command encryption (AES + RSA)
+- ⏳ Control commands
+
+See the [gap analysis](docs/protocol-gap-analysis.md) for complete details and implementation roadmap.
 
 *Disclaimer:*
 This is an experimental project, which means:
