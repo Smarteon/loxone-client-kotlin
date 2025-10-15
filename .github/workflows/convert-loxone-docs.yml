@@ -1,5 +1,5 @@
 ---
-name: Convert Loxone Communication Documentation
+name: Convert Loxone Documentation
 
 on:
   workflow_dispatch:
@@ -30,73 +30,120 @@ jobs:
         run: |
           mkdir -p docs/loxone
 
-      - name: Download PDF
-        run: |
-          curl -L -o /tmp/loxone-communication.pdf "https://www.loxone.com/wp-content/uploads/datasheets/CommunicatingWithMiniserver.pdf"
-
-      - name: Convert PDF to Markdown
+      - name: Download and Convert PDFs
         run: |
           python3 << 'EOF'
           import pymupdf4llm
           import os
+          import urllib.request
+          from datetime import datetime, timezone
           
-          pdf_path = "/tmp/loxone-communication.pdf"
-          output_path = "docs/loxone/CommunicatingWithMiniserver.md"
+          # Define all PDFs to convert
+          pdfs = [
+              {
+                  "url": "https://www.loxone.com/wp-content/uploads/datasheets/CommunicatingWithMiniserver.pdf",
+                  "output": "docs/loxone/CommunicatingWithMiniserver.md",
+                  "title": "Communicating with Miniserver"
+              },
+              {
+                  "url": "https://www.loxone.com/wp-content/uploads/datasheets/StructureFile.pdf",
+                  "output": "docs/loxone/StructureFile.md",
+                  "title": "Structure File"
+              },
+              {
+                  "url": "https://www.loxone.com/wp-content/uploads/datasheets/UserManagement.pdf",
+                  "output": "docs/loxone/UserManagement.md",
+                  "title": "User Management"
+              },
+              {
+                  "url": "https://www.loxone.com/wp-content/uploads/datasheets/OperatingModeSchedule.pdf",
+                  "output": "docs/loxone/OperatingModeSchedule.md",
+                  "title": "Operating Mode Schedule"
+              },
+              {
+                  "url": "https://www.loxone.com/wp-content/uploads/datasheets/Loxone_PortsDomains.pdf",
+                  "output": "docs/loxone/PortsDomains.md",
+                  "title": "Ports and Domains"
+              },
+              {
+                  "url": "https://www.loxone.com/wp-content/uploads/datasheets/API-Commands.pdf",
+                  "output": "docs/loxone/APICommands.md",
+                  "title": "API Commands (Konektor)"
+              }
+          ]
           
-          # Convert PDF to markdown
-          md_text = pymupdf4llm.to_markdown(pdf_path)
+          timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
           
-          # Write to file
-          with open(output_path, 'w', encoding='utf-8') as f:
-              f.write(md_text)
+          for pdf_config in pdfs:
+              print(f"\n{'='*60}")
+              print(f"Processing: {pdf_config['title']}")
+              print(f"{'='*60}")
+              
+              # Download PDF
+              pdf_path = f"/tmp/{os.path.basename(pdf_config['url'])}"
+              print(f"📥 Downloading from {pdf_config['url']}...")
+              urllib.request.urlretrieve(pdf_config['url'], pdf_path)
+              print(f"✅ Downloaded to {pdf_path}")
+              
+              # Convert PDF to markdown
+              print(f"🔄 Converting PDF to Markdown...")
+              md_text = pymupdf4llm.to_markdown(pdf_path)
+              
+              # Create header
+              header = f"# {pdf_config['title']}\n\n"
+              header += "> **Note:** This document is automatically generated from the official Loxone PDF documentation.\n"
+              header += f"> Last updated: {timestamp}\n"
+              header += f"> Source: {pdf_config['url']}\n\n"
+              header += "---\n\n"
+              
+              # Write to file with header
+              with open(pdf_config['output'], 'w', encoding='utf-8') as f:
+                  f.write(header + md_text)
+              
+              print(f"✅ Successfully converted PDF to Markdown")
+              print(f"📝 Output file: {pdf_config['output']}")
+              print(f"📊 File size: {os.path.getsize(pdf_config['output'])} bytes")
+              
+              # Clean up
+              os.remove(pdf_path)
           
-          print(f"✅ Successfully converted PDF to Markdown")
-          print(f"📝 Output file: {output_path}")
-          print(f"📊 File size: {os.path.getsize(output_path)} bytes")
+          print(f"\n{'='*60}")
+          print(f"✅ All PDFs converted successfully!")
+          print(f"{'='*60}")
           EOF
-
-      - name: Add metadata to markdown
-        run: |
-          TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
-          # Create a temporary file with header
-          cat > /tmp/header.md << EOF
-          # Communicating with Miniserver
-          
-          > **Note:** This document is automatically generated from the official Loxone PDF documentation.
-          > Last updated: ${TIMESTAMP}
-          > Source: https://www.loxone.com/wp-content/uploads/datasheets/CommunicatingWithMiniserver.pdf
-          
-          ---
-          
-          EOF
-          
-          # Prepend header to the converted markdown
-          cat /tmp/header.md docs/loxone/CommunicatingWithMiniserver.md > /tmp/final.md
-          mv /tmp/final.md docs/loxone/CommunicatingWithMiniserver.md
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.SMARTEON_GIT_TOKEN }}
-          commit-message: "docs: update Loxone communication documentation from PDF"
-          branch: docs/loxone-communication-update
+          commit-message: "docs: update Loxone documentation from PDFs"
+          branch: docs/loxone-documentation-update
           delete-branch: true
-          title: "docs: Update Loxone Communication Documentation"
+          title: "docs: Update Loxone Documentation"
           body: |
             ## 📚 Documentation Update
             
-            This PR updates the Loxone Communication documentation by converting the official PDF to Markdown format.
+            This PR updates the Loxone documentation by converting official PDFs to Markdown format.
             
             ### Changes
-            - Converted PDF to Markdown using pymupdf4llm
-            - Updated documentation in `docs/loxone/CommunicatingWithMiniserver.md`
+            - Converted multiple PDFs to Markdown using pymupdf4llm
+            - Updated documentation in `docs/loxone/` directory
             
-            ### Source
-            PDF URL: https://www.loxone.com/wp-content/uploads/datasheets/CommunicatingWithMiniserver.pdf
+            ### Documents Converted
+            - **CommunicatingWithMiniserver.md** - Main communication protocol
+            - **StructureFile.md** - Structure file documentation
+            - **UserManagement.md** - User management documentation
+            - **OperatingModeSchedule.md** - Operating mode schedule documentation
+            - **PortsDomains.md** - Ports and domains documentation
+            - **APICommands.md** - API Commands (Konektor) documentation
+            
+            ### Sources
+            All PDFs are from the official Loxone documentation:
+            - https://www.loxone.com/wp-content/uploads/datasheets/
             
             ### How to Review
-            1. Check the converted markdown file for formatting issues
-            2. Verify that important information from the PDF is preserved
+            1. Check the converted markdown files for formatting issues
+            2. Verify that important information from the PDFs is preserved
             3. Ensure code examples and tables are properly formatted
             
             ---

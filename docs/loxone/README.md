@@ -1,15 +1,25 @@
 # Loxone Communication Documentation
 
-This directory contains the Loxone Miniserver communication protocol documentation converted from the official PDF to Markdown format.
+This directory contains the Loxone Miniserver documentation converted from the official PDFs to Markdown format.
 
 ## Files
 
-- **CommunicatingWithMiniserver.md** - The main communication protocol documentation (to be generated)
+- **CommunicatingWithMiniserver.md** - The main communication protocol documentation
+- **StructureFile.md** - Structure file documentation
+- **UserManagement.md** - User management documentation
+- **OperatingModeSchedule.md** - Operating mode schedule documentation
+- **PortsDomains.md** - Ports and domains documentation
+- **APICommands.md** - API Commands (Konektor) documentation
 
-## Source
+## Sources
 
-The documentation is converted from the official Loxone PDF available at:
-https://www.loxone.com/wp-content/uploads/datasheets/CommunicatingWithMiniserver.pdf
+The documentation is converted from the official Loxone PDFs available at:
+- https://www.loxone.com/wp-content/uploads/datasheets/CommunicatingWithMiniserver.pdf
+- https://www.loxone.com/wp-content/uploads/datasheets/StructureFile.pdf
+- https://www.loxone.com/wp-content/uploads/datasheets/UserManagement.pdf
+- https://www.loxone.com/wp-content/uploads/datasheets/OperatingModeSchedule.pdf
+- https://www.loxone.com/wp-content/uploads/datasheets/Loxone_PortsDomains.pdf
+- https://www.loxone.com/wp-content/uploads/datasheets/API-Commands.pdf
 
 ## Regenerating the Documentation
 
