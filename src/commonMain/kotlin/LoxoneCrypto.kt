@@ -10,10 +10,36 @@ import org.kotlincrypto.hash.sha1.SHA1
 import org.kotlincrypto.hash.sha2.SHA256
 import org.kotlincrypto.macs.hmac.sha1.HmacSHA1
 import org.kotlincrypto.macs.hmac.sha2.HmacSHA256
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
+
+/**
+ * Platform-specific RSA encryption implementation.
+ * Uses ECB mode and PKCS1 padding.
+ *
+ * @param data The data bytes to encrypt
+ * @param publicKeyPem The public key in PEM format (X.509 encoded)
+ * @return Encrypted bytes
+ */
+internal expect fun rsaEncryptBytes(data: ByteArray, publicKeyPem: String): ByteArray
 
 internal object LoxoneCrypto {
 
     private val logger = KotlinLogging.logger {}
+
+    /**
+     * Encrypts data using RSA with the given public key.
+     * Uses ECB mode, PKCS1 padding, and returns Base64 encoded result without line wrapping.
+     *
+     * @param data The data to encrypt
+     * @param publicKeyPem The public key in PEM format (X.509 encoded)
+     * @return Base64 encoded encrypted data
+     */
+    @OptIn(ExperimentalEncodingApi::class)
+    fun rsaEncrypt(data: String, publicKeyPem: String): String {
+        val encrypted = rsaEncryptBytes(data.encodeToByteArray(), publicKeyPem)
+        return Base64.encode(encrypted)
+    }
 
     /**
      * Performs hashing algorithm as required by loxone specification.
