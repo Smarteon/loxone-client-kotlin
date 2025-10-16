@@ -1,15 +1,10 @@
 ---
 name: Loxone Client Kotlin check
 
+# This workflow is now replaced by gradle-check-required.yml
+# Keeping it for manual triggers only
 on:
-  push:
-    branches:
-      - master
-  pull_request:
-    paths:
-      - '**/*.versions.toml'
-      - '*.gradle.*'
-      - 'src/**'
+  workflow_dispatch:
 
 jobs:
   call-check:

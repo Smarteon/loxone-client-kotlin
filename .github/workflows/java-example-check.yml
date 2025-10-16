@@ -1,10 +1,10 @@
 ---
 name: Java Example check
 
+# This workflow is now integrated into required-status-checks.yml
+# Keeping it for manual triggers only
 on:
-  pull_request:
-    paths:
-      - 'examples/java/**'
+  workflow_dispatch:
 
 jobs:
   call-check:
