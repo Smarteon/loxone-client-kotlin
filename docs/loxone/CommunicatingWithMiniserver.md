@@ -1,7 +1,7 @@
 # Communicating with Miniserver
 
 > **Note:** This document is automatically generated from the official Loxone PDF documentation.
-> Last updated: 2025-10-13 17:20:29 UTC
+> Last updated: 2025-10-16 11:06:00 UTC
 > Source: https://www.loxone.com/wp-content/uploads/datasheets/CommunicatingWithMiniserver.pdf
 
 ---
