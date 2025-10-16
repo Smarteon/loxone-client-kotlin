@@ -1,0 +1,149 @@
+---
+name: Required Status Checks
+
+on:
+  pull_request:
+
+jobs:
+  # Detect what changes were made to determine which checks to run
+  detect-changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      loxone-client: ${{ steps.filter.outputs.loxone-client }}
+      kotlin-example: ${{ steps.filter.outputs.kotlin-example }}
+      java-example: ${{ steps.filter.outputs.java-example }}
+      github-actions: ${{ steps.filter.outputs.github-actions }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect changes using paths filter
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            loxone-client:
+              - '**/*.versions.toml'
+              - '*.gradle.*'
+              - 'src/**'
+            kotlin-example:
+              - 'examples/kotlin/**'
+            java-example:
+              - 'examples/java/**'
+            github-actions:
+              - '.github/**'
+
+  # Always run commitlint
+  commitlint:
+    name: Conventional Commits check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: wagoid/commitlint-github-action@v6
+
+  # Run actionlint only if GitHub Actions files changed
+  actionlint:
+    name: Github Workflows check
+    needs: detect-changes
+    if: needs.detect-changes.outputs.github-actions == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: actionlint
+        uses: raven-actions/actionlint@v1
+
+  # Run main gradle check if needed
+  loxone-client-check:
+    name: Loxone Client check
+    needs: detect-changes
+    if: needs.detect-changes.outputs.loxone-client == 'true'
+    uses: ./.github/workflows/check.yml
+    secrets: inherit
+
+  # Run Kotlin example check if needed
+  kotlin-example-check:
+    name: Kotlin example check
+    needs: detect-changes
+    if: needs.detect-changes.outputs.kotlin-example == 'true'
+    uses: ./.github/workflows/check.yml
+    with:
+      projectDir: 'examples/kotlin'
+    secrets: inherit
+
+  # Run Java example check if needed
+  java-example-check:
+    name: Java example check
+    needs: detect-changes
+    if: needs.detect-changes.outputs.java-example == 'true'
+    uses: ./.github/workflows/check.yml
+    with:
+      projectDir: 'examples/java'
+    secrets: inherit
+
+  # Final status check - always runs and reports overall success/failure
+  required-checks-result:
+    runs-on: ubuntu-latest
+    needs: [detect-changes, commitlint, actionlint, loxone-client-check, kotlin-example-check, java-example-check]
+    if: always()
+    steps:
+      - name: Report final status
+        run: |
+          echo "=== Required Status Checks Summary ==="
+
+          # Always check commitlint
+          if [ "${{ needs.commitlint.result }}" != "success" ]; then
+            echo "❌ Commitlint failed"
+            exit 1
+          else
+            echo "✅ Commitlint passed"
+          fi
+
+          # Check actionlint if it was needed
+          if [ "${{ needs.detect-changes.outputs.github-actions }}" == "true" ]; then
+            if [ "${{ needs.actionlint.result }}" != "success" ]; then
+              echo "❌ Actionlint failed"
+              exit 1
+            else
+              echo "✅ Actionlint passed"
+            fi
+          else
+            echo "⏭️ Actionlint skipped (no GitHub Actions changes)"
+          fi
+
+          # Check main gradle if it was needed
+          if [ "${{ needs.detect-changes.outputs.loxone-client }}" == "true" ]; then
+            if [ "${{ needs.loxone-client-check.result }}" != "success" ]; then
+              echo "❌ Loxone Client check failed"
+              exit 1
+            else
+              echo "✅ Loxone Client check passed"
+            fi
+          else
+            echo "⏭️  Loxone Client check skipped (no relevant changes)"
+          fi
+
+          # Check Kotlin example if it was needed
+          if [ "${{ needs.detect-changes.outputs.kotlin-example }}" == "true" ]; then
+            if [ "${{ needs.kotlin-example-check.result }}" != "success" ]; then
+              echo "❌ Kotlin example check failed"
+              exit 1
+            else
+              echo "✅ Kotlin example check passed"
+            fi
+          else
+            echo "⏭️ Kotlin example check skipped (no relevant changes)"
+          fi
+
+          # Check Java example if it was needed
+          if [ "${{ needs.detect-changes.outputs.java-example }}" == "true" ]; then
+            if [ "${{ needs.java-example-check.result }}" != "success" ]; then
+              echo "❌ Java example check failed"
+              exit 1
+            else
+              echo "✅ Java example check passed"
+            fi
+          else
+            echo "⏭️ Java example check skipped (no relevant changes)"
+          fi
+
+          echo "🎉 All required checks passed!"

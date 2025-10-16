@@ -1,10 +1,10 @@
 ---
 name: Actions Linter
 
+# This workflow is now integrated into required-status-checks.yml
+# Keeping it for manual triggers only
 on:
-  pull_request:
-    paths:
-      - '.github/**'
+  workflow_dispatch:
 
 jobs:
   actionlint:
