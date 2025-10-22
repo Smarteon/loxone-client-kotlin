@@ -36,10 +36,7 @@ jobs:
   # Always run commitlint
   commitlint:
     name: Conventional Commits check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: wagoid/commitlint-github-action@v6
+    uses: ./.github/workflows/commitlint.yml
 
   # Run actionlint only if GitHub Actions files changed
   actionlint:
