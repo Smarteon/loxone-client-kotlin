@@ -1,5 +1,7 @@
 package cz.smarteon.loxkt
 
+import cz.smarteon.loxkt.app.LoxoneAppCommand
+import cz.smarteon.loxkt.app.LoxoneAppVersionCommand
 import cz.smarteon.loxkt.message.EmptyLoxoneMsgVal
 import cz.smarteon.loxkt.message.LoxoneMsg
 import cz.smarteon.loxkt.message.SimpleLoxoneMsgCommand
@@ -79,5 +81,32 @@ object LoxoneCommands {
             user,
             expectedCode = LoxoneMsg.CODE_AUTH_FAIL
         )
+    }
+
+    /**
+     * Commands related to app management.
+     */
+    object App {
+
+        /**
+         * Command to download the complete app (LoxAPP3.json).
+         * This contains all controls, rooms, categories, and Miniserver configuration.
+         *
+         * The app can be quite large and should be cached locally.
+         * Use [version] to check if the cached version is still valid.
+         *
+         * @return Command to download app
+         */
+        @JvmStatic
+        fun get() = LoxoneAppCommand
+
+        /**
+         * Command to check the version/last modified date of the app.
+         * Use this to check if your cached app is still up to date.
+         *
+         * @return Command to get app version
+         */
+        @JvmStatic
+        fun version() = LoxoneAppVersionCommand
     }
 }

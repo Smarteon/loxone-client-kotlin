@@ -1,0 +1,4768 @@
+{
+  "lastModified": "2025-10-23 15:35:16",
+  "msInfo": {
+    "serialNr": "504F94SAMPLE",
+    "msName": "Sample Miniserver",
+    "projectName": "Sample Project",
+    "localUrl": "192.168.1.100",
+    "remoteUrl": "dns.loxonecloud.com/504F94SAMPLE",
+    "hostname": "MSSAMPLE",
+    "tempUnit": 0,
+    "currency": "Kč",
+    "squareMeasure": "m²",
+    "location": "Sample City",
+    "latitude": 50.000,
+    "longitude": 14.000,
+    "altitude": 200,
+    "languageCode": "CSY",
+    "heatPeriodStart": "10-01",
+    "heatPeriodEnd": "04-30",
+    "coolPeriodStart": "05-01",
+    "coolPeriodEnd": "09-30",
+    "catTitle": "Kategorie",
+    "roomTitle": "Místnosti",
+    "miniserverType": 2,
+    "currentUser": {
+      "name": "admin",
+      "uuid": "1c8b2764-0060-3721-fffffd5438c1b69c",
+      "isAdmin": true,
+      "changePassword": true,
+      "userRights": 4294967295
+    }
+  },
+  "globalStates": {
+    "operatingMode": "1c8b2764-0053-35f2-fffffd5438c1b69c",
+    "sunrise": "1c8b2764-0053-3604-fffffd5438c1b69c",
+    "sunset": "1c8b2764-0053-3607-fffffd5438c1b69c",
+    "pastTasks": "1c8b2766-00b9-3809-ffff2b222bb7ca5b",
+    "plannedTasks": "1c8b2766-00b9-3808-ffff2b222bb7ca5b",
+    "notifications": "1c8b2764-0051-35c2-fffffd5438c1b69c",
+    "modifications": "1c8b2764-0052-35c6-fffffd5438c1b69c",
+    "favColorSequences": "1c8b2764-0051-35c4-fffffd5438c1b69c",
+    "favColors": "1c8b2764-0051-35c5-fffffd5438c1b69c",
+    "miniserverTime": "1c8b2764-0051-35c3-fffffd5438c1b69c",
+    "liveSearch": "1c8b2764-0053-3651-fffffd5438c1b69c",
+    "userSettings": "1c8b2764-0053-3652-fffffd5438c1b69c",
+    "userSettingsTs": "1c8b2764-0053-3653-fffffd5438c1b69c",
+    "cloudservice": "1c8b2764-0053-3654-fffffd5438c1b69c",
+    "trustVersion": "1c8b2764-0053-3655-fffffd5438c1b69c",
+    "propsVersion": "1c8b2764-0053-3656-fffffd5438c1b69c",
+    "hasInternet": "1c8b2764-0067-37dc-ffff2b222bb7ca5b"
+  },
+  "operatingModes": {
+    "0": "Svátek",
+    "1": "Dovolená",
+    "2": "Volný den/školní prázdniny",
+    "3": "Pondělí",
+    "4": "Úterý",
+    "5": "Středa",
+    "6": "Čtvrtek",
+    "7": "Pátek",
+    "8": "Sobota",
+    "9": "Neděle",
+    "10": "Perioda vytápění",
+    "11": "Perioda chlazení",
+    "-1": "Alarm",
+    "-2": "Simulace přítomnosti",
+    "-3": "Ochrana budovy",
+    "-4": "Zvýšená spotřeba tepla",
+    "-5": "Oslava",
+    "-6": "Nepřítomnost",
+    "-7": "Denní režim",
+    "-8": "Večerní režim",
+    "-9": "Noční režim",
+    "-10": "Ranní režim",
+    "-11": "Režim přítomnosti",
+    "-13": "Výpadek dodávky el. energie",
+    "-14": "Požární alarm",
+    "-15": "Vizuální alarm",
+    "-16": "Tichý alarm",
+    "-17": "Alarm domu - Zastřeženo s PS",
+    "-18": "Alarm domu - Zastřeženo bez PS",
+    "-19": "Alarm domu - Odstřeženo",
+    "-20": "Únik vody",
+    "-21": "Přehřátí komponent",
+    "-22": "Ochrana před námrazou",
+    "-23": "Ochrana před bouřkou"
+  },
+  "rooms": {
+    "1c8b2764-0060-3732-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0060-3732-fffffd5438c1b69c",
+      "name": "Nepřiřazeno",
+      "image": "IconsFilled/location-pin.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "default": true,
+      "type": 2,
+      "color": "#69C350"
+    },
+    "1c8b2764-0060-3736-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0060-3736-fffffd5438c1b69c",
+      "name": "Hala v přízemí",
+      "image": "IconsFilled/shoe-1.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 3,
+      "color": "#69C350"
+    },
+    "1c8b2764-0061-373a-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0061-373a-fffffd5438c1b69c",
+      "name": "Hala v prvním patře",
+      "image": "IconsFilled/shoe-3.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 3,
+      "color": "#69C350"
+    },
+    "1c8b2764-0061-373e-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0061-373e-fffffd5438c1b69c",
+      "name": "Obývací pokoj",
+      "image": "IconsFilled/sofa-1.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": 2,
+      "color": "#69C350"
+    },
+    "1c8b2764-0061-3742-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0061-3742-fffffd5438c1b69c",
+      "name": "Kuchyně",
+      "image": "IconsFilled/chef-hat.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": 2,
+      "color": "#69C350"
+    },
+    "1c8b2764-0062-3746-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0062-3746-fffffd5438c1b69c",
+      "name": "Koupelna",
+      "image": "IconsFilled/shower-1.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 3,
+      "color": "#69C350"
+    },
+    "1c8b2764-0062-374a-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0062-374a-fffffd5438c1b69c",
+      "name": "Koupelna v prvním patře",
+      "image": "IconsFilled/shower-2.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": 2,
+      "color": "#69C350"
+    },
+    "1c8b2764-0062-374e-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0062-374e-fffffd5438c1b69c",
+      "name": "Ložnice",
+      "image": "IconsFilled/bed-double.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 1,
+      "color": "#69C350"
+    },
+    "1c8b2764-0062-3752-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0062-3752-fffffd5438c1b69c",
+      "name": "Dětský pokoj",
+      "image": "IconsFilled/baby-hanging-toy.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 1,
+      "color": "#69C350"
+    },
+    "1c8b2764-0063-3756-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0063-3756-fffffd5438c1b69c",
+      "name": "WC",
+      "image": "IconsFilled/tissue.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 3,
+      "color": "#69C350"
+    },
+    "1c8b2764-0063-375a-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0063-375a-fffffd5438c1b69c",
+      "name": "Šatna",
+      "image": "IconsFilled/clothes-hanger.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 3,
+      "color": "#69C350"
+    },
+    "1c8b2764-0063-375e-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0063-375e-fffffd5438c1b69c",
+      "name": "Garáž",
+      "image": "IconsFilled/garage-closed-2.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 3,
+      "color": "#69C350"
+    },
+    "1c8b2764-0063-3762-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0063-3762-fffffd5438c1b69c",
+      "name": "Veranda",
+      "image": "IconsFilled/windbag.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 3,
+      "color": "#69C350"
+    },
+    "1c8b2764-0064-3766-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0064-3766-fffffd5438c1b69c",
+      "name": "Schodiště",
+      "image": "IconsFilled/stairwell-1.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 3,
+      "color": "#69C350"
+    },
+    "1c8b2764-0064-376a-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0064-376a-fffffd5438c1b69c",
+      "name": "Sauna",
+      "image": "IconsFilled/sauna.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": 2,
+      "color": "#69C350"
+    },
+    "1c8b2764-0064-376e-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0064-376e-fffffd5438c1b69c",
+      "name": "Zimní zahrada",
+      "image": "IconsFilled/florida-room.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": 2,
+      "color": "#69C350"
+    },
+    "1c8b2764-0064-3772-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0064-3772-fffffd5438c1b69c",
+      "name": "Pracovna",
+      "image": "IconsFilled/computer.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": 2,
+      "color": "#69C350"
+    },
+    "1c8b2764-0065-3776-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0065-3776-fffffd5438c1b69c",
+      "name": "Herna",
+      "image": "IconsFilled/letter-blocks.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": 2,
+      "color": "#69C350"
+    },
+    "1c8b2764-0065-377a-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0065-377a-fffffd5438c1b69c",
+      "name": "Prádelna",
+      "image": "IconsFilled/washing-machine.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 3,
+      "color": "#69C350"
+    },
+    "1c8b2764-0065-377e-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0065-377e-fffffd5438c1b69c",
+      "name": "Místnost na žehlení",
+      "image": "IconsFilled/iron.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": 2,
+      "color": "#69C350"
+    },
+    "1c8b2764-0065-3782-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0065-3782-fffffd5438c1b69c",
+      "name": "Posilovna",
+      "image": "IconsFilled/dumbbell.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": 2,
+      "color": "#69C350"
+    },
+    "1c8b2764-0066-3786-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0066-3786-fffffd5438c1b69c",
+      "name": "Terasa",
+      "image": "IconsFilled/chairs-umbrella.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 5,
+      "color": "#69C350"
+    },
+    "1c8b2764-0066-378a-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0066-378a-fffffd5438c1b69c",
+      "name": "Zahrada",
+      "image": "IconsFilled/flower.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 5,
+      "color": "#69C350"
+    },
+    "1c8b2764-0066-378e-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0066-378e-fffffd5438c1b69c",
+      "name": "Jídelna",
+      "image": "IconsFilled/knife-fork.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": 2,
+      "color": "#69C350"
+    },
+    "1c8b2764-0066-3792-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0066-3792-fffffd5438c1b69c",
+      "name": "Podkroví",
+      "image": "IconsFilled/attic.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 3,
+      "color": "#69C350"
+    },
+    "1c8b2764-0066-3796-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0066-3796-fffffd5438c1b69c",
+      "name": "Sklep",
+      "image": "IconsFilled/cellar.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 5,
+      "color": "#69C350"
+    },
+    "1c8b2764-0066-379a-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0066-379a-fffffd5438c1b69c",
+      "name": "Bar",
+      "image": "IconsFilled/cocktail.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": 2,
+      "color": "#69C350"
+    },
+    "1c8b2764-0067-379e-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0067-379e-fffffd5438c1b69c",
+      "name": "Konferenční místnost",
+      "image": "IconsFilled/meeting.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": 2,
+      "color": "#69C350"
+    },
+    "1c8b2764-0067-37a2-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0067-37a2-fffffd5438c1b69c",
+      "name": "Bazén",
+      "image": "IconsFilled/pool.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": 2,
+      "color": "#69C350"
+    },
+    "1c8b2764-0067-37a6-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0067-37a6-fffffd5438c1b69c",
+      "name": "Chodba",
+      "image": "IconsFilled/hallway.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 3,
+      "color": "#69C350"
+    },
+    "1c8b2764-0067-37aa-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0067-37aa-fffffd5438c1b69c",
+      "name": "Okolí domu",
+      "image": "IconsFilled/tree.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 5,
+      "color": "#69C350"
+    },
+    "1c8b2764-0067-37ae-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0067-37ae-fffffd5438c1b69c",
+      "name": "Technická místnost",
+      "image": "IconsFilled/cog-double.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 4,
+      "color": "#69C350"
+    },
+    "1c8b2764-0067-37b2-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0067-37b2-fffffd5438c1b69c",
+      "name": "Centrální funkce",
+      "image": "IconsFilled/central.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 4,
+      "color": "#69C350"
+    },
+    "1c8b2764-0067-37b6-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0067-37b6-fffffd5438c1b69c",
+      "name": "Serverovna",
+      "image": "IconsFilled/server.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 4,
+      "color": "#69C350"
+    },
+    "1c8b2764-0067-37ba-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0067-37ba-fffffd5438c1b69c",
+      "name": "Kotelna",
+      "image": "IconsFilled/flame-2.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 4,
+      "color": "#69C350"
+    },
+    "cbf4da52-326c-4a0b-be13c5c9c45aa132": {
+      "uuid": "cbf4da52-326c-4a0b-be13c5c9c45aa132",
+      "name": "1 Vstupní hala - chodba",
+      "image": "IconsFilled/location-pin.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 3,
+      "color": "#69C350"
+    },
+    "e70539eb-9d98-4217-83cf617d515dd58d": {
+      "uuid": "e70539eb-9d98-4217-83cf617d515dd58d",
+      "name": "2 WC",
+      "image": "IconsFilled/toilet.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 3,
+      "color": "#69C350"
+    },
+    "3141c77f-515c-459d-a364931d13d23680": {
+      "uuid": "3141c77f-515c-459d-a364931d13d23680",
+      "name": "3 Koupelna",
+      "image": "IconsFilled/bathtub.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 2,
+      "color": "#69C350"
+    },
+    "98b7b12c-6312-4511-ad2e56ec45b2b78c": {
+      "uuid": "98b7b12c-6312-4511-ad2e56ec45b2b78c",
+      "name": "4 Obývací pokoj s kuchyní",
+      "image": "IconsFilled/sofa-1.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 2,
+      "color": "#69C350"
+    },
+    "c3d9ad5b-bf09-46ab-add83a4ebf29cdb4": {
+      "uuid": "c3d9ad5b-bf09-46ab-add83a4ebf29cdb4",
+      "name": "5 Spíž",
+      "image": "IconsFilled/location-pin.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 3,
+      "color": "#69C350"
+    },
+    "03d03f55-2639-45d5-88b6c859d55ea816": {
+      "uuid": "03d03f55-2639-45d5-88b6c859d55ea816",
+      "name": "6 Dětský pokoj",
+      "image": "IconsFilled/bed-single.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 1,
+      "color": "#69C350"
+    },
+    "e94f47ef-dbc7-4a55-bcf68aa7f7110184": {
+      "uuid": "e94f47ef-dbc7-4a55-bcf68aa7f7110184",
+      "name": "7 Ložnice",
+      "image": "IconsFilled/bed-single.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 1,
+      "color": "#69C350"
+    },
+    "5d889bc0-626e-43c7-bfdeab6cfb43747b": {
+      "uuid": "5d889bc0-626e-43c7-bfdeab6cfb43747b",
+      "name": "8 Terasa",
+      "image": "IconsFilled/chairs-umbrella.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 2,
+      "color": "#69C350"
+    },
+    "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c": {
+      "uuid": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "name": "Parkoviště",
+      "image": "IconsFilled/park-sign.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": 5,
+      "color": "#69C350"
+    }
+  },
+  "cats": {
+    "1c8b2764-0053-3659-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0053-3659-fffffd5438c1b69c",
+      "name": "Nepřiřazeno",
+      "image": "IconsFilled/binders.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "default": true,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-0054-365b-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0054-365b-fffffd5438c1b69c",
+      "name": "Osvětlení",
+      "image": "IconsFilled/lightbulb-3.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": "lights",
+      "color": "#FEE502"
+    },
+    "1c8b2764-0054-365d-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0054-365d-fffffd5438c1b69c",
+      "name": "Stínění",
+      "image": "IconsFilled/blinds-half-closed.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": "shading",
+      "color": "#00C7E6"
+    },
+    "1c8b2764-0054-365f-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0054-365f-fffffd5438c1b69c",
+      "name": "Topení",
+      "image": "IconsFilled/radiator.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-0055-3661-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "name": "Topení & chlazení",
+      "image": "IconsFilled/thermometer.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#F7B55C"
+    },
+    "1c8b2764-0055-3663-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0055-3663-fffffd5438c1b69c",
+      "name": "Zvuk",
+      "image": "IconsFilled/music-note.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": "multimedia",
+      "color": "#B64D9E"
+    },
+    "1c8b2764-0055-3665-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0055-3665-fffffd5438c1b69c",
+      "name": "Čidlo",
+      "image": "IconsFilled/meter.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-0056-3667-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0056-3667-fffffd5438c1b69c",
+      "name": "Hlavice",
+      "image": "IconsFilled/valve-actuator-1.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-0056-3669-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0056-3669-fffffd5438c1b69c",
+      "name": "Teplota",
+      "image": "IconsFilled/thermometer.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "indoortemperature",
+      "color": "#69C350"
+    },
+    "1c8b2764-0056-366b-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0056-366b-fffffd5438c1b69c",
+      "name": "Detektor přítomnosti",
+      "image": "IconsFilled/megaphone.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#ED5B98"
+    },
+    "1c8b2764-0057-366d-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0057-366d-fffffd5438c1b69c",
+      "name": "Ventilace",
+      "image": "IconsFilled/fan-1.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-0057-366f-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0057-366f-fffffd5438c1b69c",
+      "name": "Okno",
+      "image": "IconsFilled/window-1.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-0057-3671-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0057-3671-fffffd5438c1b69c",
+      "name": "Zabezpečení",
+      "image": "IconsFilled/cc-camera.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-0058-3673-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0058-3673-fffffd5438c1b69c",
+      "name": "Chlazení",
+      "image": "IconsFilled/snowflake.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-0058-3675-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0058-3675-fffffd5438c1b69c",
+      "name": "Alarm",
+      "image": "IconsFilled/alarm-1.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": "undefined",
+      "color": "#F94D5F"
+    },
+    "1c8b2764-0058-3677-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0058-3677-fffffd5438c1b69c",
+      "name": "Brána",
+      "image": "IconsFilled/garage-closed-2.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-0059-3679-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0059-3679-fffffd5438c1b69c",
+      "name": "Wellness",
+      "image": "IconsFilled/rock.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-0059-367b-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0059-367b-fffffd5438c1b69c",
+      "name": "Technická místnost",
+      "image": "IconsFilled/cog-double.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-0059-367d-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-0059-367d-fffffd5438c1b69c",
+      "name": "Ventil topení",
+      "image": "IconsFilled/valve-actuator-2.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005a-367f-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005a-367f-fffffd5438c1b69c",
+      "name": "Serverovna",
+      "image": "IconsFilled/computer.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005a-3681-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005a-3681-fffffd5438c1b69c",
+      "name": "Přístup",
+      "image": "IconsFilled/door-open.svg",
+      "defaultRating": 1,
+      "isFavorite": true,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005b-3683-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005b-3683-fffffd5438c1b69c",
+      "name": "Spotřebiče",
+      "image": "IconsFilled/electricity-outlet-4.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005b-3685-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005b-3685-fffffd5438c1b69c",
+      "name": "Závlaha",
+      "image": "IconsFilled/water-hose.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005b-3687-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005b-3687-fffffd5438c1b69c",
+      "name": "Fotovoltaika",
+      "image": "IconsFilled/solar-panel.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005b-3689-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005b-3689-fffffd5438c1b69c",
+      "name": "Monitorování",
+      "image": "IconsFilled/windbag.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005c-368b-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005c-368b-fffffd5438c1b69c",
+      "name": "Čas",
+      "image": "IconsFilled/clock.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005c-368d-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005c-368d-fffffd5438c1b69c",
+      "name": "Elektromobil",
+      "image": "IconsFilled/electric-car.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005c-368f-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005c-368f-fffffd5438c1b69c",
+      "name": "Slunce",
+      "image": "IconsFilled/sun.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005c-3691-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005c-3691-fffffd5438c1b69c",
+      "name": "Budík",
+      "image": "IconsFilled/alarm-clock.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005c-3693-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005c-3693-fffffd5438c1b69c",
+      "name": "Proud",
+      "image": "IconsFilled/flash-1.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005d-3695-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005d-3695-fffffd5438c1b69c",
+      "name": "Info",
+      "image": "IconsFilled/information-circle.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005d-3697-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005d-3697-fffffd5438c1b69c",
+      "name": "Cirkulační čerpadlo",
+      "image": "IconsFilled/circulation-pump.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005d-3699-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005d-3699-fffffd5438c1b69c",
+      "name": "Tepelné čerpadlo",
+      "image": "IconsFilled/heat-pump.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005d-369b-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005d-369b-fffffd5438c1b69c",
+      "name": "Počasí",
+      "image": "IconsFilled/day-cloud.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005e-369d-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005e-369d-fffffd5438c1b69c",
+      "name": "Vlhkost",
+      "image": "IconsFilled/water-drops.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005e-369f-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005e-369f-fffffd5438c1b69c",
+      "name": "Multimedia",
+      "image": "IconsFilled/video-clip.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "multimedia",
+      "color": "#69C350"
+    },
+    "1c8b2764-005e-36a1-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005e-36a1-fffffd5438c1b69c",
+      "name": "Energie",
+      "image": "IconsFilled/flash-1.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#008FBB"
+    },
+    "1c8b2764-005e-36a3-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005e-36a3-fffffd5438c1b69c",
+      "name": "Nastavení",
+      "image": "IconsFilled/cog.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005e-36a5-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005e-36a5-fffffd5438c1b69c",
+      "name": "Noc",
+      "image": "IconsFilled/night-mode.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005e-36a7-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005e-36a7-fffffd5438c1b69c",
+      "name": "Oslava",
+      "image": "IconsFilled/party-mode.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005e-36a9-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005e-36a9-fffffd5438c1b69c",
+      "name": "Dům v hlubokém spánku",
+      "image": "IconsFilled/deep-sleep-mode.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005f-36ab-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005f-36ab-fffffd5438c1b69c",
+      "name": "Režim nepřítomnost",
+      "image": "IconsFilled/away-mode.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005f-36ad-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005f-36ad-fffffd5438c1b69c",
+      "name": "Ovládání",
+      "image": "IconsFilled/finger-tapping.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005f-36af-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005f-36af-fffffd5438c1b69c",
+      "name": "Ochrana před bouřkou",
+      "image": "IconsFilled/shield-storm.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1c8b2764-005f-36b1-fffffd5438c1b69c": {
+      "uuid": "1c8b2764-005f-36b1-fffffd5438c1b69c",
+      "name": "Zámraza",
+      "image": "IconsFilled/shield-frost.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "c8d4499e-43de-40a2-a461fa29a13a20eb": {
+      "uuid": "c8d4499e-43de-40a2-a461fa29a13a20eb",
+      "name": "Chlazeni",
+      "image": "IconsFilled/snowflake.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "6ede85b8-0fca-4ec6-9e7f2edfa8b92e8e": {
+      "uuid": "6ede85b8-0fca-4ec6-9e7f2edfa8b92e8e",
+      "name": "Režimy",
+      "image": "IconsFilled/house-information.svg",
+      "defaultRating": 9,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#00468C"
+    },
+    "8ae1b79b-6626-4086-b15d88e089e36d7d": {
+      "uuid": "8ae1b79b-6626-4086-b15d88e089e36d7d",
+      "name": "Klima - servis",
+      "image": "IconsFilled/wrench-screwdriver.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#FFFFFF"
+    },
+    "fce41f4d-8a00-489b-a34af7c0b49487d7": {
+      "uuid": "fce41f4d-8a00-489b-a34af7c0b49487d7",
+      "name": "UPS Rack",
+      "image": "IconsFilled/battery-charge.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#008FBB"
+    },
+    "1a8a001e-dc69-4256-88d7162191de42a9": {
+      "uuid": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "name": "Nastavení funkcí",
+      "image": "IconsFilled/cog-double.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    },
+    "1f1cea5f-02ca-9e89-fffffd5438c1b69c": {
+      "uuid": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "name": "Parkování",
+      "image": "IconsFilled/car-park.svg",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "type": "undefined",
+      "color": "#69C350"
+    }
+  },
+  "controls": {
+    "50f49767-5678-4613-91754560578debf4": {
+      "name": "Celkový počet zpráv dnes",
+      "type": "InfoOnlyAnalog",
+      "uuidAction": "50f49767-5678-4613-91754560578debf4",
+      "cat": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/graph-line-3.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%.0f / 25 (ze systému Loxone)"
+      },
+      "states": {
+        "value": "50f49767-5678-4613-91754560578debf4",
+        "error": "d1821162-bc41-4835-a3cfdc47a98453c1"
+      }
+    },
+    "a24b154c-f6c4-4fce-905ae4c5ddf59ced": {
+      "name": "První notifikace",
+      "type": "Slider",
+      "uuidAction": "a24b154c-f6c4-4fce-905ae4c5ddf59ced",
+      "cat": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/hourglass.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "po %.1f min",
+        "min": 0,
+        "max": 15,
+        "step": 0.5
+      },
+      "states": {
+        "value": "a24b154c-f6c4-4fce-905ae4c5ddf59ced",
+        "error": "5715bc12-1296-47f0-bbdbf70f12c87075"
+      }
+    },
+    "c044ef94-61b1-4c86-9d24e005f4e1e208": {
+      "name": "Počet zpráv dnes",
+      "type": "InfoOnlyAnalog",
+      "uuidAction": "c044ef94-61b1-4c86-9d24e005f4e1e208",
+      "cat": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/graph-bar-2.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%.0f / 10 (z této funkce)"
+      },
+      "states": {
+        "value": "c044ef94-61b1-4c86-9d24e005f4e1e208",
+        "error": "bf9f6914-47da-4fa4-82b775a9b36a7053"
+      }
+    },
+    "0017f14a-dbd5-44df-be3c5779b0937af8": {
+      "name": "Odeslané notifikace",
+      "type": "Tracker",
+      "uuidAction": "0017f14a-dbd5-44df-be3c5779b0937af8",
+      "cat": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/information-circle.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "maxEntries": 100
+      },
+      "states": {
+        "entries": "0017f14a-dbd5-44df-be3c5779b0937af8"
+      }
+    },
+    "933a5d30-9e71-4f42-a8d07c50f0a6839d": {
+      "name": "Notifikace povoleny",
+      "type": "Switch",
+      "uuidAction": "933a5d30-9e71-4f42-a8d07c50f0a6839d",
+      "cat": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/bubble-chat.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "8abbdb37-2e12-46f3-a6ec408c9aca2583",
+        "active": "7529d3b8-a8ef-4c41-a7401a1d4aeb9836",
+        "lockedOn": "9fe9e6d9-f7bf-41b8-a7be9834571533a3"
+      }
+    },
+    "719bc33a-c378-48e7-bcbc86345eda235c": {
+      "name": "Notifikace Dovolená",
+      "type": "Radio",
+      "uuidAction": "719bc33a-c378-48e7-bcbc86345eda235c",
+      "cat": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/beach.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true,
+        "allOff": "Potlačeny",
+        "outputs": {
+          "1": "Odeslány pouze první",
+          "2": "Odeslány první i opakované"
+        }
+      },
+      "states": {
+        "jLocked": "e7e7c88c-9f2f-4ad5-88c41aad861311bc",
+        "activeOutput": "edcf76c2-63da-4f3d-8af73dc934c1cc68"
+      }
+    },
+    "b313ba42-299c-4541-85eb27d4885f0f85": {
+      "name": "Odložit na den (z nočního režimu)",
+      "type": "Switch",
+      "uuidAction": "b313ba42-299c-4541-85eb27d4885f0f85",
+      "cat": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/bubble-chat.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "d7ea5dc4-c3b1-4a2c-9912b48d9060bb2c",
+        "active": "8ec59263-c6e0-41ea-bc04a25f458ac28f",
+        "lockedOn": "88f8bbcc-8793-4e15-b315bbb7a977dad0"
+      }
+    },
+    "dcc32a27-65b9-455d-bd2024e8dced46e3": {
+      "name": "První notifikace",
+      "type": "Slider",
+      "uuidAction": "dcc32a27-65b9-455d-bd2024e8dced46e3",
+      "cat": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/hourglass.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "po %.1f min",
+        "min": 0,
+        "max": 15,
+        "step": 0.5
+      },
+      "states": {
+        "value": "dcc32a27-65b9-455d-bd2024e8dced46e3",
+        "error": "59984664-6955-454c-9c1b5e2073474856"
+      }
+    },
+    "83e9d801-d3cf-440a-8890644549758200": {
+      "name": "Počet zpráv dnes",
+      "type": "InfoOnlyAnalog",
+      "uuidAction": "83e9d801-d3cf-440a-8890644549758200",
+      "cat": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/graph-bar-2.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%.0f / 10 (z této funkce)"
+      },
+      "states": {
+        "value": "83e9d801-d3cf-440a-8890644549758200",
+        "error": "ef03f8c7-9fb2-4ae5-a4b437420bbea53f"
+      }
+    },
+    "7e6bc845-eda7-4011-9655630688251df2": {
+      "name": "Odeslané notifikace",
+      "type": "Tracker",
+      "uuidAction": "7e6bc845-eda7-4011-9655630688251df2",
+      "cat": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/information-circle.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "maxEntries": 100
+      },
+      "states": {
+        "entries": "7e6bc845-eda7-4011-9655630688251df2"
+      }
+    },
+    "8ecd934e-fe3f-4876-867433bc865dacaa": {
+      "name": "Notifikace povoleny",
+      "type": "Switch",
+      "uuidAction": "8ecd934e-fe3f-4876-867433bc865dacaa",
+      "cat": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/bubble-chat.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "a8499d88-3ff1-415d-bfaa798027894d2f",
+        "active": "f9a2d9d1-bf88-4ecd-97c29062b9b1c45b",
+        "lockedOn": "c5063294-9cd1-4dbc-b57d0d262cd43ed9"
+      }
+    },
+    "4bc210fd-63b8-4d5d-a2c5fce5cdd578b8": {
+      "name": "Notifikace Dovolená",
+      "type": "Radio",
+      "uuidAction": "4bc210fd-63b8-4d5d-a2c5fce5cdd578b8",
+      "cat": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/beach.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true,
+        "allOff": "Potlačeny",
+        "outputs": {
+          "1": "Odeslány pouze první",
+          "2": "Odeslány první i opakované"
+        }
+      },
+      "states": {
+        "jLocked": "c461715d-f928-4f2e-86f225624d2d932e",
+        "activeOutput": "33538791-b288-42bc-91dcabb37b21b2ca"
+      }
+    },
+    "8dcd3fdb-71cd-4cfc-80bd91d8a80a23a9": {
+      "name": "Odložit na den (z nočního režimu)",
+      "type": "Switch",
+      "uuidAction": "8dcd3fdb-71cd-4cfc-80bd91d8a80a23a9",
+      "cat": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/bubble-chat.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "ad0721b4-21be-4610-a088925d9a1c2bf7",
+        "active": "b93cb00e-71dc-4bbb-894af5c53cd4e95f",
+        "lockedOn": "a254d325-b342-48d5-ac99eaed35e832cd"
+      }
+    },
+    "d65b740e-485f-49a0-ab074f6dc7d04a9a": {
+      "name": "První notifikace",
+      "type": "Slider",
+      "uuidAction": "d65b740e-485f-49a0-ab074f6dc7d04a9a",
+      "cat": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/hourglass.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "po %.1f min",
+        "min": 0,
+        "max": 15,
+        "step": 0.5
+      },
+      "states": {
+        "value": "d65b740e-485f-49a0-ab074f6dc7d04a9a",
+        "error": "b3ba2e29-a550-46d8-94e00134f6f0384d"
+      }
+    },
+    "1d0fd836-bf02-4e9c-9d064e40599fe584": {
+      "name": "Počet zpráv dnes",
+      "type": "InfoOnlyAnalog",
+      "uuidAction": "1d0fd836-bf02-4e9c-9d064e40599fe584",
+      "cat": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/graph-bar-2.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%.0f / 10 (z této funkce)"
+      },
+      "states": {
+        "value": "1d0fd836-bf02-4e9c-9d064e40599fe584",
+        "error": "5567cc19-9006-4ccd-98bc5f8c0a770001"
+      }
+    },
+    "dbec4caa-a3e5-4051-8ad958e79ee734c1": {
+      "name": "Odeslané notifikace",
+      "type": "Tracker",
+      "uuidAction": "dbec4caa-a3e5-4051-8ad958e79ee734c1",
+      "cat": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/information-circle.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "maxEntries": 100
+      },
+      "states": {
+        "entries": "dbec4caa-a3e5-4051-8ad958e79ee734c1"
+      }
+    },
+    "18d482ee-f6fb-4654-8185e9c5b2489a6d": {
+      "name": "Notifikace povoleny",
+      "type": "Switch",
+      "uuidAction": "18d482ee-f6fb-4654-8185e9c5b2489a6d",
+      "cat": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/bubble-chat.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "ea7afdda-5718-4f3c-9333a184a1c551d5",
+        "active": "04e52714-ba9d-4067-bf7c7060ab1da34d",
+        "lockedOn": "d50f9eb6-84df-46d0-9ffea12cdd64e6ba"
+      }
+    },
+    "0cccc5b1-c039-4545-a513456871e21cff": {
+      "name": "Notifikace Dovolená",
+      "type": "Radio",
+      "uuidAction": "0cccc5b1-c039-4545-a513456871e21cff",
+      "cat": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/beach.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true,
+        "allOff": "Potlačeny",
+        "outputs": {
+          "1": "Odeslány pouze první",
+          "2": "Odeslány první i opakované"
+        }
+      },
+      "states": {
+        "jLocked": "b5a2e74d-9c69-4585-bb4b7a3b5d36ce45",
+        "activeOutput": "3843b2d7-993c-4961-ae449011609cc3da"
+      }
+    },
+    "2d40bd9f-e250-4a55-90742eed450f343d": {
+      "name": "Odložit na den (z nočního režimu)",
+      "type": "Switch",
+      "uuidAction": "2d40bd9f-e250-4a55-90742eed450f343d",
+      "cat": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/bubble-chat.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "de6e768e-978e-46bb-a8cd4dce981142a0",
+        "active": "5dabbf8b-3b80-45f8-9fbc41d42ee163a6",
+        "lockedOn": "b33b212f-1f5a-4c61-9dd6a1665f199a09"
+      }
+    },
+    "241b9ea3-5992-4643-963fdd1aec3ea615": {
+      "name": "Schéma systému VZT",
+      "type": "SystemScheme",
+      "uuidAction": "241b9ea3-5992-4643-963fdd1aec3ea615",
+      "cat": "1c8b2764-0053-3659-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "configState": {
+        "isConfigured": false
+      },
+      "defaultIcon": "IconsFilled/thermometer.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "imagePath": "241b9ea3-5992-4643-963fdd1aec3ea615.png",
+        "imageVersion": 488677013,
+        "mainControl": "c8f72fed-a937-4338-931f861b7f514152",
+        "schemeSize": {
+          "width": 1343,
+          "height": 508
+        },
+        "controlReferences": [
+          {
+            "uuidAction": "7a6c73a7-4b27-45ec-94399f4e2d43cb52",
+            "pos": {
+              "x": 100,
+              "y": 117
+            },
+            "text": "",
+            "actionsVisible": false
+          },
+          {
+            "uuidAction": "5a231c1a-1719-4315-83cb27706b55925f",
+            "pos": {
+              "x": 99,
+              "y": 84
+            },
+            "text": "",
+            "actionsVisible": false
+          },
+          {
+            "uuidAction": "b6b829a5-c585-4896-8c13018244452fd5",
+            "pos": {
+              "x": 215,
+              "y": 36
+            },
+            "text": "",
+            "actionsVisible": false
+          },
+          {
+            "uuidAction": "d503c11e-60e3-474f-8a03c7c932595997",
+            "pos": {
+              "x": 1086,
+              "y": 197
+            },
+            "text": "",
+            "actionsVisible": false
+          },
+          {
+            "uuidAction": "c8f72fed-a937-4338-931f861b7f514152",
+            "pos": {
+              "x": 1085,
+              "y": 230
+            },
+            "text": "",
+            "actionsVisible": false
+          },
+          {
+            "uuidAction": "e59d03be-8a6e-4e72-bf32427348933253",
+            "pos": {
+              "x": 344,
+              "y": 192
+            },
+            "text": "",
+            "actionsVisible": false
+          },
+          {
+            "uuidAction": "c3651a63-a4a9-4e5b-a0d29f0d4e0738d8",
+            "pos": {
+              "x": 215,
+              "y": 64
+            },
+            "text": "",
+            "actionsVisible": false
+          },
+          {
+            "uuidAction": "d6e7483d-cbd1-4ae1-9dc573c78f6b779b",
+            "pos": {
+              "x": 1159,
+              "y": 62
+            },
+            "text": "",
+            "actionsVisible": false
+          },
+          {
+            "uuidAction": "27e088b5-1479-4093-9eb964acc7a1d187",
+            "pos": {
+              "x": 676,
+              "y": 456
+            },
+            "text": "",
+            "actionsVisible": false
+          }
+        ],
+        "extraObjects": []
+      }
+    },
+    "aa79e9b4-a85f-4822-b3bbaed6bd562940": {
+      "name": "Řízení rekuperace",
+      "type": "Radio",
+      "uuidAction": "aa79e9b4-a85f-4822-b3bbaed6bd562940",
+      "cat": "1c8b2764-0057-366f-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "hasControlNotes": true,
+      "defaultIcon": "IconsFilled/computer-notebook.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true,
+        "allOff": "Chytrá domácnost",
+        "outputs": {
+          "1": "Týdenní program"
+        }
+      },
+      "states": {
+        "jLocked": "a1483721-889a-4b4f-82cc2414d36ca0bb",
+        "activeOutput": "f24a17bf-d5b7-42ed-94a7f04cc1401364"
+      }
+    },
+    "f4a1bc32-78b7-423b-9f3ff2ee68b38ec8": {
+      "name": "Režim rekuperace",
+      "type": "Radio",
+      "uuidAction": "f4a1bc32-78b7-423b-9f3ff2ee68b38ec8",
+      "cat": "1c8b2764-0057-366f-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "hasControlNotes": true,
+      "defaultIcon": "IconsFilled/finger-tapping.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true,
+        "allOff": "Vypnuto",
+        "outputs": {
+          "2": "Větrání"
+        }
+      },
+      "states": {
+        "jLocked": "8016d75d-059a-4000-b7073aac417413cc",
+        "activeOutput": "e7a471e0-226b-48bf-be5478f8393dbc24"
+      }
+    },
+    "179b5d5e-5f78-4290-92ea973a3c2a6b0d": {
+      "name": "Aut. obnova ochrany",
+      "type": "TextState",
+      "uuidAction": "179b5d5e-5f78-4290-92ea973a3c2a6b0d",
+      "cat": "1c8b2764-0054-365d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/automatic-2.svg",
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "179b5d5e-5f78-4290-92ea973a3c2a6b0d",
+        "iconAndColor": "3e0ea223-4eb5-4bbf-a518e042f1412835"
+      }
+    },
+    "9852ed77-e626-48da-9b5cc2ae53b49df8": {
+      "name": "Aut. obnova ochrany",
+      "type": "TextState",
+      "uuidAction": "9852ed77-e626-48da-9b5cc2ae53b49df8",
+      "cat": "1c8b2764-0054-365d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/automatic-2.svg",
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "9852ed77-e626-48da-9b5cc2ae53b49df8",
+        "iconAndColor": "ce92f126-8ee1-4ac7-98e96203dc8b08aa"
+      }
+    },
+    "581eaf23-ed9d-41e5-8d7809ae52412391": {
+      "name": "Průběh diagnostiky",
+      "type": "Tracker",
+      "uuidAction": "581eaf23-ed9d-41e5-8d7809ae52412391",
+      "cat": "1c8b2764-0054-365d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/information-circle.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "maxEntries": 100
+      },
+      "states": {
+        "entries": "581eaf23-ed9d-41e5-8d7809ae52412391"
+      }
+    },
+    "d155ba24-8165-4ff6-bf8df92b1e340603": {
+      "name": "Vytažení žaluzií při otevření",
+      "type": "Switch",
+      "uuidAction": "d155ba24-8165-4ff6-bf8df92b1e340603",
+      "cat": "1c8b2764-0054-365d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "hasControlNotes": true,
+      "defaultIcon": "IconsFilled/blinds-up.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "b05b78df-5a91-49ac-95c57b516c335970",
+        "active": "a8782460-cdef-4b09-a24be46a8a1af79b",
+        "lockedOn": "637afe1e-6a8a-401b-ab96983ac0a1f92c"
+      }
+    },
+    "7463df6c-4c68-4afc-a88c74fb3b5730d7": {
+      "name": "Historie aktivity ochran",
+      "type": "Tracker",
+      "uuidAction": "7463df6c-4c68-4afc-a88c74fb3b5730d7",
+      "cat": "1c8b2764-0054-365d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/shield-time.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "maxEntries": 100
+      },
+      "states": {
+        "entries": "7463df6c-4c68-4afc-a88c74fb3b5730d7"
+      }
+    },
+    "f3a35169-96a4-41f4-80ef81f3ea801b54": {
+      "name": "Ochrana před bouřkou",
+      "type": "Switch",
+      "uuidAction": "f3a35169-96a4-41f4-80ef81f3ea801b54",
+      "cat": "1c8b2764-0054-365d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/shield-storm.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "f33c0c1f-ff49-4eb7-b6e14e6489b64a55",
+        "active": "0dd059c8-b755-422a-b8b7ae3dcc4d2fca",
+        "lockedOn": "b3f9baf0-e125-4c9d-8417d872f96614e9"
+      }
+    },
+    "be2e7880-878a-48ce-9e16fa5be9e7ee96": {
+      "name": "Ochrana před námrazou",
+      "type": "Switch",
+      "uuidAction": "be2e7880-878a-48ce-9e16fa5be9e7ee96",
+      "cat": "1c8b2764-0054-365d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/shield-frost.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "85d56ee9-76ae-438c-adaabf1c00f8224a",
+        "active": "727a8949-0dfb-487d-a047846f1c9b49ef",
+        "lockedOn": "0d3716ba-88ac-491a-ae0bae31a3a3d7a2"
+      }
+    },
+    "635bbee8-3087-4afd-bdfdf8af57e68d98": {
+      "name": "Ochrana před bouřkou",
+      "type": "TextState",
+      "uuidAction": "635bbee8-3087-4afd-bdfdf8af57e68d98",
+      "cat": "1c8b2764-0054-365d-fffffd5438c1b69c",
+      "defaultRating": 3,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/shield-storm.svg",
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "635bbee8-3087-4afd-bdfdf8af57e68d98",
+        "iconAndColor": "6c1e1418-b21c-40fb-90e2694d7be20071"
+      },
+      "links": [
+        "f3a35169-96a4-41f4-80ef81f3ea801b54",
+        "179b5d5e-5f78-4290-92ea973a3c2a6b0d"
+      ]
+    },
+    "952432fd-a0b7-4038-bd51afc3539b0ef7": {
+      "name": "Ochrana před námrazou",
+      "type": "TextState",
+      "uuidAction": "952432fd-a0b7-4038-bd51afc3539b0ef7",
+      "cat": "1c8b2764-0054-365d-fffffd5438c1b69c",
+      "defaultRating": 3,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/shield-frost.svg",
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "952432fd-a0b7-4038-bd51afc3539b0ef7",
+        "iconAndColor": "c9cdd796-ab34-49e7-9dccc937027531c6"
+      },
+      "links": [
+        "be2e7880-878a-48ce-9e16fa5be9e7ee96",
+        "9852ed77-e626-48da-9b5cc2ae53b49df8"
+      ]
+    },
+    "3e41c9f8-85ab-49d1-b33c2379adb4f292": {
+      "name": "Ukončení sekvence",
+      "type": "Pushbutton",
+      "uuidAction": "3e41c9f8-85ab-49d1-b33c2379adb4f292",
+      "cat": "1c8b2764-0054-365d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/delete-1.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "f02af69d-da0e-43c6-8746ef2c8a081af4",
+        "active": "73ff4c00-ff8e-4b7a-8521851bc7343c79"
+      }
+    },
+    "5eb9c4dd-d4a4-4dcb-8265b1bd7067b61a": {
+      "name": "Zjistit Bld",
+      "type": "Pushbutton",
+      "uuidAction": "5eb9c4dd-d4a4-4dcb-8265b1bd7067b61a",
+      "cat": "1c8b2764-0054-365d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/blinds-up.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "bcc3ab47-aabb-4eba-91be08032f7b637f",
+        "active": "86422839-933f-40e0-a8270df03dcaf5ff"
+      }
+    },
+    "3354f66d-940d-475b-851554dbdd6a8d2b": {
+      "name": "Zjistit Bldo",
+      "type": "Pushbutton",
+      "uuidAction": "3354f66d-940d-475b-851554dbdd6a8d2b",
+      "cat": "1c8b2764-0054-365d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/blinds-up-down.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "f44fb233-8818-4635-b1d8a8a901cd0ac1",
+        "active": "bd23619e-538e-4f5b-a7605af474715ce8"
+      }
+    },
+    "63cd5643-aa74-4820-89a206f2f476c571": {
+      "name": "Zjistit Rd",
+      "type": "Pushbutton",
+      "uuidAction": "63cd5643-aa74-4820-89a206f2f476c571",
+      "cat": "1c8b2764-0054-365d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/blinds-shading-2.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "ba3f4fe3-6e05-4396-9857d017a0898eee",
+        "active": "cfd8358e-074b-40b2-94c406418f32848e"
+      }
+    },
+    "d43a7cf1-5c9c-452f-942ba385aaf88420": {
+      "name": "Ruční jízda DOLŮ",
+      "type": "Pushbutton",
+      "uuidAction": "d43a7cf1-5c9c-452f-942ba385aaf88420",
+      "cat": "1c8b2764-0054-365d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/arrow-down-1.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "bffac583-23c4-4a2c-afa904645fb8af83",
+        "active": "fb0d320d-9a83-4483-9e9ebe474d9a2c18"
+      }
+    },
+    "2beb299f-4b89-4680-b9f5dedd05ab69c3": {
+      "name": "Ruční jízda NAHORU",
+      "type": "Pushbutton",
+      "uuidAction": "2beb299f-4b89-4680-b9f5dedd05ab69c3",
+      "cat": "1c8b2764-0054-365d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/arrow-up-1.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "b27beb75-3b16-4acb-83efa53dd5ac1a02",
+        "active": "a9382c1e-6b5a-4fe3-a830470476a8825a"
+      }
+    },
+    "ee9d5187-febf-4227-a8e43a9b275eee36": {
+      "name": "Spuštění prevence",
+      "type": "AlarmClock",
+      "uuidAction": "ee9d5187-febf-4227-a8e43a9b275eee36",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "restrictions": 17,
+      "details": {
+        "jLockable": true,
+        "hasNightLight": false,
+        "snoozeDurationConnected": false,
+        "brightInactiveConnected": false,
+        "brightActiveConnected": false,
+        "wakeAlarmSoundConnected": false,
+        "wakeAlarmVolumeConnected": false,
+        "wakeAlarmSlopingConnected": false,
+        "wakeAlarmSounds": [
+          {
+            "id": 1,
+            "name": "Čtyři nízké pípnutí"
+          },
+          {
+            "id": 2,
+            "name": "Čtyři vysoké pípnutí"
+          },
+          {
+            "id": 3,
+            "name": "Dvojité nízké pípnutí"
+          },
+          {
+            "id": 4,
+            "name": "Dvojité vysoké pípnutí"
+          },
+          {
+            "id": 5,
+            "name": "siréna"
+          }
+        ]
+      },
+      "states": {
+        "jLocked": "f7370f93-51bf-47e8-bfc88f94de8d35ba",
+        "isEnabled": "6f400589-f336-46f1-8b36e0a4a5ea321c",
+        "isAlarmActive": "e74c5715-70da-4970-90c4beb71f51ea35",
+        "confirmationNeeded": "285cb5b5-0fd0-4f5e-ac7cc7fda3577fd8",
+        "entryList": "79cda82c-a412-48d7-a8104c7087ff995d",
+        "currentEntry": "99239352-52cc-4608-b65e4042c1bb1f76",
+        "nextEntry": "2107bee9-d7c3-4eb2-b85e3aef29907813",
+        "nextEntryMode": "4cb48621-7eee-4967-b79df6382a730867",
+        "ringingTime": "edd217d7-10ef-4959-a28852e1ac13f5df",
+        "ringDuration": "5ca42cb6-99a9-43d7-be4110d930ca4749",
+        "prepareDuration": "050d5e37-9c74-47b4-9a32f0d2b0a91626",
+        "snoozeTime": "3195acb4-fc5c-4a2b-a9ab0604497010d7",
+        "snoozeDuration": "0d6c2df4-9f76-4005-a8b53e29608b9063",
+        "nextEntryTime": "8ed3d8af-a0c2-4e22-983f2b7c87b3fad6",
+        "deviceState": "4c16e2ff-53d2-49a9-b66aa34d9a5ca3a4",
+        "deviceSettings": "5e73df77-8280-4663-8bf019a2215b163c",
+        "wakeAlarmSoundSettings": "532c2f7d-c291-4a6f-871bcea124de84f0"
+      }
+    },
+    "e713e920-48ca-4c2a-a77be651b05e4320": {
+      "name": "Pracovní režim TČ",
+      "type": "Radio",
+      "uuidAction": "e713e920-48ca-4c2a-a77be651b05e4320",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": true,
+        "allOff": "Ruční (klávesnice)",
+        "outputs": {
+          "1": "Vytápění (zimní)",
+          "2": "Chlazení (letní)",
+          "3": "Kombinovaný (mixed)"
+        }
+      },
+      "states": {
+        "jLocked": "a73ed422-9f22-4145-b3625eec580bf9ca",
+        "activeOutput": "1ab25f02-dede-489a-830a0fbb2018dc28"
+      }
+    },
+    "3921c292-ab01-40ac-ac61ede0c6f5b279": {
+      "name": "Provozní stav TČ",
+      "type": "Radio",
+      "uuidAction": "3921c292-ab01-40ac-ac61ede0c6f5b279",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": true,
+        "allOff": "Ruční (klávesnice)",
+        "outputs": {
+          "1": "OFF",
+          "2": "ON",
+          "3": "Nouzový stav"
+        }
+      },
+      "states": {
+        "jLocked": "fc4fa201-9834-4644-96863241f7f0784e",
+        "activeOutput": "085bf461-2386-49f7-bc1dc91c6172574a"
+      }
+    },
+    "363c94e9-08a9-4ddd-bdfba67bdaf2c867": {
+      "name": "Způsob prevence",
+      "type": "Radio",
+      "uuidAction": "363c94e9-08a9-4ddd-bdfba67bdaf2c867",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/shield-cross.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true,
+        "allOff": "",
+        "outputs": {
+          "1": "60 °C / 40 min.",
+          "2": "65 °C / 30 min.",
+          "3": "70 °C / 20 min."
+        }
+      },
+      "states": {
+        "jLocked": "e5be72b1-a69c-4f6b-b8cfb6d303a1edd5",
+        "activeOutput": "08e19d87-3ce6-4aac-84971bbef1486138"
+      }
+    },
+    "014385f7-0916-46c7-ac2be3ac66ab8538": {
+      "name": "Alarm / chyba",
+      "type": "TextState",
+      "uuidAction": "014385f7-0916-46c7-ac2be3ac66ab8538",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "014385f7-0916-46c7-ac2be3ac66ab8538",
+        "iconAndColor": "efdd6ec8-736f-4f33-bed02a3b2031d49e"
+      }
+    },
+    "f639109e-e07e-42b2-ac4851b6468397a7": {
+      "name": "Teplota média",
+      "type": "TextState",
+      "uuidAction": "f639109e-e07e-42b2-ac4851b6468397a7",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "f639109e-e07e-42b2-ac4851b6468397a7",
+        "iconAndColor": "125c4234-27a7-43fa-bb960b5353f4a83b"
+      },
+      "links": [
+        "cf0dd416-d865-44e3-b16dfa9a4b7b309b"
+      ]
+    },
+    "ccbe808c-f38d-4f2d-9de0e1d3c3788c08": {
+      "name": "Voda v bazénu",
+      "type": "TextState",
+      "uuidAction": "ccbe808c-f38d-4f2d-9de0e1d3c3788c08",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/pool.svg",
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "ccbe808c-f38d-4f2d-9de0e1d3c3788c08",
+        "iconAndColor": "ea868172-547f-467a-a880618a711d08aa"
+      },
+      "links": [
+        "d09bf20a-751c-4019-a130d7b7cc1ef7b9",
+        "a27ddea9-2b73-49f8-a34a8aa476d0dbb9"
+      ]
+    },
+    "9ed589d8-ade3-41c4-96935151c2d9e5ea": {
+      "name": "Ovládání přes ModBus",
+      "type": "TextState",
+      "uuidAction": "9ed589d8-ade3-41c4-96935151c2d9e5ea",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "9ed589d8-ade3-41c4-96935151c2d9e5ea",
+        "iconAndColor": "0ac35b4b-7b65-4632-b57077b0ba988da4"
+      }
+    },
+    "09e40af4-f487-49db-a3fc5d431ce4849d": {
+      "name": "Pracovní režim",
+      "type": "TextState",
+      "uuidAction": "09e40af4-f487-49db-a3fc5d431ce4849d",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "09e40af4-f487-49db-a3fc5d431ce4849d",
+        "iconAndColor": "c3d65c9f-4b2c-4a22-8f99dff3a18f7523"
+      },
+      "links": [
+        "2b03fd17-a7b9-4088-82f149946108bf79",
+        "a9fe6f9e-214a-442c-8b0300242ba87623"
+      ]
+    },
+    "67b0e175-0218-4eef-a830bdbd7320b9e2": {
+      "name": "Provozní stav",
+      "type": "TextState",
+      "uuidAction": "67b0e175-0218-4eef-a830bdbd7320b9e2",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "67b0e175-0218-4eef-a830bdbd7320b9e2",
+        "iconAndColor": "f7ebc6a7-df69-4072-a3fd29986a1d1520"
+      }
+    },
+    "16563096-df8b-4d19-aa0e22fde46d9c47": {
+      "name": "Teplá voda (TUV)",
+      "type": "TextState",
+      "uuidAction": "16563096-df8b-4d19-aa0e22fde46d9c47",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/water-faucet-2.svg",
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "16563096-df8b-4d19-aa0e22fde46d9c47",
+        "iconAndColor": "21109ed0-7f20-4b3a-a4319cb93aa8efac"
+      },
+      "links": [
+        "7cc21464-76db-44e1-aa9e58d987290a63",
+        "c98d7835-7a5a-432f-809581b8aa8f48c2",
+        "1b7e1dce-7005-4dfa-a204ff41b2289d50",
+        "25bd2397-c936-4d3e-b34bc2f2ab7da30c",
+        "77ad9bf9-a92a-41fa-abe32d573bceff86"
+      ]
+    },
+    "4290de9a-1c5b-4f60-b8cbbfbde849eae7": {
+      "name": "Stav TČ",
+      "type": "TextState",
+      "uuidAction": "4290de9a-1c5b-4f60-b8cbbfbde849eae7",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/information-circle.svg",
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "4290de9a-1c5b-4f60-b8cbbfbde849eae7",
+        "iconAndColor": "97f6023c-fdd5-469e-a5c375befc54ce11"
+      },
+      "links": [
+        "9ed589d8-ade3-41c4-96935151c2d9e5ea",
+        "67b0e175-0218-4eef-a830bdbd7320b9e2",
+        "09e40af4-f487-49db-a3fc5d431ce4849d",
+        "014385f7-0916-46c7-ac2be3ac66ab8538"
+      ]
+    },
+    "553bdcfe-e0d2-40d9-b595619c2f04dacc": {
+      "name": "Teplota média",
+      "type": "TextState",
+      "uuidAction": "553bdcfe-e0d2-40d9-b595619c2f04dacc",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/thermometer.svg",
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "553bdcfe-e0d2-40d9-b595619c2f04dacc",
+        "iconAndColor": "5a413114-be06-4b31-b5d26f72f078005c"
+      },
+      "links": [
+        "da0d5fd3-dc02-4f1f-a51967403fddddee",
+        "9a4bdc17-5cd8-4880-ade005476068876b"
+      ]
+    },
+    "2176c30b-7230-4c50-bb09a976c20d22d9": {
+      "name": "Otopná voda",
+      "type": "TextState",
+      "uuidAction": "2176c30b-7230-4c50-bb09a976c20d22d9",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/home-3.svg",
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "2176c30b-7230-4c50-bb09a976c20d22d9",
+        "iconAndColor": "7390c1e2-2e77-41d2-b22324d47c6c5145"
+      },
+      "links": [
+        "553bdcfe-e0d2-40d9-b595619c2f04dacc",
+        "f639109e-e07e-42b2-ac4851b6468397a7",
+        "ed5f5eba-2a80-436e-8541b507f727c366",
+        "6e690c4b-3fe7-45ce-89cf8d5045f003f9"
+      ]
+    },
+    "6e690c4b-3fe7-45ce-89cf8d5045f003f9": {
+      "name": "Vytápění & chlazení",
+      "type": "TextState",
+      "uuidAction": "6e690c4b-3fe7-45ce-89cf8d5045f003f9",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/heat-pump.svg",
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "6e690c4b-3fe7-45ce-89cf8d5045f003f9",
+        "iconAndColor": "03fb7133-7ec1-4a70-9e5b2cdc92290351"
+      },
+      "links": [
+        "32976752-235a-48ab-b146bd39aa72453d"
+      ]
+    },
+    "25bd2397-c936-4d3e-b34bc2f2ab7da30c": {
+      "name": "Prevence legionelly",
+      "type": "TextState",
+      "uuidAction": "25bd2397-c936-4d3e-b34bc2f2ab7da30c",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/aal-alarm.svg",
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "25bd2397-c936-4d3e-b34bc2f2ab7da30c",
+        "iconAndColor": "c47ffa21-5be1-4ec6-8487a731263bf6f2"
+      },
+      "links": [
+        "163b91ec-2827-4152-ad634e5ca307ef89",
+        "ee9d5187-febf-4227-a8e43a9b275eee36",
+        "363c94e9-08a9-4ddd-bdfba67bdaf2c867"
+      ]
+    },
+    "a27ddea9-2b73-49f8-a34a8aa476d0dbb9": {
+      "name": "Ohřev vody v bazénu",
+      "type": "TextState",
+      "uuidAction": "a27ddea9-2b73-49f8-a34a8aa476d0dbb9",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/pool.svg",
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "a27ddea9-2b73-49f8-a34a8aa476d0dbb9",
+        "iconAndColor": "35a49df2-4d54-4989-84272482ae5bd304"
+      },
+      "links": [
+        "0e12d31a-fed7-45f9-ad71c55f8f1df31d",
+        "ab5b367f-3d8c-4ddf-9125f6c2013eddb5"
+      ]
+    },
+    "1b7e1dce-7005-4dfa-a204ff41b2289d50": {
+      "name": "Příprava teplé vody",
+      "type": "TextState",
+      "uuidAction": "1b7e1dce-7005-4dfa-a204ff41b2289d50",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/water-faucet-2.svg",
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "1b7e1dce-7005-4dfa-a204ff41b2289d50",
+        "iconAndColor": "e33ccaed-b3b7-46e1-9abcb9b36ed14cd2"
+      },
+      "links": [
+        "9692eb42-00a8-44d7-b8da0e9028973289"
+      ]
+    },
+    "4f7be51b-3c4e-4db5-ba681c3ab291e914": {
+      "name": "x Servisní rozhranní",
+      "type": "TextState",
+      "uuidAction": "4f7be51b-3c4e-4db5-ba681c3ab291e914",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/wrench-screwdriver.svg",
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "4f7be51b-3c4e-4db5-ba681c3ab291e914",
+        "iconAndColor": "a57ca968-bd51-485a-875c798b7fc8925c"
+      },
+      "links": [
+        "620f782c-0690-4fbe-b7b00cafb911c80e",
+        "3921c292-ab01-40ac-ac61ede0c6f5b279",
+        "e713e920-48ca-4c2a-a77be651b05e4320"
+      ]
+    },
+    "c98d7835-7a5a-432f-809581b8aa8f48c2": {
+      "name": "Teplota vody (nastavení)",
+      "type": "ValueSelector",
+      "uuidAction": "c98d7835-7a5a-432f-809581b8aa8f48c2",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "hasControlNotes": true,
+      "defaultIcon": "IconsFilled/temperature-increase-decrease.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true,
+        "increaseOnly": false,
+        "format": "Požadavek: %.0f °C"
+      },
+      "states": {
+        "jLocked": "e84fb068-8f4b-4e08-a161d6c563b06339",
+        "min": "fec33622-478d-43fa-aab8f3009f50b5c6",
+        "max": "f1acc765-6def-48a7-96ebb62c9a276742",
+        "step": "ededa201-51ad-40a0-876830046810d5c5",
+        "value": "1ea25283-0e6a-42e3-911925fefd08dc32"
+      }
+    },
+    "d09bf20a-751c-4019-a130d7b7cc1ef7b9": {
+      "name": "Teplota vody (nastavení)",
+      "type": "ValueSelector",
+      "uuidAction": "d09bf20a-751c-4019-a130d7b7cc1ef7b9",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "hasControlNotes": true,
+      "defaultIcon": "IconsFilled/thermometer.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true,
+        "increaseOnly": false,
+        "format": "Požadavek: %.0f °C"
+      },
+      "states": {
+        "jLocked": "9ccc8e48-8490-4485-a6554d13ea21df4d",
+        "min": "cf335129-5022-4ade-bfb48474a2ddba1d",
+        "max": "a725b3c7-88f0-4f2f-ba114326fdcd4fc2",
+        "step": "b80b9854-e32c-488f-a0f92432e36f0e95",
+        "value": "0b051fad-91e1-495e-8dffb57cc3b9bce2"
+      }
+    },
+    "620f782c-0690-4fbe-b7b00cafb911c80e": {
+      "name": "Ovládání přes ModBus",
+      "type": "Switch",
+      "uuidAction": "620f782c-0690-4fbe-b7b00cafb911c80e",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/computer.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "d415d48c-baea-4eb1-be85719b8d19fcf8",
+        "active": "4da7a1a0-2538-4b15-bb27a445408c789b",
+        "lockedOn": "536fdaaa-a119-4f39-b397e6e725c8b56e"
+      }
+    },
+    "0e12d31a-fed7-45f9-ad71c55f8f1df31d": {
+      "name": "Povolení ohřevu",
+      "type": "Switch",
+      "uuidAction": "0e12d31a-fed7-45f9-ad71c55f8f1df31d",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "hasControlNotes": true,
+      "defaultIcon": "IconsFilled/finger-tapping.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "f6df6112-f49f-4f7d-96f552137c807fdf",
+        "active": "2515239e-dcf2-408c-bb17a72462807125",
+        "lockedOn": "c410a02c-f9d0-4ce1-8b5103ed3ff2170c"
+      }
+    },
+    "9692eb42-00a8-44d7-b8da0e9028973289": {
+      "name": "Řízení LOXONE",
+      "type": "Switch",
+      "uuidAction": "9692eb42-00a8-44d7-b8da0e9028973289",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "hasControlNotes": true,
+      "defaultIcon": "IconsFilled/finger-tapping.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "8ee7956f-e528-4a7a-9444565003a63cf7",
+        "active": "c88fef8e-00c9-4da4-9b74a2c7f40b89da",
+        "lockedOn": "554b1a7b-0bb0-4568-b24f405b84870f06"
+      }
+    },
+    "163b91ec-2827-4152-ad634e5ca307ef89": {
+      "name": "Povolení funkce",
+      "type": "Switch",
+      "uuidAction": "163b91ec-2827-4152-ad634e5ca307ef89",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/finger-tapping.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "cdcca84f-25a1-4b03-878038beb9936266",
+        "active": "e62071bc-4b9d-4684-98ae433febeffe83",
+        "lockedOn": "cbe98a2d-3ed0-4002-84df9c1eba1e7630"
+      }
+    },
+    "32976752-235a-48ab-b146bd39aa72453d": {
+      "name": "Řízení LOXONE",
+      "type": "Switch",
+      "uuidAction": "32976752-235a-48ab-b146bd39aa72453d",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "a7f6f3dd-1f53-4ad7-886628db25ded830",
+        "active": "6e437cab-a793-42f0-a003a1b572801dff",
+        "lockedOn": "709b9619-1b7c-4cf7-89227aa5008f7c93"
+      }
+    },
+    "77ad9bf9-a92a-41fa-abe32d573bceff86": {
+      "name": "Provoz oběh. čerpadla TUV",
+      "type": "Daytimer",
+      "uuidAction": "77ad9bf9-a92a-41fa-abe32d573bceff86",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/circulation-pump.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true,
+        "analog": false,
+        "text": {
+          "on": "Aktivní",
+          "off": "Neaktivní"
+        }
+      },
+      "states": {
+        "jLocked": "c43cbadb-6b68-4062-bf76a5f6f99c4ade",
+        "mode": "36728e0f-8613-429e-bfb1e261bf458db4",
+        "override": "3bcc9c41-676c-4dac-bf0144717b56e003",
+        "value": "85e5171a-63be-43ef-88a0bd98acd96526",
+        "needsActivation": "ee006571-14c9-40ac-81ffe57f78211839",
+        "modeList": "347e3141-9fd4-461d-87df961cecf51816",
+        "entriesAndDefaultValue": "77ad9bf9-a92a-41fa-abe32d573bceff86",
+        "resetActive": "443cbadb-6b68-4062-bf76a5f6f99c4ade"
+      }
+    },
+    "9060d160-4c62-416e-aa1eea8e0c24d42f": {
+      "name": "Aktuálně větrané zóny",
+      "type": "TextState",
+      "uuidAction": "9060d160-4c62-416e-aa1eea8e0c24d42f",
+      "cat": "1c8b2764-0057-366d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/navigation-drawer.svg",
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "9060d160-4c62-416e-aa1eea8e0c24d42f",
+        "iconAndColor": "c79b138d-bcb5-461c-bb1566bc24401935"
+      },
+      "links": [
+        "e3606ad0-9fc5-4cff-b11f785e419b17a7",
+        "9c67bb46-70c4-4e4b-879c58e8ec42068b",
+        "93458fa1-8aee-465c-a67d0a9db4f69611"
+      ]
+    },
+    "c8a3fe0e-7f93-40a8-9e9368a61e6743ca": {
+      "name": "Opakované oznámení",
+      "type": "Slider",
+      "uuidAction": "c8a3fe0e-7f93-40a8-9e9368a61e6743ca",
+      "cat": "1c8b2764-0057-366d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "po %.1f h",
+        "min": 0.5,
+        "max": 48,
+        "step": 0.5
+      },
+      "states": {
+        "value": "c8a3fe0e-7f93-40a8-9e9368a61e6743ca",
+        "error": "16abe931-4643-4a6b-b2d4f52483ef5061"
+      }
+    },
+    "7a246798-8cb1-4bed-b111c897450ef524": {
+      "name": "První oznámení",
+      "type": "Slider",
+      "uuidAction": "7a246798-8cb1-4bed-b111c897450ef524",
+      "cat": "1c8b2764-0057-366d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "po %.1f h",
+        "min": 0,
+        "max": 24,
+        "step": 0.5
+      },
+      "states": {
+        "value": "7a246798-8cb1-4bed-b111c897450ef524",
+        "error": "5181fa82-0cf9-4620-8d70e17230be5819"
+      }
+    },
+    "e2fe3150-d059-4e2f-9d4fe848202466a6": {
+      "name": "Poruchy rekuperace",
+      "type": "TextState",
+      "uuidAction": "e2fe3150-d059-4e2f-9d4fe848202466a6",
+      "cat": "1c8b2764-0057-366d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/cog-double.svg",
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "e2fe3150-d059-4e2f-9d4fe848202466a6",
+        "iconAndColor": "73a6ba9b-8e27-4062-bbc8e61702687409"
+      }
+    },
+    "e3606ad0-9fc5-4cff-b11f785e419b17a7": {
+      "name": "Aktuální výkon",
+      "type": "TextState",
+      "uuidAction": "e3606ad0-9fc5-4cff-b11f785e419b17a7",
+      "cat": "1c8b2764-0057-366d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "e3606ad0-9fc5-4cff-b11f785e419b17a7",
+        "iconAndColor": "f53767e6-e143-4880-b79f5062b9480abe"
+      },
+      "links": [
+        "5771806d-fd0b-4905-9dbc56668c80f70c",
+        "157df857-9c20-4533-ab2058100f8d6816"
+      ]
+    },
+    "157df857-9c20-4533-ab2058100f8d6816": {
+      "name": "Další nastavení",
+      "type": "TextState",
+      "uuidAction": "157df857-9c20-4533-ab2058100f8d6816",
+      "cat": "1c8b2764-0057-366d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/cog-double.svg",
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "157df857-9c20-4533-ab2058100f8d6816",
+        "iconAndColor": "eaf4a7aa-93cf-4b43-92eef68f25d50397"
+      },
+      "links": [
+        "86df1abb-7460-42e9-b848f28bc6565098",
+        "142320c9-a71f-4a3e-8d49b80e7fd86af9",
+        "7003f6c8-de46-4a80-bb25c7161e2f0147"
+      ]
+    },
+    "36b046df-6141-43c7-b918358c83118f95": {
+      "name": "Stav rekuperace",
+      "type": "TextState",
+      "uuidAction": "36b046df-6141-43c7-b918358c83118f95",
+      "cat": "1c8b2764-0057-366d-fffffd5438c1b69c",
+      "defaultRating": 6,
+      "isFavorite": true,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/cog-double.svg",
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "36b046df-6141-43c7-b918358c83118f95",
+        "iconAndColor": "bb523e55-2efe-4a80-8e4fecd22594f28e"
+      },
+      "links": [
+        "76adb940-7a1b-4143-a9558acf5006dd99",
+        "e2fe3150-d059-4e2f-9d4fe848202466a6",
+        "e3606ad0-9fc5-4cff-b11f785e419b17a7",
+        "9060d160-4c62-416e-aa1eea8e0c24d42f",
+        "241b9ea3-5992-4643-963fdd1aec3ea615"
+      ]
+    },
+    "7003f6c8-de46-4a80-bb25c7161e2f0147": {
+      "name": "Teplota odpadního vzduchu",
+      "type": "Radio",
+      "uuidAction": "7003f6c8-de46-4a80-bb25c7161e2f0147",
+      "cat": "1c8b2764-0057-366d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "hasControlNotes": true,
+      "defaultIcon": "IconsFilled/meter.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true,
+        "allOff": "",
+        "outputs": {
+          "1": "Interní čidlo (TEb)",
+          "3": "Externí čidlo (Loxone)"
+        }
+      },
+      "states": {
+        "jLocked": "dd5ba83f-aa62-48bb-b76bc3d930b23850",
+        "activeOutput": "c65c1020-c68e-4dc6-b8b885c3691111ea"
+      }
+    },
+    "142320c9-a71f-4a3e-8d49b80e7fd86af9": {
+      "name": "Teplota vstupního vzduchu",
+      "type": "Radio",
+      "uuidAction": "142320c9-a71f-4a3e-8d49b80e7fd86af9",
+      "cat": "1c8b2764-0057-366d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "hasControlNotes": true,
+      "defaultIcon": "IconsFilled/meter.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true,
+        "allOff": "",
+        "outputs": {
+          "1": "Interní čidlo (TEa)",
+          "2": "Externí čidlo (Loxone)"
+        }
+      },
+      "states": {
+        "jLocked": "b982166a-2bac-4b19-885ce08c6ab3b8d3",
+        "activeOutput": "ee1264fc-16bb-4dec-816595cfbeec5f0c"
+      }
+    },
+    "41fd3aac-2d63-4c0b-9b55f67f90fe4444": {
+      "name": "Zjištěná hodnota Bldo",
+      "type": "Slider",
+      "uuidAction": "41fd3aac-2d63-4c0b-9b55f67f90fe4444",
+      "cat": "1c8b2764-0057-366d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/blinds-up-down.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%.2f s",
+        "min": 0,
+        "max": 1,
+        "step": 0.02
+      },
+      "states": {
+        "value": "41fd3aac-2d63-4c0b-9b55f67f90fe4444",
+        "error": "e8c78509-aeff-4da4-a60b22330fba4a38"
+      }
+    },
+    "86df1abb-7460-42e9-b848f28bc6565098": {
+      "name": "Větrání v režimu Dovolená",
+      "type": "Daytimer",
+      "uuidAction": "86df1abb-7460-42e9-b848f28bc6565098",
+      "cat": "1c8b2764-0057-366d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "hasControlNotes": true,
+      "defaultIcon": "IconsFilled/beach.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true,
+        "analog": true,
+        "format": "%.0f %%"
+      },
+      "states": {
+        "jLocked": "da4e0d3b-41ac-4e67-909e066ba17f702c",
+        "mode": "76fd2c3e-3496-4f6b-b5056aecf12f6c88",
+        "override": "f846f087-acfb-444c-90c058b750bef618",
+        "value": "38e023ea-5173-490a-b1ea4793d6b905cb",
+        "needsActivation": "692b5c9a-1983-4367-8cc194f51acdce35",
+        "modeList": "48daac3c-8792-49f3-b96bd4a8d6359f4a",
+        "entriesAndDefaultValue": "86df1abb-7460-42e9-b848f28bc6565098",
+        "resetActive": "da4e0d3b-41ac-4e67-909e066ba17f702c"
+      }
+    },
+    "1f925846-006a-1a09-ffff967a578d13b3": {
+      "name": "Button 1",
+      "type": "Pushbutton",
+      "uuidAction": "1f925846-006a-1a09-ffff967a578d13b3",
+      "room": "1c8b2764-0066-379a-fffffd5438c1b69c",
+      "cat": "1c8b2764-005f-36ad-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 0,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "9f925846-006a-1a03-01ffbe05f9f7db41",
+        "active": "1f925846-006a-1a07-05ffbe05f9f7db41"
+      }
+    },
+    "1f3a40d3-008b-426c-ffffcf52e32151df": {
+      "name": "interkom",
+      "type": "Intercom",
+      "uuidAction": "1f3a40d3-008b-426c-ffffcf52e32151df",
+      "room": "1c8b2764-0060-3732-fffffd5438c1b69c",
+      "cat": "1c8b2764-005a-3681-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "restrictions": 0,
+      "securedDetails": true,
+      "details": {
+        "jLockable": true,
+        "deviceType": 0,
+        "lastBellEventImages": false,
+        "videoInfo": {
+
+        },
+        "audioInfo": {
+
+        },
+        "showBellImage": false,
+        "outputs": [
+          {
+            "id": 0,
+            "name": "Světlo"
+          },
+          {
+            "id": 1,
+            "name": "Výstup 2"
+          },
+          {
+            "id": 2,
+            "name": "Výstup 3"
+          }
+        ]
+      },
+      "states": {
+        "jLocked": "9f3a40d3-008b-4264-01ff4510cc335b39",
+        "bell": "1f3a40d3-008b-4267-03ff4510cc335b39",
+        "lastBellEvents": "1f3a40d3-008b-425d-ffff4510cc335b39",
+        "lastBellTimestamp": "1f3a40d3-008b-425f-ffff4510cc335b39"
+      },
+      "subControls": {
+        "1f3a40d3-008b-426c-ffffcf52e32151df/1": {
+          "name": "Světlo",
+          "type": "Pushbutton",
+          "uuidAction": "1f3a40d3-008b-426c-ffffcf52e32151df/1",
+          "defaultRating": 0,
+          "isFavorite": false,
+          "isSecured": false,
+          "restrictions": 0,
+          "states": {
+            "active": "1f3a40d3-008b-4268-04ff4510cc335b39"
+          }
+        }
+      }
+    },
+    "1f1cebbc-0041-0161-fffffd5438c1b69c": {
+      "name": "Délka",
+      "type": "Radio",
+      "uuidAction": "1f1cebbc-0041-0161-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1c8b2764-005f-36ad-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/clock-3.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true,
+        "allOff": "",
+        "outputs": {
+          "1": "2h",
+          "2": "4h",
+          "3": "8h",
+          "4": "12h",
+          "5": "16h",
+          "6": "24h",
+          "7": "48h"
+        }
+      },
+      "states": {
+        "jLocked": "9f1cebbc-0041-0152-0bff28d179c58508",
+        "activeOutput": "1f1cebbc-0041-015f-18ff28d179c58508"
+      }
+    },
+    "1f51e19c-01d9-0244-fffffd5438c1b69c": {
+      "name": "Odeslat SPZ do parkovacího systému",
+      "type": "Pushbutton",
+      "uuidAction": "1f51e19c-01d9-0244-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1c8b2764-005f-36ad-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/finger-tapping.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "9f51e19c-01d9-023e-01ffc69b7f983131",
+        "active": "1f51e19c-01d9-0242-05ffc69b7f983131"
+      }
+    },
+    "1f1cec5e-03cf-7f6d-fffffd5438c1b69c": {
+      "name": "Rezervovat",
+      "type": "Pushbutton",
+      "uuidAction": "1f1cec5e-03cf-7f6d-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1c8b2764-005f-36ad-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": true
+      },
+      "states": {
+        "jLocked": "9f1cec5e-03cf-7f67-01ff67f26f0ca47f",
+        "active": "1f1cec5e-03cf-7f6b-05ff67f26f0ca47f"
+      }
+    },
+    "1f1ceb07-0198-5c15-fffffd5438c1b69c": {
+      "name": "Aktuální stav",
+      "type": "SystemScheme",
+      "uuidAction": "1f1ceb07-0198-5c15-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/graph-bar-2.svg",
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "imagePath": "1f1ceb07-0198-5c15-fffffd5438c1b69c.jpg",
+        "imageVersion": 525460143,
+        "mainControl": "1f6ecdfb-0244-cf2a-fffffd5438c1b69c",
+        "schemeSize": {
+          "width": 1738,
+          "height": 776
+        },
+        "controlReferences": [
+          {
+            "uuidAction": "1f223779-0282-8b06-fffffd5438c1b69c",
+            "pos": {
+              "x": 450,
+              "y": 133
+            },
+            "text": "",
+            "size": {
+              "width": 104,
+              "height": 116
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f2239f5-0332-ad6f-fffffd5438c1b69c",
+            "pos": {
+              "x": 567,
+              "y": 133
+            },
+            "text": "",
+            "size": {
+              "width": 104,
+              "height": 116
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f2239f8-00a5-df69-fffffd5438c1b69c",
+            "pos": {
+              "x": 1105,
+              "y": 144
+            },
+            "text": "",
+            "size": {
+              "width": 104,
+              "height": 108
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5214f4-0127-ce25-fffffd5438c1b69c",
+            "pos": {
+              "x": 450,
+              "y": 56
+            },
+            "text": "",
+            "size": {
+              "width": 104,
+              "height": 28
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5214f8-0088-00e2-fffffd5438c1b69c",
+            "pos": {
+              "x": 567,
+              "y": 56
+            },
+            "text": "",
+            "size": {
+              "width": 104,
+              "height": 28
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5214fc-010e-33a3-fffffd5438c1b69c",
+            "pos": {
+              "x": 1105,
+              "y": 72
+            },
+            "text": "",
+            "size": {
+              "width": 104,
+              "height": 28
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db74b-0192-e283-fffffd5438c1b69c",
+            "pos": {
+              "x": 1223,
+              "y": 144
+            },
+            "text": "",
+            "size": {
+              "width": 104,
+              "height": 108
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db74e-00d3-157c-fffffd5438c1b69c",
+            "pos": {
+              "x": 1351,
+              "y": 144
+            },
+            "text": "",
+            "size": {
+              "width": 120,
+              "height": 108
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db74f-037a-4879-fffffd5438c1b69c",
+            "pos": {
+              "x": 1497,
+              "y": 143
+            },
+            "text": "",
+            "size": {
+              "width": 136,
+              "height": 108
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db751-00d4-7b7a-fffffd5438c1b69c",
+            "pos": {
+              "x": 1650,
+              "y": 144
+            },
+            "text": "",
+            "size": {
+              "width": 136,
+              "height": 108
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db752-0283-ae7f-fffffd5438c1b69c",
+            "pos": {
+              "x": 68,
+              "y": 680
+            },
+            "text": "",
+            "size": {
+              "width": 128,
+              "height": 116
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db754-0068-e188-fffffd5438c1b69c",
+            "pos": {
+              "x": 212,
+              "y": 680
+            },
+            "text": "",
+            "size": {
+              "width": 128,
+              "height": 116
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db755-023f-1495-fffffd5438c1b69c",
+            "pos": {
+              "x": 451,
+              "y": 677
+            },
+            "text": "",
+            "size": {
+              "width": 104,
+              "height": 116
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db757-0023-47a6-fffffd5438c1b69c",
+            "pos": {
+              "x": 568,
+              "y": 678
+            },
+            "text": "",
+            "size": {
+              "width": 104,
+              "height": 116
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db758-0259-7abb-fffffd5438c1b69c",
+            "pos": {
+              "x": 966,
+              "y": 669
+            },
+            "text": "",
+            "size": {
+              "width": 120,
+              "height": 116
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db75a-0091-add4-fffffd5438c1b69c",
+            "pos": {
+              "x": 1097,
+              "y": 669
+            },
+            "text": "",
+            "size": {
+              "width": 120,
+              "height": 116
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db75b-0343-e0f1-fffffd5438c1b69c",
+            "pos": {
+              "x": 1226,
+              "y": 669
+            },
+            "text": "",
+            "size": {
+              "width": 120,
+              "height": 116
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db75d-013f-1412-fffffd5438c1b69c",
+            "pos": {
+              "x": 1356,
+              "y": 669
+            },
+            "text": "",
+            "size": {
+              "width": 120,
+              "height": 116
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db760-0162-7a60-fffffd5438c1b69c",
+            "pos": {
+              "x": 1496,
+              "y": 669
+            },
+            "text": "",
+            "size": {
+              "width": 136,
+              "height": 116
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db762-001f-ad8d-fffffd5438c1b69c",
+            "pos": {
+              "x": 1650,
+              "y": 669
+            },
+            "text": "",
+            "size": {
+              "width": 136,
+              "height": 116
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db763-01e5-e0be-fffffd5438c1b69c",
+            "pos": {
+              "x": 1224,
+              "y": 72
+            },
+            "text": "",
+            "size": {
+              "width": 104,
+              "height": 28
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db765-00dd-13f3-fffffd5438c1b69c",
+            "pos": {
+              "x": 1352,
+              "y": 72
+            },
+            "text": "",
+            "size": {
+              "width": 120,
+              "height": 28
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db767-00a3-472c-fffffd5438c1b69c",
+            "pos": {
+              "x": 1497,
+              "y": 72
+            },
+            "text": "",
+            "size": {
+              "width": 136,
+              "height": 28
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db769-0230-7a69-fffffd5438c1b69c",
+            "pos": {
+              "x": 1650,
+              "y": 72
+            },
+            "text": "",
+            "size": {
+              "width": 136,
+              "height": 28
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db76a-03c1-adaa-fffffd5438c1b69c",
+            "pos": {
+              "x": 68,
+              "y": 600
+            },
+            "text": "",
+            "size": {
+              "width": 136,
+              "height": 28
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db76c-01aa-e0ef-fffffd5438c1b69c",
+            "pos": {
+              "x": 212,
+              "y": 600
+            },
+            "text": "",
+            "size": {
+              "width": 136,
+              "height": 28
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db76d-0330-1438-fffffd5438c1b69c",
+            "pos": {
+              "x": 450,
+              "y": 600
+            },
+            "text": "",
+            "size": {
+              "width": 104,
+              "height": 28
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db76f-0166-4785-fffffd5438c1b69c",
+            "pos": {
+              "x": 568,
+              "y": 600
+            },
+            "text": "",
+            "size": {
+              "width": 104,
+              "height": 28
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db882-020d-4b60-fffffd5438c1b69c",
+            "pos": {
+              "x": 966,
+              "y": 592
+            },
+            "text": "",
+            "size": {
+              "width": 120,
+              "height": 28
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db884-03b9-7f2d-fffffd5438c1b69c",
+            "pos": {
+              "x": 1096,
+              "y": 592
+            },
+            "text": "",
+            "size": {
+              "width": 112,
+              "height": 28
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db887-0038-b2fe-fffffd5438c1b69c",
+            "pos": {
+              "x": 1227,
+              "y": 592
+            },
+            "text": "",
+            "size": {
+              "width": 112,
+              "height": 28
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db889-0172-e6d3-fffffd5438c1b69c",
+            "pos": {
+              "x": 1356,
+              "y": 592
+            },
+            "text": "",
+            "size": {
+              "width": 120,
+              "height": 28
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db88b-0287-1aac-fffffd5438c1b69c",
+            "pos": {
+              "x": 1497,
+              "y": 592
+            },
+            "text": "",
+            "size": {
+              "width": 136,
+              "height": 28
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f5db88e-02e0-4e89-fffffd5438c1b69c",
+            "pos": {
+              "x": 1650,
+              "y": 593
+            },
+            "text": "",
+            "size": {
+              "width": 136,
+              "height": 28
+            },
+            "actionsVisible": true
+          },
+          {
+            "uuidAction": "1f6ecdfb-0244-cf2a-fffffd5438c1b69c",
+            "pos": {
+              "x": 880,
+              "y": 208
+            },
+            "text": "",
+            "size": {
+              "width": 184,
+              "height": 36
+            },
+            "actionsVisible": true
+          }
+        ],
+        "extraObjects": []
+      }
+    },
+    "1f1ced3b-0312-0c73-fffffd5438c1b69c": {
+      "name": "Moje parkovací místo",
+      "type": "TextState",
+      "uuidAction": "1f1ced3b-0312-0c73-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/garage.svg",
+      "restrictions": 0,
+      "states": {
+        "textAndIcon": "1f1ced3b-0312-0c73-fffffd5438c1b69c",
+        "iconAndColor": "1f1ced3b-0312-0c6c-00ffe1294ca15b31"
+      },
+      "links": [
+        "1f51e047-03bb-10f4-fffffd5438c1b69c"
+      ]
+    },
+    "1f51e047-03bb-10f4-fffffd5438c1b69c": {
+      "name": "Místo XX20",
+      "type": "TextState",
+      "uuidAction": "1f51e047-03bb-10f4-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/car.svg",
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "1f51e047-03bb-10f4-fffffd5438c1b69c",
+        "iconAndColor": "1f51e047-03bb-10ed-00ff0d90f23893ac"
+      },
+      "links": [
+        "1f51e119-02b3-0d98-fffffd5438c1b69c",
+        "1f51e11d-0104-401d-fffffd5438c1b69c",
+        "1f51e120-02e4-d7b8-fffffd5438c1b69c",
+        "1f51e11f-039c-a52d-fffffd5438c1b69c",
+        "1f51e11d-03db-72a4-fffffd5438c1b69c",
+        "1f51e19c-01d9-0244-fffffd5438c1b69c"
+      ]
+    },
+    "1f1ceb78-008f-affb-fffffd5438c1b69c": {
+      "name": "Nová rezervace",
+      "type": "TextState",
+      "uuidAction": "1f1ceb78-008f-affb-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/add-circle-1.svg",
+      "restrictions": 17,
+      "states": {
+        "textAndIcon": "1f1ceb78-008f-affb-fffffd5438c1b69c",
+        "iconAndColor": "1f1ceb78-008f-aff4-00ff04c5d599a4ef"
+      },
+      "links": [
+        "1f1cebbc-0041-0161-fffffd5438c1b69c",
+        "1f1cec2f-02b6-8863-fffffd5438c1b69c",
+        "1f6d4d4f-01c1-bb80-fffffd5438c1b69c",
+        "1f1cec5e-03cf-7f6d-fffffd5438c1b69c"
+      ]
+    },
+    "1f1ceabc-02fd-632e-fffffd5438c1b69c": {
+      "name": "Návštěvnická místa",
+      "type": "TextState",
+      "uuidAction": "1f1ceabc-02fd-632e-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/car-park.svg",
+      "restrictions": 0,
+      "states": {
+        "textAndIcon": "1f1ceabc-02fd-632e-fffffd5438c1b69c",
+        "iconAndColor": "1f1ceabc-02fd-6327-00ff88aa333bea7a"
+      },
+      "links": [
+        "1f1ceb07-0198-5c15-fffffd5438c1b69c",
+        "1f1ceb78-008f-affb-fffffd5438c1b69c"
+      ]
+    },
+    "1f1cec2f-02b6-8863-fffffd5438c1b69c": {
+      "name": "SPZ",
+      "type": "TextInput",
+      "uuidAction": "1f1cec2f-02b6-8863-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "states": {
+        "text": "1f1cec2f-02b6-8862-00ff1cebad88821e"
+      }
+    },
+    "1f51e119-02b3-0d98-fffffd5438c1b69c": {
+      "name": "Zadat RZ 1",
+      "type": "TextInput",
+      "uuidAction": "1f51e119-02b3-0d98-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/login.svg",
+      "restrictions": 17,
+      "states": {
+        "text": "1f51e119-02b3-0d97-00ff0eec40aaad8c"
+      }
+    },
+    "1f51e11d-0104-401d-fffffd5438c1b69c": {
+      "name": "Zadat RZ 2",
+      "type": "TextInput",
+      "uuidAction": "1f51e11d-0104-401d-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/login.svg",
+      "restrictions": 17,
+      "states": {
+        "text": "1f51e11d-0104-401c-00ff15103a5e364f"
+      }
+    },
+    "1f51e120-02e4-d7b8-fffffd5438c1b69c": {
+      "name": "Zadat RZ 3",
+      "type": "TextInput",
+      "uuidAction": "1f51e120-02e4-d7b8-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/login.svg",
+      "restrictions": 17,
+      "states": {
+        "text": "1f51e120-02e4-d7b7-00ff181d70c490c3"
+      }
+    },
+    "1f51e11f-039c-a52d-fffffd5438c1b69c": {
+      "name": "Zadat RZ 4",
+      "type": "TextInput",
+      "uuidAction": "1f51e11f-039c-a52d-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/login.svg",
+      "restrictions": 17,
+      "states": {
+        "text": "1f51e11f-039c-a52c-00ff5c554cf6b9da"
+      }
+    },
+    "1f51e11d-03db-72a4-fffffd5438c1b69c": {
+      "name": "Zadat RZ 5",
+      "type": "TextInput",
+      "uuidAction": "1f51e11d-03db-72a4-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/login.svg",
+      "restrictions": 17,
+      "states": {
+        "text": "1f51e11d-03db-72a3-00ff138d0feaa637"
+      }
+    },
+    "1f223779-0282-8b06-fffffd5438c1b69c": {
+      "name": "---",
+      "type": "InfoOnlyText",
+      "uuidAction": "1f223779-0282-8b06-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%s"
+      },
+      "states": {
+        "text": "1f223779-0282-8b06-fffffd5438c1b69c"
+      }
+    },
+    "1f5db755-023f-1495-fffffd5438c1b69c": {
+      "name": "---",
+      "type": "InfoOnlyText",
+      "uuidAction": "1f5db755-023f-1495-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%s"
+      },
+      "states": {
+        "text": "1f5db755-023f-1495-fffffd5438c1b69c"
+      }
+    },
+    "1f5db76d-0330-1438-fffffd5438c1b69c": {
+      "name": "place10state",
+      "type": "InfoOnlyDigital",
+      "uuidAction": "1f5db76d-0330-1438-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "text": {
+          "off": "VOLNO",
+          "on": "OBSAZENO"
+        },
+        "color": {
+          "off": "#69C350",
+          "on": "#E73246"
+        }
+      },
+      "states": {
+        "active": "1f5db76d-0330-1438-fffffd5438c1b69c"
+      }
+    },
+    "1f5db757-0023-47a6-fffffd5438c1b69c": {
+      "name": "---",
+      "type": "InfoOnlyText",
+      "uuidAction": "1f5db757-0023-47a6-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%s"
+      },
+      "states": {
+        "text": "1f5db757-0023-47a6-fffffd5438c1b69c"
+      }
+    },
+    "1f5db76f-0166-4785-fffffd5438c1b69c": {
+      "name": "place11state",
+      "type": "InfoOnlyDigital",
+      "uuidAction": "1f5db76f-0166-4785-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "text": {
+          "off": "VOLNO",
+          "on": "OBSAZENO"
+        },
+        "color": {
+          "off": "#69C350",
+          "on": "#E73246"
+        }
+      },
+      "states": {
+        "active": "1f5db76f-0166-4785-fffffd5438c1b69c"
+      }
+    },
+    "1f5db758-0259-7abb-fffffd5438c1b69c": {
+      "name": "---",
+      "type": "InfoOnlyText",
+      "uuidAction": "1f5db758-0259-7abb-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%s"
+      },
+      "states": {
+        "text": "1f5db758-0259-7abb-fffffd5438c1b69c"
+      }
+    },
+    "1f5db882-020d-4b60-fffffd5438c1b69c": {
+      "name": "place12state",
+      "type": "InfoOnlyDigital",
+      "uuidAction": "1f5db882-020d-4b60-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "text": {
+          "off": "VOLNO",
+          "on": "OBSAZENO"
+        },
+        "color": {
+          "off": "#69C350",
+          "on": "#E73246"
+        }
+      },
+      "states": {
+        "active": "1f5db882-020d-4b60-fffffd5438c1b69c"
+      }
+    },
+    "1f5db75a-0091-add4-fffffd5438c1b69c": {
+      "name": "---",
+      "type": "InfoOnlyText",
+      "uuidAction": "1f5db75a-0091-add4-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%s"
+      },
+      "states": {
+        "text": "1f5db75a-0091-add4-fffffd5438c1b69c"
+      }
+    },
+    "1f5db884-03b9-7f2d-fffffd5438c1b69c": {
+      "name": "place13state",
+      "type": "InfoOnlyDigital",
+      "uuidAction": "1f5db884-03b9-7f2d-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "text": {
+          "off": "VOLNO",
+          "on": "OBSAZENO"
+        },
+        "color": {
+          "off": "#69C350",
+          "on": "#E73246"
+        }
+      },
+      "states": {
+        "active": "1f5db884-03b9-7f2d-fffffd5438c1b69c"
+      }
+    },
+    "1f5db75b-0343-e0f1-fffffd5438c1b69c": {
+      "name": "---",
+      "type": "InfoOnlyText",
+      "uuidAction": "1f5db75b-0343-e0f1-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%s"
+      },
+      "states": {
+        "text": "1f5db75b-0343-e0f1-fffffd5438c1b69c"
+      }
+    },
+    "1f5db887-0038-b2fe-fffffd5438c1b69c": {
+      "name": "place14state",
+      "type": "InfoOnlyDigital",
+      "uuidAction": "1f5db887-0038-b2fe-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "text": {
+          "off": "VOLNO",
+          "on": "OBSAZENO"
+        },
+        "color": {
+          "off": "#69C350",
+          "on": "#E73246"
+        }
+      },
+      "states": {
+        "active": "1f5db887-0038-b2fe-fffffd5438c1b69c"
+      }
+    },
+    "1f5db75d-013f-1412-fffffd5438c1b69c": {
+      "name": "---",
+      "type": "InfoOnlyText",
+      "uuidAction": "1f5db75d-013f-1412-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%s"
+      },
+      "states": {
+        "text": "1f5db75d-013f-1412-fffffd5438c1b69c"
+      }
+    },
+    "1f5db889-0172-e6d3-fffffd5438c1b69c": {
+      "name": "place15state",
+      "type": "InfoOnlyDigital",
+      "uuidAction": "1f5db889-0172-e6d3-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "text": {
+          "off": "VOLNO",
+          "on": "OBSAZENO"
+        },
+        "color": {
+          "off": "#69C350",
+          "on": "#E73246"
+        }
+      },
+      "states": {
+        "active": "1f5db889-0172-e6d3-fffffd5438c1b69c"
+      }
+    },
+    "1f5db760-0162-7a60-fffffd5438c1b69c": {
+      "name": "---",
+      "type": "InfoOnlyText",
+      "uuidAction": "1f5db760-0162-7a60-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%s"
+      },
+      "states": {
+        "text": "1f5db760-0162-7a60-fffffd5438c1b69c"
+      }
+    },
+    "1f5db88b-0287-1aac-fffffd5438c1b69c": {
+      "name": "place16state",
+      "type": "InfoOnlyDigital",
+      "uuidAction": "1f5db88b-0287-1aac-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "text": {
+          "off": "VOLNO",
+          "on": "OBSAZENO"
+        },
+        "color": {
+          "off": "#69C350",
+          "on": "#E73246"
+        }
+      },
+      "states": {
+        "active": "1f5db88b-0287-1aac-fffffd5438c1b69c"
+      }
+    },
+    "1f5db762-001f-ad8d-fffffd5438c1b69c": {
+      "name": "---",
+      "type": "InfoOnlyText",
+      "uuidAction": "1f5db762-001f-ad8d-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%s"
+      },
+      "states": {
+        "text": "1f5db762-001f-ad8d-fffffd5438c1b69c"
+      }
+    },
+    "1f5db88e-02e0-4e89-fffffd5438c1b69c": {
+      "name": "place17state",
+      "type": "InfoOnlyDigital",
+      "uuidAction": "1f5db88e-02e0-4e89-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "text": {
+          "off": "VOLNO",
+          "on": "OBSAZENO"
+        },
+        "color": {
+          "off": "#69C350",
+          "on": "#E73246"
+        }
+      },
+      "states": {
+        "active": "1f5db88e-02e0-4e89-fffffd5438c1b69c"
+      }
+    },
+    "1f5214f4-0127-ce25-fffffd5438c1b69c": {
+      "name": "VOLNO",
+      "type": "InfoOnlyDigital",
+      "uuidAction": "1f5214f4-0127-ce25-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "text": {
+          "off": "VOLNO",
+          "on": "OBSAZENO"
+        },
+        "color": {
+          "off": "#69C350",
+          "on": "#E73246"
+        }
+      },
+      "states": {
+        "active": "1f5214f4-0127-ce25-fffffd5438c1b69c"
+      }
+    },
+    "1f2239f5-0332-ad6f-fffffd5438c1b69c": {
+      "name": "---",
+      "type": "InfoOnlyText",
+      "uuidAction": "1f2239f5-0332-ad6f-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%s"
+      },
+      "states": {
+        "text": "1f2239f5-0332-ad6f-fffffd5438c1b69c"
+      }
+    },
+    "1f5214f8-0088-00e2-fffffd5438c1b69c": {
+      "name": "VOLNO",
+      "type": "InfoOnlyDigital",
+      "uuidAction": "1f5214f8-0088-00e2-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "text": {
+          "off": "VOLNO",
+          "on": "OBSAZENO"
+        },
+        "color": {
+          "off": "#69C350",
+          "on": "#E73246"
+        }
+      },
+      "states": {
+        "active": "1f5214f8-0088-00e2-fffffd5438c1b69c"
+      }
+    },
+    "1f2239f8-00a5-df69-fffffd5438c1b69c": {
+      "name": "---",
+      "type": "InfoOnlyText",
+      "uuidAction": "1f2239f8-00a5-df69-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%s"
+      },
+      "states": {
+        "text": "1f2239f8-00a5-df69-fffffd5438c1b69c"
+      }
+    },
+    "1f5214fc-010e-33a3-fffffd5438c1b69c": {
+      "name": "VOLNO",
+      "type": "InfoOnlyDigital",
+      "uuidAction": "1f5214fc-010e-33a3-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "text": {
+          "off": "VOLNO",
+          "on": "OBSAZENO"
+        },
+        "color": {
+          "off": "#69C350",
+          "on": "#E73246"
+        }
+      },
+      "states": {
+        "active": "1f5214fc-010e-33a3-fffffd5438c1b69c"
+      }
+    },
+    "1f5db74b-0192-e283-fffffd5438c1b69c": {
+      "name": "---",
+      "type": "InfoOnlyText",
+      "uuidAction": "1f5db74b-0192-e283-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%s"
+      },
+      "states": {
+        "text": "1f5db74b-0192-e283-fffffd5438c1b69c"
+      }
+    },
+    "1f5db763-01e5-e0be-fffffd5438c1b69c": {
+      "name": "place4state",
+      "type": "InfoOnlyDigital",
+      "uuidAction": "1f5db763-01e5-e0be-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "text": {
+          "off": "VOLNO",
+          "on": "OBSAZENO"
+        },
+        "color": {
+          "off": "#69C350",
+          "on": "#E73246"
+        }
+      },
+      "states": {
+        "active": "1f5db763-01e5-e0be-fffffd5438c1b69c"
+      }
+    },
+    "1f5db74e-00d3-157c-fffffd5438c1b69c": {
+      "name": "---",
+      "type": "InfoOnlyText",
+      "uuidAction": "1f5db74e-00d3-157c-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%s"
+      },
+      "states": {
+        "text": "1f5db74e-00d3-157c-fffffd5438c1b69c"
+      }
+    },
+    "1f5db765-00dd-13f3-fffffd5438c1b69c": {
+      "name": "place5state",
+      "type": "InfoOnlyDigital",
+      "uuidAction": "1f5db765-00dd-13f3-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "text": {
+          "off": "VOLNO",
+          "on": "OBSAZENO"
+        },
+        "color": {
+          "off": "#69C350",
+          "on": "#E73246"
+        }
+      },
+      "states": {
+        "active": "1f5db765-00dd-13f3-fffffd5438c1b69c"
+      }
+    },
+    "1f5db74f-037a-4879-fffffd5438c1b69c": {
+      "name": "---",
+      "type": "InfoOnlyText",
+      "uuidAction": "1f5db74f-037a-4879-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%s"
+      },
+      "states": {
+        "text": "1f5db74f-037a-4879-fffffd5438c1b69c"
+      }
+    },
+    "1f5db767-00a3-472c-fffffd5438c1b69c": {
+      "name": "place6state",
+      "type": "InfoOnlyDigital",
+      "uuidAction": "1f5db767-00a3-472c-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "text": {
+          "off": "VOLNO",
+          "on": "OBSAZENO"
+        },
+        "color": {
+          "off": "#69C350",
+          "on": "#E73246"
+        }
+      },
+      "states": {
+        "active": "1f5db767-00a3-472c-fffffd5438c1b69c"
+      }
+    },
+    "1f5db751-00d4-7b7a-fffffd5438c1b69c": {
+      "name": "---",
+      "type": "InfoOnlyText",
+      "uuidAction": "1f5db751-00d4-7b7a-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%s"
+      },
+      "states": {
+        "text": "1f5db751-00d4-7b7a-fffffd5438c1b69c"
+      }
+    },
+    "1f5db769-0230-7a69-fffffd5438c1b69c": {
+      "name": "place7state",
+      "type": "InfoOnlyDigital",
+      "uuidAction": "1f5db769-0230-7a69-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "text": {
+          "off": "VOLNO",
+          "on": "OBSAZENO"
+        },
+        "color": {
+          "off": "#69C350",
+          "on": "#E73246"
+        }
+      },
+      "states": {
+        "active": "1f5db769-0230-7a69-fffffd5438c1b69c"
+      }
+    },
+    "1f5db752-0283-ae7f-fffffd5438c1b69c": {
+      "name": "---",
+      "type": "InfoOnlyText",
+      "uuidAction": "1f5db752-0283-ae7f-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%s"
+      },
+      "states": {
+        "text": "1f5db752-0283-ae7f-fffffd5438c1b69c"
+      }
+    },
+    "1f5db76a-03c1-adaa-fffffd5438c1b69c": {
+      "name": "place8state",
+      "type": "InfoOnlyDigital",
+      "uuidAction": "1f5db76a-03c1-adaa-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "text": {
+          "off": "VOLNO",
+          "on": "OBSAZENO"
+        },
+        "color": {
+          "off": "#69C350",
+          "on": "#E73246"
+        }
+      },
+      "states": {
+        "active": "1f5db76a-03c1-adaa-fffffd5438c1b69c"
+      }
+    },
+    "1f5db754-0068-e188-fffffd5438c1b69c": {
+      "name": "---",
+      "type": "InfoOnlyText",
+      "uuidAction": "1f5db754-0068-e188-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%s"
+      },
+      "states": {
+        "text": "1f5db754-0068-e188-fffffd5438c1b69c"
+      }
+    },
+    "1f5db76c-01aa-e0ef-fffffd5438c1b69c": {
+      "name": "place9state",
+      "type": "InfoOnlyDigital",
+      "uuidAction": "1f5db76c-01aa-e0ef-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "text": {
+          "off": "VOLNO",
+          "on": "OBSAZENO"
+        },
+        "color": {
+          "off": "#69C350",
+          "on": "#E73246"
+        }
+      },
+      "states": {
+        "active": "1f5db76c-01aa-e0ef-fffffd5438c1b69c"
+      }
+    },
+    "1f6ecdfb-0244-cf2a-fffffd5438c1b69c": {
+      "name": "zbýváMíst",
+      "type": "InfoOnlyText",
+      "uuidAction": "1f6ecdfb-0244-cf2a-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "details": {
+        "jLockable": false,
+        "format": "%s"
+      },
+      "states": {
+        "text": "1f6ecdfb-0244-cf2a-fffffd5438c1b69c"
+      }
+    },
+    "1f6d4d4f-01c1-bb80-fffffd5438c1b69c": {
+      "name": "Číslo bytu (TEST)",
+      "type": "TextInput",
+      "uuidAction": "1f6d4d4f-01c1-bb80-fffffd5438c1b69c",
+      "room": "1f1ce9ff-00e8-0b2a-fffffd5438c1b69c",
+      "cat": "1f1cea5f-02ca-9e89-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 17,
+      "states": {
+        "text": "1f6d4d4f-01c1-bb7f-00ff006df0775e23"
+      }
+    },
+    "21440adb-46a2-4c96-97cf31c9804bbec2": {
+      "name": "HDO",
+      "type": "InfoOnlyDigital",
+      "uuidAction": "21440adb-46a2-4c96-97cf31c9804bbec2",
+      "cat": "1c8b2764-005e-36a1-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 0,
+      "details": {
+        "jLockable": false,
+        "text": {
+          "off": "Vysoký tarif",
+          "on": "Nízký tarif"
+        },
+        "color": {
+          "off": "#E73246",
+          "on": "#69C350"
+        }
+      },
+      "states": {
+        "active": "21440adb-46a2-4c96-97cf31c9804bbec2"
+      },
+      "statistic": {
+        "frequency": 1,
+        "outputs": [
+          {
+            "id": 0,
+            "name": "HDO",
+            "uuid": "981ae181-65ee-4c21-808023cc1c575ee7",
+            "visuType": 1
+          }
+        ]
+      }
+    },
+    "1930b81c-35d5-4bf5-8a0408acabfed7b7": {
+      "name": "Nastavení ochran žaluzií",
+      "type": "TextState",
+      "uuidAction": "1930b81c-35d5-4bf5-8a0408acabfed7b7",
+      "cat": "1a8a001e-dc69-4256-88d7162191de42a9",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 0,
+      "states": {
+        "textAndIcon": "1930b81c-35d5-4bf5-8a0408acabfed7b7",
+        "iconAndColor": "edb41b2c-a659-478a-a83601f4282e5bb9"
+      },
+      "links": [
+        "635bbee8-3087-4afd-bdfdf8af57e68d98",
+        "952432fd-a0b7-4038-bd51afc3539b0ef7",
+        "7463df6c-4c68-4afc-a88c74fb3b5730d7"
+      ]
+    },
+    "40c3b455-60b9-4053-825d6745cd1d5767": {
+      "name": "Centrál osvětlení",
+      "type": "CentralLightController",
+      "uuidAction": "40c3b455-60b9-4053-825d6745cd1d5767",
+      "cat": "1c8b2764-0054-365b-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": true,
+      "isSecured": false,
+      "configState": {
+        "isConfigured": false
+      },
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "controls": [],
+        "parameterConnections": 0
+      },
+      "states": {
+        "jLocked": "d5fd558f-d147-4db5-ba16fdd31bfe5775",
+        "events": "5efa1e26-e80c-4550-b6e458fde32f711b"
+      }
+    },
+    "d3cb6dd7-0cd7-463c-bceca41472632b9e": {
+      "name": "Centrál stínění",
+      "type": "CentralJalousie",
+      "uuidAction": "d3cb6dd7-0cd7-463c-bceca41472632b9e",
+      "cat": "1c8b2764-0054-365d-fffffd5438c1b69c",
+      "defaultRating": 4,
+      "isFavorite": true,
+      "isSecured": false,
+      "configState": {
+        "isConfigured": false
+      },
+      "restrictions": 0,
+      "details": {
+        "jLockable": true,
+        "controls": [],
+        "parameterConnections": 0
+      },
+      "states": {
+        "jLocked": "fb663f4a-9736-4cdf-92cf688a2687960b",
+        "events": "5ff19628-11b4-4f68-9d9f3d7b38427d17"
+      },
+      "links": [
+        "d155ba24-8165-4ff6-bf8df92b1e340603"
+      ]
+    },
+    "1bebba36-47cd-4fa9-98deb8e67c0198bd": {
+      "name": "Diagnostika param. stínění",
+      "type": "TextState",
+      "uuidAction": "1bebba36-47cd-4fa9-98deb8e67c0198bd",
+      "cat": "1c8b2764-0054-365d-fffffd5438c1b69c",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/window-state-unknown.svg",
+      "restrictions": 0,
+      "states": {
+        "textAndIcon": "1bebba36-47cd-4fa9-98deb8e67c0198bd",
+        "iconAndColor": "9e51d830-966f-46d3-b0860e69f92cc6cc"
+      },
+      "links": [
+        "2beb299f-4b89-4680-b9f5dedd05ab69c3",
+        "d43a7cf1-5c9c-452f-942ba385aaf88420",
+        "5eb9c4dd-d4a4-4dcb-8265b1bd7067b61a",
+        "3354f66d-940d-475b-851554dbdd6a8d2b",
+        "41fd3aac-2d63-4c0b-9b55f67f90fe4444",
+        "63cd5643-aa74-4820-89a206f2f476c571",
+        "3e41c9f8-85ab-49d1-b33c2379adb4f292",
+        "581eaf23-ed9d-41e5-8d7809ae52412391"
+      ]
+    },
+    "98532162-963f-427f-ab8a00d8ca69466f": {
+      "name": "Stav ochran žaluzií",
+      "type": "TextState",
+      "uuidAction": "98532162-963f-427f-ab8a00d8ca69466f",
+      "cat": "1c8b2764-0054-365d-fffffd5438c1b69c",
+      "defaultRating": 3,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": null,
+      "restrictions": 0,
+      "states": {
+        "textAndIcon": "98532162-963f-427f-ab8a00d8ca69466f",
+        "iconAndColor": "a3212e3d-8ebf-4368-b5021c401ab024a4"
+      },
+      "links": [
+        "635bbee8-3087-4afd-bdfdf8af57e68d98",
+        "952432fd-a0b7-4038-bd51afc3539b0ef7",
+        "7463df6c-4c68-4afc-a88c74fb3b5730d7"
+      ]
+    },
+    "4282d3c0-6d79-402f-a26f48cc1e42dc8d": {
+      "name": "Tepelné čerpadlo",
+      "type": "TextState",
+      "uuidAction": "4282d3c0-6d79-402f-a26f48cc1e42dc8d",
+      "cat": "1c8b2764-0055-3661-fffffd5438c1b69c",
+      "defaultRating": 1,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/circulation-pump.svg",
+      "restrictions": 0,
+      "states": {
+        "textAndIcon": "4282d3c0-6d79-402f-a26f48cc1e42dc8d",
+        "iconAndColor": "66a6bf26-68d9-405b-a7f7c262fccbae24"
+      },
+      "links": [
+        "4290de9a-1c5b-4f60-b8cbbfbde849eae7",
+        "2176c30b-7230-4c50-bb09a976c20d22d9",
+        "16563096-df8b-4d19-aa0e22fde46d9c47",
+        "ccbe808c-f38d-4f2d-9de0e1d3c3788c08",
+        "4f7be51b-3c4e-4db5-ba681c3ab291e914"
+      ]
+    },
+    "a4109cb2-df70-456c-ab73ca6b951e02de": {
+      "name": "Rekuperace",
+      "type": "TextState",
+      "uuidAction": "a4109cb2-df70-456c-ab73ca6b951e02de",
+      "cat": "1c8b2764-0057-366d-fffffd5438c1b69c",
+      "defaultRating": 6,
+      "isFavorite": false,
+      "isSecured": false,
+      "defaultIcon": "IconsFilled/fan-1.svg",
+      "restrictions": 0,
+      "states": {
+        "textAndIcon": "a4109cb2-df70-456c-ab73ca6b951e02de",
+        "iconAndColor": "14d2300f-2bb8-4715-88777f84a5029701"
+      },
+      "links": [
+        "f4a1bc32-78b7-423b-9f3ff2ee68b38ec8",
+        "aa79e9b4-a85f-4822-b3bbaed6bd562940",
+        "36b046df-6141-43c7-b918358c83118f95",
+        "157df857-9c20-4533-ab2058100f8d6816"
+      ]
+    }
+  },
+  "weatherServer": {
+    "states": {
+      "actual": "1c8b2766-00cf-3994-fffffd5438c1b69c",
+      "forecast": "1c8b2766-00cf-3993-ffff2b222bb7ca5b"
+    },
+    "format": {
+      "relativeHumidity": "%.0f%%",
+      "temperature": "%.1f°",
+      "windSpeed": "%.0fkm/h",
+      "precipitation": "%.1fmm",
+      "barometricPressure": "%.0fhPa"
+    },
+    "weatherTypeTexts": {
+      "1": "Jasno",
+      "2": "Polojasno",
+      "3": "Oblačno",
+      "4": "Skoro zataženo",
+      "5": "Zataženo",
+      "6": "Mlha",
+      "7": "Vysoká mlha",
+      "8": "nepoužito",
+      "9": "nepoužito",
+      "10": "Lehký déšť",
+      "11": "Déšť",
+      "12": "Silný déšť",
+      "13": "Mrholení",
+      "14": "Lehký mrazivý déšť",
+      "15": "Silný mrazivý déšť",
+      "16": "Lehké dešťové přeháňky",
+      "17": "Silné dešťové přeháňky",
+      "18": "Bouřka",
+      "19": "Silná bouřka",
+      "20": "Lehké sněžení",
+      "21": "Sněžení",
+      "22": "Silné sněžení",
+      "23": "Lehké sněžné přeháňky",
+      "24": "Silné sněžné přehánky",
+      "25": "Lehký déšť se sněhem",
+      "26": "Déšť se sněhem",
+      "27": "Silný déšť se sněhem",
+      "28": "Lehké přeháňky se sněhem",
+      "29": "Silné přeháňky se sněhem"
+    },
+    "weatherFieldTypes": {
+      "1": {
+        "id": 1,
+        "name": "Teplota",
+        "analog": true,
+        "unit": "°C",
+        "format": "%.1f"
+      },
+      "2": {
+        "id": 2,
+        "name": "Rosný bod",
+        "analog": true,
+        "unit": "°C",
+        "format": "%.1f"
+      },
+      "3": {
+        "id": 3,
+        "name": "Rel. vlhkost vzduchu",
+        "analog": true,
+        "format": "%.0f%%"
+      },
+      "4": {
+        "id": 4,
+        "name": "Rychlost větru",
+        "analog": true,
+        "unit": "km/h",
+        "format": "%.0f"
+      },
+      "5": {
+        "id": 5,
+        "name": "Směr větru",
+        "analog": true
+      },
+      "6": {
+        "id": 6,
+        "name": "Nárazy větru",
+        "analog": true
+      },
+      "7": {
+        "id": 7,
+        "name": "Absolutní záření",
+        "analog": true
+      },
+      "8": {
+        "id": 8,
+        "name": "Relativní záření",
+        "analog": true
+      },
+      "9": {
+        "id": 9,
+        "name": "Srážky",
+        "analog": true,
+        "unit": "mm",
+        "format": "%.1f"
+      },
+      "10": {
+        "id": 10,
+        "name": "Typ počasí",
+        "analog": true
+      },
+      "11": {
+        "id": 11,
+        "name": "Tlak vzduchu",
+        "analog": true,
+        "unit": "hPa",
+        "format": "%.0f"
+      },
+      "26": {
+        "id": 26,
+        "name": "Vnímaná teplota",
+        "analog": true,
+        "unit": "°C",
+        "format": "%.1f"
+      },
+      "27": {
+        "id": 27,
+        "name": "Sluneční záření",
+        "analog": true
+      },
+      "28": {
+        "id": 28,
+        "name": "Pravděpodobnost srážek",
+        "analog": true
+      },
+      "29": {
+        "id": 29,
+        "name": "Podíl sněhu",
+        "analog": true
+      },
+      "30": {
+        "id": 30,
+        "name": "CAPE",
+        "analog": true
+      },
+      "31": {
+        "id": 31,
+        "name": "Nízká oblačnost",
+        "analog": true
+      },
+      "32": {
+        "id": 32,
+        "name": "Střední oblačnost",
+        "analog": true
+      },
+      "33": {
+        "id": 33,
+        "name": "Vysoká oblačnost",
+        "analog": true
+      },
+      "34": {
+        "id": 34,
+        "name": "Sluneční svit",
+        "analog": false
+      },
+      "35": {
+        "id": 35,
+        "name": "Znečištění částicemi (PM2.5)",
+        "analog": true
+      },
+      "36": {
+        "id": 36,
+        "name": "Varování před nebezpečím",
+        "analog": false
+      }
+    }
+  },
+  "times": {
+    "266": {
+      "id": 266,
+      "name": "Dny od roku 2009",
+      "analog": true
+    },
+    "267": {
+      "id": 267,
+      "name": "Rok",
+      "analog": true
+    },
+    "268": {
+      "id": 268,
+      "name": "Měsíc",
+      "analog": true
+    },
+    "269": {
+      "id": 269,
+      "name": "Den",
+      "analog": true
+    },
+    "270": {
+      "id": 270,
+      "name": "Den v týdnu",
+      "analog": true
+    },
+    "271": {
+      "id": 271,
+      "name": "Aktivní kalendář",
+      "analog": true
+    },
+    "272": {
+      "id": 272,
+      "name": "Minuty od půlnoci",
+      "analog": true
+    },
+    "273": {
+      "id": 273,
+      "name": "Hodina",
+      "analog": true
+    },
+    "274": {
+      "id": 274,
+      "name": "Minuty",
+      "analog": true
+    },
+    "275": {
+      "id": 275,
+      "name": "Sekundy",
+      "analog": true
+    },
+    "276": {
+      "id": 276,
+      "name": "Sekundy od spuštění",
+      "analog": true
+    },
+    "277": {
+      "id": 277,
+      "name": "Čas východu Slunce",
+      "analog": true
+    },
+    "278": {
+      "id": 278,
+      "name": "Čas západu Slunce",
+      "analog": true
+    },
+    "281": {
+      "id": 281,
+      "name": "Denní světlo",
+      "analog": false
+    },
+    "282": {
+      "id": 282,
+      "name": "Denní světlo 30 minut",
+      "analog": false
+    },
+    "283": {
+      "id": 283,
+      "name": "Čas rozednění",
+      "analog": true
+    },
+    "284": {
+      "id": 284,
+      "name": "Čas soumraku",
+      "analog": true
+    },
+    "285": {
+      "id": 285,
+      "name": "Výška Slunce",
+      "analog": true
+    },
+    "286": {
+      "id": 286,
+      "name": "Směr Slunce",
+      "analog": true
+    },
+    "287": {
+      "id": 287,
+      "name": "Počáteční impulz",
+      "analog": false
+    },
+    "288": {
+      "id": 288,
+      "name": "Impulz při změně roku",
+      "analog": false
+    },
+    "289": {
+      "id": 289,
+      "name": "Impulz při změně měsíce",
+      "analog": false
+    },
+    "290": {
+      "id": 290,
+      "name": "Impulz při změně dne",
+      "analog": false
+    },
+    "291": {
+      "id": 291,
+      "name": "Impulz při změně hodiny",
+      "analog": false
+    },
+    "292": {
+      "id": 292,
+      "name": "Impulz při změně minuty",
+      "analog": false
+    },
+    "293": {
+      "id": 293,
+      "name": "Impulz při změně sekundy",
+      "analog": false
+    },
+    "294": {
+      "id": 294,
+      "name": "Impulz při východu Slunce",
+      "analog": false
+    },
+    "295": {
+      "id": 295,
+      "name": "Impulz při západu Slunce",
+      "analog": false
+    },
+    "298": {
+      "id": 298,
+      "name": "Impulz při rozednění",
+      "analog": false
+    },
+    "299": {
+      "id": 299,
+      "name": "Impulz při setmění",
+      "analog": false
+    },
+    "233": {
+      "id": 233,
+      "name": "Unix Timestamp",
+      "analog": true
+    },
+    "238": {
+      "id": 238,
+      "name": "Noc",
+      "analog": false
+    },
+    "261": {
+      "id": 261,
+      "name": "Týden",
+      "analog": true
+    }
+  },
+  "caller": {
+    "1c8b2766-00ba-381e-fffffd5438c1b69c": {
+      "id": "1c8b2766-00ba-381e-fffffd5438c1b69c",
+      "name": "Hasiči",
+      "phoneNumber": ""
+    },
+    "1c8b2766-00bb-3848-fffffd5438c1b69c": {
+      "id": "1c8b2766-00bb-3848-fffffd5438c1b69c",
+      "name": "Policie",
+      "phoneNumber": ""
+    },
+    "1c8b2766-00bc-3872-fffffd5438c1b69c": {
+      "id": "1c8b2766-00bc-3872-fffffd5438c1b69c",
+      "name": "Záchranná služba",
+      "phoneNumber": ""
+    },
+    "1c8b2766-00be-389c-fffffd5438c1b69c": {
+      "id": "1c8b2766-00be-389c-fffffd5438c1b69c",
+      "name": "Nouzový kontakt 1",
+      "phoneNumber": ""
+    },
+    "1c8b2766-00c1-38c6-fffffd5438c1b69c": {
+      "id": "1c8b2766-00c1-38c6-fffffd5438c1b69c",
+      "name": "Nouzový kontakt 2",
+      "phoneNumber": ""
+    },
+    "1c8b2766-00c4-38f0-fffffd5438c1b69c": {
+      "id": "1c8b2766-00c4-38f0-fffffd5438c1b69c",
+      "name": "Nouzový kontakt 3",
+      "phoneNumber": ""
+    },
+    "1c8b2766-00c8-391a-fffffd5438c1b69c": {
+      "id": "1c8b2766-00c8-391a-fffffd5438c1b69c",
+      "name": "Nouzový kontakt 4",
+      "phoneNumber": ""
+    }
+  },
+  "mailer": {
+    "1c8b2766-00ba-381c-fffffd5438c1b69c": {
+      "id": "1c8b2766-00ba-381c-fffffd5438c1b69c",
+      "name": "Loxone Cloud Mailer",
+      "eMailAddress": "support@smarteon.cz"
+    },
+    "8aca8f0b-95b7-461c-b40b75070de6a5c5": {
+      "id": "8aca8f0b-95b7-461c-b40b75070de6a5c5",
+      "name": "Smarteon support",
+      "eMailAddress": "support@smarteon.cz"
+    }
+  },
+  "autopilot": {
+    "1c8b2764-0053-3646-fffffd5438c1b69c": {
+      "name": "Automatická pravidla",
+      "uuidAction": "1c8b2764-0053-3646-fffffd5438c1b69c",
+      "states": {
+        "changed": "1c8b2764-0053-3642-fffffd5438c1b69c",
+        "history": "1c8b2764-0053-3643-fffffd5438c1b69c"
+      }
+    }
+  },
+  "messageCenter": {
+    "1c8b2764-0053-364c-fffffd5438c1b69c": {
+      "name": "Stav systému",
+      "uuidAction": "1c8b2764-0053-364c-fffffd5438c1b69c",
+      "states": {
+        "changed": "1c8b2764-0053-364b-fffffd5438c1b69c"
+      }
+    }
+  }
+}
