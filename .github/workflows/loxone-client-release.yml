@@ -50,12 +50,12 @@ jobs:
           # Run release:
           ./gradlew release -Prelease.versionIncrementer=${{ inputs.versionIncrement }}
 
-      - name: Publish to OSS Sonatype
+      - name: Publish to Maven Central
         shell: bash
         env:
-          OSS_USER: ${{ secrets.OSS_USER }}
-          OSS_PASS: ${{ secrets.OSS_PASS }}
-          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-          SIGNING_PASS: ${{ secrets.SIGNING_PASS }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.OSS_USER }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.OSS_PASS }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASS }}
         run: |
-          ./gradlew --no-configuration-cache publishToSonatype closeAndReleaseSonatypeStagingRepository
+          ./gradlew publishToMavenCentral
