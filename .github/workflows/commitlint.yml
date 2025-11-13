@@ -36,8 +36,15 @@ jobs:
 
       - name: Create commitlint config
         run: |
-          echo "Using default conventional commits config"
-          echo 'module.exports = { extends: ["@commitlint/config-conventional"] };' > commitlint.config.js
+          echo "Using default conventional commits config with ignores for GitHub Copilot commits"
+          cat > commitlint.config.js << 'EOF'
+          module.exports = {
+            extends: ["@commitlint/config-conventional"],
+            ignores: [
+              (commit) => commit === "Initial plan"
+            ]
+          };
+          EOF
 
       - name: Check conventional commits
         id: check-commits
