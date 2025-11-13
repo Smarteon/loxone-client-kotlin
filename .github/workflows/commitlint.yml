@@ -41,7 +41,7 @@ jobs:
           module.exports = {
             extends: ["@commitlint/config-conventional"],
             ignores: [
-              (commit) => commit === "Initial plan"
+              (commit) => commit.trim() === "Initial plan"
             ]
           };
           EOF
