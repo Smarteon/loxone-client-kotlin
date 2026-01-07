@@ -2,6 +2,7 @@ package cz.smarteon.loxkt.app
 
 import cz.smarteon.loxkt.Command
 import cz.smarteon.loxkt.LoxoneResponse
+import kotlinx.serialization.Serializable
 import kotlin.reflect.KClass
 
 /**
@@ -37,4 +38,5 @@ object LoxoneAppVersionCommand : Command<LoxoneAppVersion> {
  *
  * @property lastModified Timestamp when the app was last modified
  */
+@Serializable
 data class LoxoneAppVersion(val lastModified: String) : LoxoneResponse

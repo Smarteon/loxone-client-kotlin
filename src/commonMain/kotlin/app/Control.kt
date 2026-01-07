@@ -157,7 +157,7 @@ data class ConfigState(
 @Serializable
 data class Statistic(
     val frequency: Int,
-    val outputs: List<StatisticOutput>,
+    val outputs: List<StatisticOutput> = emptyList(),
 )
 
 /**
@@ -185,7 +185,7 @@ data class StatisticOutput(
  */
 @Serializable
 data class StatisticV2(
-    val groups: List<StatisticGroup>,
+    val groups: List<StatisticGroup> = emptyList(),
 )
 
 /**
@@ -194,14 +194,14 @@ data class StatisticV2(
  * @property id Group ID used for getStatistics requests
  * @property mode Recording mode (0=none, 1=every change max 1/min, 7=every change, 8-12=intervals)
  * @property accumulated Whether this is an accumulated meter value
- * @property dataPoints List of data points in this group
+ * @property dataPoints List of data points in this group (optional, may be empty or missing)
  */
 @Serializable
 data class StatisticGroup(
     val id: Int,
     val mode: Int,
     val accumulated: Boolean? = null,
-    val dataPoints: List<StatisticDataPoint>,
+    val dataPoints: List<StatisticDataPoint> = emptyList(),
 )
 
 /**
@@ -214,8 +214,8 @@ data class StatisticGroup(
  */
 @Serializable
 data class StatisticDataPoint(
-    val name: String,
-    val uuid: String,
+    val name: String? = null,
+    val uuid: String? = null,
     val format: String? = null,
     val type: String? = null,
 )
