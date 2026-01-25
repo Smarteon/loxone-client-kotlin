@@ -21,7 +21,7 @@ import kotlin.jvm.JvmStatic
 object LoxoneCommands {
 
     /**
-     * Keep alive command used solely in [cz.smarteon.loxone.WebsocketLoxoneClient] to ensure connection alive
+     * Keep alive command used solely in [cz.smarteon.loxkt.WebsocketLoxoneClient] to ensure connection alive
      * functionality.
      */
     val KEEP_ALIVE = object : NoResponseCommand("keepalive") {}
@@ -108,5 +108,21 @@ object LoxoneCommands {
          */
         @JvmStatic
         fun version() = LoxoneAppVersionCommand
+
+        /**
+         * Command to enable binary status updates.
+         * After this command is sent, the Miniserver will send binary event tables
+         * (VALUE, TEXT, DAYTIMER, WEATHER) through the WebSocket connection.
+         *
+         * This command must be sent after authentication to receive state updates.
+         *
+         * @return Command to enable binary status updates
+         */
+        @JvmStatic
+        fun enableBinStatusUpdate() = SimpleLoxoneMsgCommand(
+            listOf("jdev", "sps", "enablebinstatusupdate"),
+            EmptyLoxoneMsgVal::class,
+            authenticated = true
+        )
     }
 }

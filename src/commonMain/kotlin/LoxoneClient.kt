@@ -1,8 +1,10 @@
 package cz.smarteon.loxkt
 
 import cz.smarteon.loxkt.Codec.loxJson
+import cz.smarteon.loxkt.event.LoxoneEvent
 import cz.smarteon.loxkt.message.EmptyLoxoneMsgVal
 import cz.smarteon.loxkt.message.LoxoneMsgVal
+import kotlinx.coroutines.flow.SharedFlow
 
 interface LoxoneClient {
 
@@ -36,7 +38,21 @@ interface HttpLoxoneClient : LoxoneClient {
     suspend fun postRaw(command: String, payload: ByteArray): String
 }
 
-interface WebsocketLoxoneClient : LoxoneClient
+interface WebsocketLoxoneClient : LoxoneClient {
+    /**
+     * Flow of events received from the Miniserver.
+     * Events are emitted when binary status updates are enabled via [LoxoneCommands.App.enableBinStatusUpdate].
+     *
+     * Events include:
+     * - [cz.smarteon.loxkt.event.ValueEvent] - Numeric state updates
+     * - [cz.smarteon.loxkt.event.TextEvent] - Text state updates
+     * - [cz.smarteon.loxkt.event.DaytimerEvent] - Daytimer state updates
+     * - [cz.smarteon.loxkt.event.WeatherEvent] - Weather forecast updates
+     *
+     * @see LoxoneCommands.App.enableBinStatusUpdate
+     */
+    val events: SharedFlow<LoxoneEvent>
+}
 
 suspend inline fun <reified VAL : LoxoneMsgVal> LoxoneClient.callForMsg(command: LoxoneMsgCommand<VAL>): VAL {
     val msg = call(command)

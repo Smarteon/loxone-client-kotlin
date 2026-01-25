@@ -8,6 +8,7 @@ import cz.smarteon.loxkt.LoxoneEndpoint
 import cz.smarteon.loxkt.LoxoneResponse
 import cz.smarteon.loxkt.LoxoneTokenAuthenticator
 import cz.smarteon.loxkt.WebsocketLoxoneClient
+import cz.smarteon.loxkt.event.LoxoneEvent
 import cz.smarteon.loxkt.message.MessageHeader
 import cz.smarteon.loxkt.message.MessageKind
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -22,6 +23,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -38,13 +42,15 @@ class KtorWebsocketLoxoneClient internal constructor(
     private val client: HttpClient,
     private val endpoint: LoxoneEndpoint? = null,
     private val authenticator: LoxoneTokenAuthenticator? = null,
-    dispatcher: CoroutineDispatcher = Dispatchers.Default
+    dispatcher: CoroutineDispatcher = Dispatchers.Default,
+    eventBufferSize: Int = DEFAULT_EVENT_BUFFER_SIZE
 ) : WebsocketLoxoneClient {
 
     @JvmOverloads constructor(
         endpoint: LoxoneEndpoint,
-        authenticator: LoxoneTokenAuthenticator? = null
-    ) : this(HttpClient { install(WebSockets) }, endpoint, authenticator)
+        authenticator: LoxoneTokenAuthenticator? = null,
+        eventBufferSize: Int = DEFAULT_EVENT_BUFFER_SIZE
+    ) : this(HttpClient { install(WebSockets) }, endpoint, authenticator, Dispatchers.Default, eventBufferSize)
 
     private val logger = KotlinLogging.logger {}
 
@@ -60,6 +66,9 @@ class KtorWebsocketLoxoneClient internal constructor(
     private val textMsgHeader = Channel<MessageHeader>(capacity = 1)
     private val binaryMsgHeader = Channel<MessageHeader>(capacity = 1)
     private val textMessages = Channel<String>(capacity = 10)
+
+    private val _events = MutableSharedFlow<LoxoneEvent>(extraBufferCapacity = eventBufferSize)
+    override val events: SharedFlow<LoxoneEvent> = _events.asSharedFlow()
 
     override suspend fun <RESPONSE : LoxoneResponse> call(command: Command<RESPONSE>): RESPONSE {
         val session = ensureSession()
@@ -124,8 +133,9 @@ class KtorWebsocketLoxoneClient internal constructor(
             FrameType.BINARY -> {
                 val incomingBinaryMsgHeader = binaryMsgHeader.tryReceive()
                 if (incomingBinaryMsgHeader.isSuccess) {
-                    logger.trace { "Incoming binary message" }
-                    // TODO process binary message
+                    val header = incomingBinaryMsgHeader.getOrThrow()
+                    logger.trace { "Processing binary message of kind: ${header.kind}" }
+                    processBinaryMessage(header, frame.data)
                 } else {
                     val header = Codec.readHeader(frame.data)
                     logger.trace { "Incoming message header: $header" }
@@ -142,6 +152,48 @@ class KtorWebsocketLoxoneClient internal constructor(
                 textMessages.send(textData)
             }
             else -> error("Unexpected frame of type ${frame.frameType}")
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private fun processBinaryMessage(header: MessageHeader, data: ByteArray) {
+        try {
+            when (header.kind) {
+                MessageKind.EVENT_VALUE -> processAndEmitEvents("value", data, Codec::readValueEvents)
+                MessageKind.EVENT_TEXT -> processAndEmitEvents("text", data, Codec::readTextEvents)
+                MessageKind.EVENT_DAYTIMER -> processAndEmitEvents("daytimer", data, Codec::readDaytimerEvents)
+                MessageKind.EVENT_WEATHER -> processAndEmitEvents("weather", data, Codec::readWeatherEvents)
+                MessageKind.FILE -> {
+                    logger.debug { "Received binary file of ${data.size} bytes (binary file handling not implemented)" }
+                }
+                MessageKind.OUT_OF_SERVICE -> {
+                    logger.warn { "Received out-of-service indicator, Miniserver may be updating" }
+                }
+                else -> {
+                    logger.warn { "Unexpected binary message kind: ${header.kind}" }
+                }
+            }
+        } catch (e: IndexOutOfBoundsException) {
+            logger.error(e) { "Buffer positioning error while parsing binary message of kind ${header.kind}" }
+        } catch (e: IllegalArgumentException) {
+            logger.error(e) { "Invalid argument while parsing binary message of kind ${header.kind}" }
+        }
+    }
+
+    private fun <T : LoxoneEvent> processAndEmitEvents(
+        eventType: String,
+        data: ByteArray,
+        parser: (ByteArray) -> List<T>
+    ) {
+        val events = parser(data)
+        logger.debug { "Received ${events.size} $eventType events" }
+        events.forEach { emitEvent(it) }
+    }
+
+    private fun emitEvent(event: LoxoneEvent) {
+        val success = _events.tryEmit(event)
+        if (!success) {
+            logger.warn { "Event buffer full, dropping event ${event.uuid}" }
         }
     }
 
@@ -173,6 +225,7 @@ class KtorWebsocketLoxoneClient internal constructor(
 
     companion object {
         private const val WS_PATH = "/ws/rfc6455"
+        private const val DEFAULT_EVENT_BUFFER_SIZE = 100
         private val RCV_TXT_MSG_TIMEOUT = 10.seconds
         private val KEEP_ALIVE_INTERVAL = 4.minutes
         private val KEEP_ALIVE_RESPONSE_TIMEOUT = 30.seconds
