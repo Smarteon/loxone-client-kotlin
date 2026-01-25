@@ -1,8 +1,14 @@
 package cz.smarteon.loxkt
 
+import cz.smarteon.loxkt.event.LoxoneEvent
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+
 internal class MockLoxoneClient : WebsocketLoxoneClient {
 
     private val stubbedCalls = mutableListOf<StubbedCall<*>>()
+    private val _events = MutableSharedFlow<LoxoneEvent>()
+    override val events: SharedFlow<LoxoneEvent> = _events
 
     fun <RESPONSE : LoxoneResponse> stubCall(response: RESPONSE, commandMatcher: (Command<*>) -> Boolean): CallVerification {
         val verification = CallVerification()
