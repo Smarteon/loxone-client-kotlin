@@ -80,7 +80,7 @@ val authenticator = LoxoneTokenAuthenticator(LoxoneProfile(endpoint, LoxoneCrede
 val wsClient = KtorWebsocketLoxoneClient(endpoint, authenticator)
 
 // Enable binary status updates to start receiving events
-wsClient.callForMsg(LoxoneCommands.Sps.enableBinStatusUpdate())
+wsClient.callForMsg(LoxoneCommands.App.enableBinStatusUpdate())
 
 // Collect events
 scope.launch {

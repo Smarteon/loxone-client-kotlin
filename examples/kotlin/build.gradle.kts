@@ -8,6 +8,7 @@ repositories {
 
 dependencies {
     implementation("cz.smarteon.loxone:loxone-client-kotlin")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 }
 
 kotlin {
