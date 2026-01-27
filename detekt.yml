@@ -1,5 +1,9 @@
 build:
   maxIssues: 0
+complexity:
+  TooManyFunctions:
+    thresholdInClasses: 15
+    thresholdInObjects: 15
 naming:
   InvalidPackageDeclaration:
     rootPackage: cz.smarteon.loxkt
