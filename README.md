@@ -23,10 +23,11 @@ Key implemented features:
 - ✅ Keep-alive mechanism
 - ✅ Basic API commands
 - ✅ Multiplatform support (JVM, JS, Linux Native)
+- ✅ Binary event processing (real-time state updates)
+- ✅ Structure file parsing (LoxoneApp)
+- ✅ State management (LoxoneState)
 
 Notable gaps (contributions welcome):
-- ⏳ Binary event processing (real-time state updates)
-- ⏳ Structure file parsing
 - ⏳ Command encryption (AES + RSA)
 - ⏳ Control commands
 
@@ -64,3 +65,71 @@ or
 ```kotlin
 implementation("cz.smarteon.loxone", "loxone-client.kotlin", "desired version")
 ```
+
+## Real-time Events and State Management
+
+The library supports real-time event streaming from the Miniserver via WebSocket and provides a thread-safe state store for tracking control values.
+
+### Receiving Events
+
+After establishing a WebSocket connection and enabling binary status updates, you can collect events from the `events` flow:
+
+```kotlin
+val endpoint = LoxoneEndpoint.fromUrl("http://192.168.1.100")
+val authenticator = LoxoneTokenAuthenticator(LoxoneProfile(endpoint, LoxoneCredentials("user", "pass")))
+val wsClient = KtorWebsocketLoxoneClient(endpoint, authenticator)
+
+// Enable binary status updates to start receiving events
+wsClient.callForMsg(LoxoneCommands.App.enableBinStatusUpdate())
+
+// Collect events
+scope.launch {
+    wsClient.events.collect { event ->
+        when (event) {
+            is ValueEvent -> println("Value: ${event.uuid} = ${event.value}")
+            is TextEvent -> println("Text: ${event.uuid} = ${event.text}")
+            is DaytimerEvent -> println("Daytimer: ${event.uuid}")
+            is WeatherEvent -> println("Weather: ${event.uuid}")
+        }
+    }
+}
+```
+
+### Using LoxoneState
+
+`LoxoneState` is a thread-safe store that automatically tracks the latest value for each state UUID:
+
+```kotlin
+val state = LoxoneState()
+
+// Collect events into state (run in background)
+scope.launch(Dispatchers.IO) {
+    state.collectFrom(wsClient.events)
+}
+
+// Query state values (safe from any coroutine context)
+val temperature = state.getValue("uuid-of-temperature-sensor")
+val textState = state.getText("uuid-of-text-state")
+```
+
+### Combining with LoxoneApp
+
+Use extension functions to easily query control states by name:
+
+```kotlin
+// Download app structure
+val app = httpClient.call(LoxoneCommands.App.get())
+
+// Find a control
+val thermostat = app.controls.values.first { it.type == "IRoomControllerV2" }
+
+// Query state by name (after events have been collected)
+val actualTemp = thermostat.getValue(state, "tempActual")
+val targetTemp = thermostat.getValue(state, "tempTarget")
+
+// Get all states for a control
+val allStates = thermostat.getAllValues(state)
+```
+
+For a complete working example, see [`examples/kotlin/src/main/kotlin/LoxoneStateExample.kt`](examples/kotlin/src/main/kotlin/LoxoneStateExample.kt).
+
