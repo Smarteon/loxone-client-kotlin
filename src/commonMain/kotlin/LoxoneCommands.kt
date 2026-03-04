@@ -1,7 +1,9 @@
 package cz.smarteon.loxkt
 
+import cz.smarteon.loxkt.LoxoneCommands.App.version
 import cz.smarteon.loxkt.app.LoxoneAppCommand
 import cz.smarteon.loxkt.app.LoxoneAppVersionCommand
+import cz.smarteon.loxkt.app.StatisticUnit
 import cz.smarteon.loxkt.message.EmptyLoxoneMsgVal
 import cz.smarteon.loxkt.message.LoxoneMsg
 import cz.smarteon.loxkt.message.SimpleLoxoneMsgCommand
@@ -124,5 +126,72 @@ object LoxoneCommands {
             EmptyLoxoneMsgVal::class,
             authenticated = true
         )
+    }
+
+    /**
+     * Commands related to statistics.
+     */
+    object Statistics {
+
+        /**
+         * Build the command path for V2 raw statistic data.
+         * Returns binary data with recorded values during the specified timespan.
+         * @param controlUuid UUID of the control
+         * @param timeRange Time range as pair of unix UTC timestamps (from to until, inclusive)
+         * @param groupId Which statistic group is requested
+         * @param unit Data point unit (all, hour, day, month, year)
+         * @param outputName Optional output name filter
+         */
+        @JvmStatic
+        fun getStatisticRaw(
+            controlUuid: String,
+            timeRange: Pair<Long, Long>,
+            groupId: Int,
+            unit: StatisticUnit = StatisticUnit.ALL,
+            outputName: String? = null
+        ): String = statisticPath(controlUuid, "raw", timeRange, unit.value, groupId, outputName)
+
+        /**
+         * Build the command path for V2 diff (preprocessed) statistic data.
+         * Returns summed differences between recorded values per [unit].
+         * @param controlUuid UUID of the control
+         * @param timeRange Time range as pair of unix UTC timestamps (from to until, inclusive)
+         * @param groupId Which statistic group is requested
+         * @param unit Data point grouping resolution
+         * @param outputName Optional output name filter
+         */
+        @JvmStatic
+        fun getStatisticDiff(
+            controlUuid: String,
+            timeRange: Pair<Long, Long>,
+            groupId: Int,
+            unit: StatisticUnit = StatisticUnit.DAY,
+            outputName: String? = null
+        ): String = statisticPath(controlUuid, "diff", timeRange, unit.value, groupId, outputName)
+
+        @Suppress("LongParameterList")
+        private fun statisticPath(
+            controlUuid: String,
+            mode: String,
+            timeRange: Pair<Long, Long>,
+            unit: String,
+            groupId: Int,
+            outputName: String?
+        ): String = buildString {
+            append("dev/sps/getStatistic/$controlUuid/$mode/${timeRange.first}/${timeRange.second}/$unit/$groupId")
+            if (outputName != null) append("/$outputName")
+        }
+
+        /**
+         * V1 HTTP path for XML statistic data (via `stats/` prefix).
+         * Returns XML with entries in the form `<S T="YYYY-MM-DD HH:MM:SS" V="float"/>`.
+         * Timestamps are in local Miniserver time.
+         * Uses the control UUID (not the output UUID).
+         * @param controlUuid UUID of the control
+         * @param date Date in format YYYYMM or YYYYMMDD
+         */
+        @JvmStatic
+        fun statisticDataXml(controlUuid: String, date: String): String =
+            "stats/statisticdata.xml/$controlUuid/$date"
     }
 }
