@@ -194,28 +194,28 @@ data class StatisticV2(
  * @property id Group ID used for getStatistics requests
  * @property mode Recording mode (0=none, 1=every change max 1/min, 7=every change, 8-12=intervals)
  * @property accumulated Whether this is an accumulated meter value
- * @property dataPoints List of data points in this group (optional, may be empty or missing)
+ * @property activeSince Unix UTC timestamp since when statistics are available
+ * @property dataPoints List of data points in this group
  */
 @Serializable
 data class StatisticGroup(
     val id: Int,
     val mode: Int,
     val accumulated: Boolean? = null,
+    val activeSince: Long? = null,
     val dataPoints: List<StatisticDataPoint> = emptyList(),
 )
 
 /**
- * Data point in a statistic group.
+ * Data point in a V2 statistic group.
  *
- * @property name Name of the data point
- * @property uuid UUID of the data point
- * @property format Format specifier
- * @property type Type identifier
+ * @property title User-friendly name to show in a graph
+ * @property format Format specifier for displaying the value
+ * @property output Name of the output/state used for recording the values
  */
 @Serializable
 data class StatisticDataPoint(
-    val name: String? = null,
-    val uuid: String? = null,
+    val title: String? = null,
     val format: String? = null,
-    val type: String? = null,
+    val output: String? = null,
 )

@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.SharedFlow
 internal class MockLoxoneClient : WebsocketLoxoneClient {
 
     private val stubbedCalls = mutableListOf<StubbedCall<*>>()
+    private val stubbedRawData = mutableMapOf<String, ByteArray>()
+    private val stubbedRawStrings = mutableMapOf<String, String>()
     private val _events = MutableSharedFlow<LoxoneEvent>()
     override val events: SharedFlow<LoxoneEvent> = _events
 
@@ -14,6 +16,14 @@ internal class MockLoxoneClient : WebsocketLoxoneClient {
         val verification = CallVerification()
         stubbedCalls.add(StubbedCall(commandMatcher, response, verification))
         return verification
+    }
+
+    fun stubRawData(command: String, data: ByteArray) {
+        stubbedRawData[command] = data
+    }
+
+    fun stubRawString(command: String, data: String) {
+        stubbedRawStrings[command] = data
     }
 
     override suspend fun <RESPONSE : LoxoneResponse> call(command: Command<RESPONSE>): RESPONSE {
@@ -25,13 +35,11 @@ internal class MockLoxoneClient : WebsocketLoxoneClient {
         } ?: error("No stubbed call for $command")
     }
 
-    override suspend fun callRaw(command: String): String {
-        TODO("Not yet implemented")
-    }
+    override suspend fun callRaw(command: String): String =
+        stubbedRawStrings[command] ?: error("No stubbed raw string for command: $command")
 
-    override suspend fun callRawForData(command: String): ByteArray {
-        TODO("Not yet implemented")
-    }
+    override suspend fun callRawForData(command: String): ByteArray =
+        stubbedRawData[command] ?: error("No stubbed raw data for command: $command")
 
     override suspend fun close() {
         TODO("Not yet implemented")

@@ -4,6 +4,7 @@ import com.ditchoom.buffer.ByteOrder
 import com.ditchoom.buffer.PlatformBuffer
 import com.ditchoom.buffer.allocate
 import com.ditchoom.buffer.wrap
+import cz.smarteon.loxkt.app.StatisticEntry
 import cz.smarteon.loxkt.event.DaytimerEntry
 import cz.smarteon.loxkt.event.DaytimerEvent
 import cz.smarteon.loxkt.event.TextEvent
@@ -15,11 +16,17 @@ import cz.smarteon.loxkt.message.MessageHeader.Companion.FIRST_BYTE
 import cz.smarteon.loxkt.message.MessageHeader.Companion.MSG_SIZE_POSITION
 import cz.smarteon.loxkt.message.MessageHeader.Companion.PAYLOAD_LENGTH
 import cz.smarteon.loxkt.message.MessageKind
+import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 import kotlinx.serialization.json.Json
 
 @Suppress("TooManyFunctions")
 object Codec {
 
+    private val logger = KotlinLogging.logger {}
     private const val SEPARATOR = ':'
     private const val UUID_DATA1_LENGTH = 8
     private const val UUID_DATA2_LENGTH = 4
@@ -211,6 +218,52 @@ object Codec {
     }
 
     /**
+     * Reads statistic entries from binary data.
+     * Each entry consists of: UInt32 timestamp (4 bytes) + N × Float64 values (8 bytes each).
+     *
+     * For V1: timestamp is seconds since 1.1.2009 in local Miniserver-time.
+     * For V2: timestamp is unix UTC timestamp.
+     *
+     * @param bytes Binary data containing statistic entries
+     * @param outputCount Number of values per entry (from statistic outputs/dataPoints count).
+     *   When null, the count is inferred from the binary data size.
+     * @return List of statistic entries
+     */
+    fun readStatisticEntries(bytes: ByteArray, outputCount: Int? = null): List<StatisticEntry> {
+        val count = resolveOutputCount(bytes, outputCount) ?: return emptyList()
+        val entrySize = UINT32_SIZE + count * FLOAT64_SIZE
+        if (bytes.size % entrySize != 0) {
+            logger.warn {
+                "Statistic data size ${bytes.size} is not a multiple of entry size $entrySize " +
+                    "(${bytes.size % entrySize} trailing bytes)"
+            }
+        }
+        val buffer = PlatformBuffer.wrap(bytes, ByteOrder.LITTLE_ENDIAN)
+        return buildList {
+            while (buffer.remaining() >= entrySize) {
+                val timestamp = buffer.readUnsignedInt()
+                val values = List(count) { buffer.readDouble() }
+                add(StatisticEntry(timestamp, values))
+            }
+        }
+    }
+
+    /** Resolves and validates the output count, returning null if the data should be skipped. */
+    private fun resolveOutputCount(bytes: ByteArray, outputCount: Int?): Int? {
+        if (bytes.isEmpty()) return null
+        val count = outputCount ?: inferOutputCount(bytes)
+        return count?.takeIf { it > 0 }
+    }
+
+    /** Returns the output count that evenly divides [bytes], or null if none found. */
+    private fun inferOutputCount(bytes: ByteArray): Int? {
+        for (n in 1..MAX_OUTPUT_COUNT) {
+            if (bytes.size % (UINT32_SIZE + n * FLOAT64_SIZE) == 0) return n
+        }
+        return null
+    }
+
+    /**
      * Reads weather events from binary data.
      * Weather-States: UUID (16) + last update (4) + entry count (4) + entries (68 each).
      *
@@ -265,4 +318,45 @@ object Codec {
 
         return events
     }
+
+    private const val UINT32_SIZE = 4
+    private const val FLOAT64_SIZE = 8
+    private const val MAX_OUTPUT_COUNT = 8
+    private const val LOXONE_EPOCH_YEAR = 2009
+    private const val LOXONE_EPOCH_MONTH = 1
+    private const val LOXONE_EPOCH_DAY = 1
+
+    // Loxone epoch as a local datetime — intentionally without timezone, so it is
+    // interpreted in the same timezone as the parsed miniserver timestamps.
+    private val LOXONE_EPOCH_LOCAL = LocalDateTime(LOXONE_EPOCH_YEAR, LOXONE_EPOCH_MONTH, LOXONE_EPOCH_DAY, 0, 0, 0)
+
+    /**
+     * Converts a Loxone local datetime string "YYYY-MM-DD HH:MM:SS" to a UInt timestamp.
+     * Result is seconds since the Loxone epoch (2009-01-01 00:00:00) in local Miniserver time.
+     *
+     * @param dateTime Miniserver-local datetime string in the format "YYYY-MM-DD HH:MM:SS"
+     * @param timeZone The timezone the Miniserver operates in. Defaults to [TimeZone.currentSystemDefault].
+     *   Pass the Miniserver's actual timezone (e.g. obtained from its location/config) to avoid
+     *   incorrect offsets when the client runs in a different timezone.
+     */
+    internal fun loxoneLocalDateTimeToTimestamp(
+        dateTime: String,
+        timeZone: TimeZone = TimeZone.currentSystemDefault(),
+    ): UInt {
+        val ldt = LocalDateTime.parse(dateTime.replace(' ', 'T'))
+        return (ldt.toInstant(timeZone).epochSeconds - LOXONE_EPOCH_LOCAL.toInstant(timeZone).epochSeconds).toUInt()
+    }
+
+    /**
+     * Converts an [Instant] to a V1 Loxone-epoch timestamp (UInt seconds since 2009-01-01 00:00:00
+     * local Miniserver time), using the same convention as [loxoneLocalDateTimeToTimestamp].
+     *
+     * Used to convert UTC `from`/`until` bounds into the same unit as V1 [cz.smarteon.loxkt.app.StatisticEntry]
+     * timestamps so that range-filtering is consistent regardless of timezone.
+     *
+     * @param instant The point in time to convert
+     * @param timeZone The Miniserver's timezone
+     */
+    internal fun instantToLoxoneTimestamp(instant: Instant, timeZone: TimeZone): UInt =
+        (instant.epochSeconds - LOXONE_EPOCH_LOCAL.toInstant(timeZone).epochSeconds).toUInt()
 }
