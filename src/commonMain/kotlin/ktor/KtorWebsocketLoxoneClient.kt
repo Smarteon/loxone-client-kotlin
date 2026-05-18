@@ -189,6 +189,7 @@ class KtorWebsocketLoxoneClient internal constructor(
         logger.debug { "Received ${events.size} $eventType events" }
         events.forEach { emitEvent(it) }
     }
+    
 
     private fun emitEvent(event: LoxoneEvent) {
         val success = _events.tryEmit(event)
