@@ -116,6 +116,13 @@ kotlin {
                 enabled = false
             }
         }
+        compilations {
+            getByName("main") {
+                packageJson {
+                    customField("resolutions", mapOf("ws" to "8.20.1"))
+                }
+            }
+        }
     }
     linuxArm64()
     linuxX64()
