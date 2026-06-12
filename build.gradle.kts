@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
+import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -10,6 +12,12 @@ plugins {
     alias(libs.plugins.dokka)
     alias(libs.plugins.axion.release)
     alias(libs.plugins.vanniktech.maven.publish)
+}
+
+rootProject.plugins.withType<YarnPlugin> {
+    rootProject.the<YarnRootExtension>().apply {
+        resolution("ws", "8.20.1")
+    }
 }
 
 group = "cz.smarteon.loxone"
@@ -114,13 +122,6 @@ kotlin {
             testTask {
                 // enabling needs headless browser, skipped for now
                 enabled = false
-            }
-        }
-        compilations {
-            getByName("main") {
-                packageJson {
-                    customField("resolutions", mapOf("ws" to "8.20.1"))
-                }
             }
         }
     }
