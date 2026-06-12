@@ -64,8 +64,12 @@ Published as `cz.smarteon.loxone:loxone-client-kotlin` on Maven Central.
 
 ## Commit convention
 
-- Conventional commits required (`feat:`, `fix:`, `chore:`, `docs:`, `test:`, `refactor:`, `style:`, `perf:`, `ci:`, `build:`).
-- Validated via commitlint in CI. The commit `"Initial plan"` is ignored.
+- Follow https://www.conventionalcommits.org/en/v1.0.0/
+- Format: `type(scope): description` — body lines ≤ 100 chars
+- Allowed types: `feat`, `fix`, `chore`, `docs`, `test`, `refactor`, `style`, `perf`, `ci`, `build`
+- Scopes: `core`, `auth`, `app`, `state`, `http`, `ws`, `build`, `ci`, `deps`, `docs`, `test`, `release`
+  - e.g. `feat(core): add timeout parameter`, `fix(auth): handle token expiry`, `build(deps): pin ws to 8.20.1`
+- Validated via commitlint in CI (`"Initial plan"` ignored).
 
 ## Known gaps (contributions welcome)
 
