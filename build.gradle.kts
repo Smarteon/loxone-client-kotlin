@@ -38,7 +38,6 @@ repositories {
 }
 
 dependencies {
-    detektPlugins(libs.detekt.formatting)
 }
 
 detekt {
