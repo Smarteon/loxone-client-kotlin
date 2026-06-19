@@ -196,10 +196,15 @@ tasks.configureEach {
 }
 
 kover {
+    currentProject {
+        instrumentation {
+            disabledForTestTasks.add("jvmAcceptanceTest")
+        }
+    }
     reports {
         filters {
             excludes {
-                classes("cz.smarteon.loxone.*AT*")
+                classes("cz.smarteon.loxkt.*AT*")
             }
         }
     }
