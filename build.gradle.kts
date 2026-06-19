@@ -113,16 +113,14 @@ kotlin {
     }
     js {
         browser {
-            commonWebpackConfig {
-                cssSupport {
-                    enabled.set(true)
-                }
-            }
             testTask {
                 // enabling needs headless browser, skipped for now
                 enabled = false
             }
         }
+        useEsModules()
+        binaries.library()
+        generateTypeScriptDefinitions()
     }
     linuxArm64()
     linuxX64()
