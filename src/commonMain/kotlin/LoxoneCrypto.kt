@@ -20,7 +20,7 @@ internal object LoxoneCrypto {
     private val logger = KotlinLogging.logger {}
 
     @OptIn(ExperimentalEncodingApi::class)
-    fun rsaEncrypt(data: String, publicKeyPem: String): String =
+    internal fun rsaEncrypt(data: String, publicKeyPem: String): String =
         Base64.encode(rsaEncryptBytes(data.encodeToByteArray(), publicKeyPem))
 
     /**

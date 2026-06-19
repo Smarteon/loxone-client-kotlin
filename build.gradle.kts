@@ -159,6 +159,7 @@ kotlin {
         }
         jvmMain.dependencies {
             implementation(libs.ktor.client.cio)
+            implementation(libs.cryptography.provider.jdk)
         }
         jvmTest.dependencies {
             implementation(libs.kotest.runner.junit5)
@@ -169,9 +170,11 @@ kotlin {
         }
         jsMain.dependencies {
             implementation(libs.ktor.client.js)
+            implementation(npm("jsencrypt", "3.3.2"))
         }
         linuxMain.dependencies {
             implementation(libs.ktor.client.cio)
+            implementation(libs.cryptography.provider.openssl3)
         }
     }
 }

@@ -1,5 +1,15 @@
 package cz.smarteon.loxkt
 
-// TODO: implement via OpenSSL C interop (RSA_public_encrypt with RSA_PKCS1_PADDING)
+import dev.whyoleg.cryptography.CryptographyProvider
+import dev.whyoleg.cryptography.DelicateCryptographyApi
+import dev.whyoleg.cryptography.algorithms.RSA
+import dev.whyoleg.cryptography.algorithms.SHA256
+
+@OptIn(DelicateCryptographyApi::class)
 internal actual fun rsaEncryptBytes(data: ByteArray, publicKeyPem: String): ByteArray =
-    throw LoxoneException("RSA encryption is not yet implemented for Native platform")
+    CryptographyProvider.Default
+        .get(RSA.PKCS1)
+        .publicKeyDecoder(SHA256)
+        .decodeFromByteArrayBlocking(RSA.PublicKey.Format.PEM.Generic, publicKeyPem.encodeToByteArray())
+        .encryptor()
+        .encryptBlocking(data)

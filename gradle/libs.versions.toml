@@ -4,6 +4,7 @@ coroutines = "1.10.2"
 kotest = "6.0.2"
 ksp = "2.3.9"
 kotlincrypto = "0.8.0"
+cryptography-kotlin = "0.6.0"
 detekt = "2.0.0-alpha.4"
 ktor = "3.5.0"
 slf4j = "2.0.17"
@@ -21,6 +22,9 @@ kotlincrypto-sha1 = { module = "org.kotlincrypto.hash:sha1", version.ref = "kotl
 kotlincrypto-sha2 = { module = "org.kotlincrypto.hash:sha2", version.ref = "kotlincrypto" }
 kotlincrypto-hmacsha1 = { module = "org.kotlincrypto.macs:hmac-sha1", version.ref = "kotlincrypto" }
 kotlincrypto-hmacsha2 = { module = "org.kotlincrypto.macs:hmac-sha2", version.ref = "kotlincrypto" }
+
+cryptography-provider-jdk = { module = "dev.whyoleg.cryptography:cryptography-provider-jdk", version.ref = "cryptography-kotlin" }
+cryptography-provider-openssl3 = { module = "dev.whyoleg.cryptography:cryptography-provider-openssl3-prebuilt", version.ref = "cryptography-kotlin" }
 
 stately-collections = { module = "co.touchlab:stately-concurrent-collections", version = "2.1.0" }
 

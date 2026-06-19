@@ -1,21 +1,15 @@
 package cz.smarteon.loxkt
 
-import java.security.KeyFactory
-import java.security.spec.X509EncodedKeySpec
-import java.util.Base64
-import javax.crypto.Cipher
+import dev.whyoleg.cryptography.CryptographyProvider
+import dev.whyoleg.cryptography.DelicateCryptographyApi
+import dev.whyoleg.cryptography.algorithms.RSA
+import dev.whyoleg.cryptography.algorithms.SHA256
 
-internal actual fun rsaEncryptBytes(data: ByteArray, publicKeyPem: String): ByteArray {
-    val pemBody = publicKeyPem
-        .replace("-----BEGIN PUBLIC KEY-----", "")
-        .replace("-----END PUBLIC KEY-----", "")
-        .replace("\\s".toRegex(), "")
-
-    val keyBytes = Base64.getDecoder().decode(pemBody)
-    val publicKey = KeyFactory.getInstance("RSA").generatePublic(X509EncodedKeySpec(keyBytes))
-
-    return Cipher.getInstance("RSA/ECB/PKCS1Padding").run {
-        init(Cipher.ENCRYPT_MODE, publicKey)
-        doFinal(data)
-    }
-}
+@OptIn(DelicateCryptographyApi::class)
+internal actual fun rsaEncryptBytes(data: ByteArray, publicKeyPem: String): ByteArray =
+    CryptographyProvider.Default
+        .get(RSA.PKCS1)
+        .publicKeyDecoder(SHA256)
+        .decodeFromByteArrayBlocking(RSA.PublicKey.Format.PEM.Generic, publicKeyPem.encodeToByteArray())
+        .encryptor()
+        .encryptBlocking(data)
