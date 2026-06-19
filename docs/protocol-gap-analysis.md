@@ -1,7 +1,7 @@
 # Loxone Protocol Coverage - Gap Analysis
 
-**Document Version:** 1.0  
-**Analysis Date:** 2025-10-14  
+**Document Version:** 1.1  
+**Analysis Date:** 2026-06-19  
 **Target Protocol Version:** 16.0  
 **Repository:** loxone-client-kotlin
 
@@ -34,6 +34,9 @@ The library currently implements core authentication (token-based), basic WebSoc
    - Hashing support (SHA1, SHA256, HMAC)
    - getkey2 command for user salt retrieval
    - Token permission model (TokenPermission)
+   - RSA public key retrieval (`jdev/sys/getPublicKey`) — PR #75
+   - RSA PKCS1v1.5 encryption, multiplatform (JVM/Native/JS) — PR #75
+   - Public key caching (`PublicKeyRepository`) — PR #75
 
 3. **Basic Commands**
    - API info retrieval (`jdev/cfg/api`)
@@ -108,17 +111,22 @@ The library currently implements core authentication (token-based), basic WebSoc
 **Impact:** High - Required for secure command transmission  
 **Protocol Reference:** CommunicatingWithMiniserver.md, "Command Encryption"
 
+**Implemented (PR #75):**
+- Public key retrieval: `jdev/sys/getPublicKey` ✅
+- RSA encryption (PKCS1v1.5, Base64 NoWrap), multiplatform ✅
+
 **Missing Components:**
-- Public key retrieval: `jdev/sys/getPublicKey`
-- RSA encryption support (PKCS1, Base64 NoWrap)
-- AES-256-CBC encryption (ZeroBytePadding, 16-byte IV, 32-byte key)
+- AES-256-CBC key + IV generation (random, 32-byte key / 16-byte IV)
+- AES-256-CBC encryption with ZeroBytePadding
+- Key exchange: `jdev/sys/keyexchange/{encrypted-session-key}`
 - Encrypted command wrapping: `jdev/sys/enc/{cipher}`
 - Encrypted command with encrypted response: `jdev/sys/fenc/{cipher}`
-- Key exchange: `jdev/sys/keyexchange/{encrypted-session-key}`
-- WebSocket encryption using negotiated key/IV/salt
+- Session salt rotation (anti-replay) per command
 
 **Current Code Reference:**
-- `src/commonMain/kotlin/LoxoneCrypto.kt` - Only hashing implemented, no encryption
+- `src/commonMain/kotlin/LoxoneCrypto.kt` — hashing + RSA; AES not yet implemented
+- `src/commonMain/kotlin/PublicKey.kt` — public key model
+- `src/commonMain/kotlin/PublicKeyRepository.kt` — key caching
 
 ---
 
@@ -315,20 +323,17 @@ The library currently implements core authentication (token-based), basic WebSoc
 ### Phase 3: Command Encryption (High Priority - Security)
 **Goal:** Enable secure command transmission
 
-6. **Issue: Implement RSA Public Key Retrieval and Management**
-   - Add `jdev/sys/getPublicKey` command
-   - Add RSA encryption support (requires crypto library evaluation)
-   - Implement key storage and reuse
+6. ~~**Issue: Implement RSA Public Key Retrieval and Management**~~ ✅ **Done — PR #75, closes #28**
+   - ~~Add `jdev/sys/getPublicKey` command~~
+   - ~~Add RSA encryption support (requires crypto library evaluation)~~
+   - ~~Implement key storage and reuse~~
 
-7. **Issue: Implement AES Command Encryption**
-   - Add AES-256-CBC encryption support
-   - Implement `jdev/sys/enc/{cipher}` command wrapper
-   - Implement `jdev/sys/fenc/{cipher}` with response decryption
-
-8. **Issue: Implement WebSocket Key Exchange**
-   - Add `jdev/sys/keyexchange/{encrypted-session-key}` support
-   - Implement session key negotiation during connection setup
-   - Use negotiated key/IV for WebSocket command encryption
+7. **Issue: Implement AES Command Encryption and WebSocket Key Exchange**
+   - Add AES-256-CBC key + IV generation
+   - Add AES-256-CBC encryption/decryption with ZeroBytePadding (multiplatform)
+   - Add `jdev/sys/keyexchange/{encrypted-session-key}` — wire RSA-encrypted session key exchange into WebSocket connection setup
+   - Implement `jdev/sys/enc/{cipher}` command wrapper with salt rotation
+   - Implement `jdev/sys/fenc/{cipher}` with AES-decrypted response
 
 ### Phase 4: Certificate & TLS Support (Medium Priority)
 **Goal:** Proper TLS verification and security
