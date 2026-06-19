@@ -1,31 +1,21 @@
 package cz.smarteon.loxkt.ktor
 
-import cz.smarteon.loxkt.Codec.writeHeader
 import cz.smarteon.loxkt.message.ApiInfo
-import cz.smarteon.loxkt.message.MessageHeader
-import cz.smarteon.loxkt.message.MessageKind.TEXT
 import cz.smarteon.loxkt.message.TestingLoxValues.API_INFO_MSG_VAL
 import cz.smarteon.loxkt.message.TestingMessages.okMsg
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import io.ktor.client.*
-import io.ktor.server.application.*
-import io.ktor.server.testing.*
-import io.ktor.server.websocket.*
-import io.ktor.websocket.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlin.time.Duration.Companion.seconds
-import io.ktor.client.plugins.websocket.WebSockets as ClientWebsockets
-import io.ktor.server.websocket.WebSockets as ServerWebsockets
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class WebsocketLoxoneClientIT : StringSpec({
 
     "should call simple command" {
-        val ctx = startTestWebsocketServer()
+        val ctx = startTestWebSocketServer(
+            "jdev/cfg/api" to { _ -> sendLoxoneResponse(okMsg("dev/cfg/api", API_INFO_MSG_VAL)) }
+        )
         val bgDispatcher = UnconfinedTestDispatcher()
         val client = KtorWebsocketLoxoneClient(ctx.testedClient, dispatcher = bgDispatcher)
 
@@ -45,42 +35,3 @@ class WebsocketLoxoneClientIT : StringSpec({
         client.close()
     }
 })
-
-private suspend fun startTestWebsocketServer(): ClientTestContext {
-    lateinit var clientTestContext: ClientTestContext
-
-    ApplicationTestBuilder().apply {
-        application { install(ServerWebsockets) }
-
-        val receivedMsgs = Channel<String>(capacity = Channel.BUFFERED)
-
-        routing {
-            webSocketRaw(path = "/ws/rfc6455") {
-                incoming.consumeEach { frame ->
-                    if (frame is Frame.Text) {
-                        val payload = frame.readText()
-                        receivedMsgs.send(payload)
-                        when (payload) {
-                            "jdev/cfg/api" -> {
-                                val text = okMsg("dev/cfg/api", API_INFO_MSG_VAL).encodeToByteArray()
-                                send(Frame.Binary(true, writeHeader(MessageHeader(TEXT, false, text.size.toLong()))))
-                                send(Frame.Text(true, text))
-                            }
-
-                            "keepalive" -> {
-                                send(Frame.Binary(true, writeHeader(MessageHeader.KEEP_ALIVE)))
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        val client = createClient { install(ClientWebsockets) }
-        clientTestContext = ClientTestContext(client, receivedMsgs)
-    }
-
-    return clientTestContext
-}
-
-private class ClientTestContext(val testedClient: HttpClient, val received: Channel<String>)

@@ -6,14 +6,22 @@ import cz.smarteon.loxkt.Codec.concatToBytes
 import cz.smarteon.loxkt.message.Hashing
 import cz.smarteon.loxkt.message.Token
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 import org.kotlincrypto.hash.sha1.SHA1
 import org.kotlincrypto.hash.sha2.SHA256
 import org.kotlincrypto.macs.hmac.sha1.HmacSHA1
 import org.kotlincrypto.macs.hmac.sha2.HmacSHA256
 
+internal expect fun rsaEncryptBytes(data: ByteArray, publicKeyPem: String): ByteArray
+
 internal object LoxoneCrypto {
 
     private val logger = KotlinLogging.logger {}
+
+    @OptIn(ExperimentalEncodingApi::class)
+    internal fun rsaEncrypt(data: String, publicKeyPem: String): String =
+        Base64.encode(rsaEncryptBytes(data.encodeToByteArray(), publicKeyPem))
 
     /**
      * Performs hashing algorithm as required by loxone specification.

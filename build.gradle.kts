@@ -157,8 +157,16 @@ kotlin {
             implementation(libs.kotest.framework.engine)
             implementation(libs.ktor.client.mock)
         }
+        val nativeJvmMain by creating {
+            dependsOn(commonMain.get())
+            dependencies {
+                implementation(libs.cryptography.core)
+            }
+        }
+        jvmMain.get().dependsOn(nativeJvmMain)
         jvmMain.dependencies {
             implementation(libs.ktor.client.cio)
+            implementation(libs.cryptography.provider.jdk)
         }
         jvmTest.dependencies {
             implementation(libs.kotest.runner.junit5)
@@ -169,9 +177,12 @@ kotlin {
         }
         jsMain.dependencies {
             implementation(libs.ktor.client.js)
+            implementation(npm("jsencrypt", "3.3.2"))
         }
+        linuxMain.get().dependsOn(nativeJvmMain)
         linuxMain.dependencies {
             implementation(libs.ktor.client.cio)
+            implementation(libs.cryptography.provider.openssl3)
         }
     }
 }

@@ -14,6 +14,7 @@ Published as `cz.smarteon.loxone:loxone-client-kotlin` on Maven Central.
 ./gradlew dokkaHtml                 # generate API docs
 ./gradlew jvmAcceptanceTest         # needs real miniserver — see below
 ./gradlew release -Prelease.versionIncrementer=incrementPatch
+./gradlew kotlinUpgradeYarnLock     # regenerate kotlin-js-store/yarn.lock — run after any npm() change
 ```
 
 ## Build
@@ -22,6 +23,9 @@ Published as `cz.smarteon.loxone:loxone-client-kotlin` on Maven Central.
 - Version catalog at `gradle/libs.versions.toml` — never hardcode versions.
 - Native tests (`linuxX64Test`, `linuxArm64Test`) and JS browser tests are **disabled**.
 - Ktor engine: CIO on JVM/Linux, JS engine on browser.
+- **npm dependencies**: after adding, changing, or removing any `npm("pkg", "version")` call in
+  `build.gradle.kts`, run `./gradlew kotlinUpgradeYarnLock` and commit the updated
+  `kotlin-js-store/yarn.lock`. CI enforces this via `kotlinStoreYarnLock`.
 
 ## Package convention
 
@@ -73,7 +77,6 @@ Published as `cz.smarteon.loxone:loxone-client-kotlin` on Maven Central.
 
 ## Known gaps (contributions welcome)
 
-- Command encryption (AES + RSA)
 - Control commands
 - Token persistence and refresh
 - CloudDNS discovery
