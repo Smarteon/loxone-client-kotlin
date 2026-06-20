@@ -1,6 +1,7 @@
 package cz.smarteon.loxkt
 
 import cz.smarteon.loxkt.event.LoxoneEvent
+import cz.smarteon.loxkt.message.LoxoneMsg
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 
@@ -17,6 +18,9 @@ internal class MockLoxoneClient : WebsocketLoxoneClient {
         stubbedCalls.add(StubbedCall(commandMatcher, response, verification))
         return verification
     }
+
+    fun stubMsg(operation: String, value: String, code: String = "200") =
+        stubCall(LoxoneMsg(operation, code, value)) { it.pathSegments.contains(operation) }
 
     fun stubRawData(command: String, data: ByteArray) {
         stubbedRawData[command] = data
@@ -44,6 +48,38 @@ internal class MockLoxoneClient : WebsocketLoxoneClient {
     override suspend fun close() {
         TODO("Not yet implemented")
     }
+}
+
+internal class MockHttpLoxoneClient : LoxoneClient {
+
+    private val stubbedCalls = mutableListOf<StubbedCall<*>>()
+
+    fun <RESPONSE : LoxoneResponse> stubCall(
+        response: RESPONSE,
+        commandMatcher: (Command<*>) -> Boolean
+    ): CallVerification {
+        val verification = CallVerification()
+        stubbedCalls.add(StubbedCall(commandMatcher, response, verification))
+        return verification
+    }
+
+    override suspend fun <RESPONSE : LoxoneResponse> call(command: Command<RESPONSE>): RESPONSE {
+        stubbedCalls.firstOrNull { it.commandMatcher(command) }?.let {
+            it.verification.matches.add(command)
+
+            @Suppress("UNCHECKED_CAST")
+            return it.response as RESPONSE
+        } ?: error("No stubbed call for $command")
+    }
+
+    fun stubMsg(operation: String, value: String, code: String = "200") =
+        stubCall(LoxoneMsg(operation, code, value)) { it.pathSegments.contains(operation) }
+
+    override suspend fun callRaw(command: String): String = error("Not stubbed")
+
+    override suspend fun callRawForData(command: String): ByteArray = error("Not stubbed")
+
+    override suspend fun close() {}
 }
 
 internal data class StubbedCall<RESPONSE : LoxoneResponse>(

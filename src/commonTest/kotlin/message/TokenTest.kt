@@ -3,6 +3,7 @@ package cz.smarteon.loxkt.message
 import cz.smarteon.loxkt.Codec.loxJson
 import cz.smarteon.loxkt.message.TestingLoxValues.token
 import cz.smarteon.loxkt.message.TestingLoxValues.tokenAuthResponse
+import cz.smarteon.loxkt.message.TestingLoxValues.tokenRefreshResponse
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
@@ -36,6 +37,28 @@ class TokenTest : StringSpec({
             342151900,
             1667,
             true
+        )
+    }
+
+    "should deserialize refresh response" {
+        loxJson.decodeFromString<Token>(tokenRefreshResponse(342151839)) shouldBe Token(
+            "REFRESHED_TOKEN_VALUE",
+            null,
+            342151839,
+            null,
+            false
+        )
+    }
+
+    "should merge refresh response preserving rights" {
+        val original = Token("origToken", byteArrayOf(1), 342151839, 1666, false)
+        val refreshResponse = loxJson.decodeFromString<Token>(tokenRefreshResponse(342151900))
+        original.merge(refreshResponse) shouldBe Token(
+            "REFRESHED_TOKEN_VALUE",
+            byteArrayOf(1),
+            342151900,
+            1666,
+            false
         )
     }
 })
