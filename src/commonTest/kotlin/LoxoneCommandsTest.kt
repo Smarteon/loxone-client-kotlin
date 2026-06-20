@@ -43,4 +43,13 @@ class LoxoneCommandsTest : ShouldSpec({
             it.expectedCode shouldBe "200"
         }
     }
+
+    should("create refresh token command") {
+        LoxoneCommands.Tokens.refresh("hash", "user").asClue {
+            it.pathSegments shouldBe listOf("jdev", "sys", "refreshjwt", "hash", "user")
+            it.valueType shouldBe Token::class
+            it.authenticated shouldBe false
+            it.expectedCode shouldBe "200"
+        }
+    }
 })

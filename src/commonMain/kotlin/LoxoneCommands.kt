@@ -72,6 +72,14 @@ object LoxoneCommands {
         )
 
         /**
+         * Command to refresh token. Uses the modern `refreshjwt` endpoint (protocol ≥ 10.2).
+         * The [tokenHash] must be HMAC of the current token string using a fresh `getkey2` result.
+         */
+        @JvmStatic
+        fun refresh(tokenHash: String, user: String) =
+            sysCommand<Token>("refreshjwt", tokenHash, user, authenticated = false)
+
+        /**
          * Command to kill token.
          * @param tokenHash The token hash to kill.
          * @param user The user to kill the token for.

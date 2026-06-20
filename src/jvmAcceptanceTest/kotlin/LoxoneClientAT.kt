@@ -6,6 +6,8 @@ import cz.smarteon.loxkt.message.ApiInfo
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.spec.style.wordSpec
+import io.kotest.matchers.longs.shouldBeGreaterThan
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldMatch
@@ -24,6 +26,31 @@ fun commonAT(loxoneClient: LoxoneClient) = wordSpec {
         }
         "callForMsg ApiInfo" {
             loxoneClient.callForMsg(ApiInfo.command).version shouldMatch ".*\\d+\\.\\d+\\.\\d+.*"
+        }
+    }
+}
+
+/**
+ * Acceptance tests for WebSocket-specific functionality.
+ * @param client WebSocket client to test
+ * @param authenticator authenticator backing the client
+ * @param user Loxone username
+ */
+fun websocketAT(
+    client: KtorWebsocketLoxoneClient,
+    authenticator: LoxoneTokenAuthenticator,
+    user: String
+) = wordSpec {
+    "KtorWebsocketLoxoneClient" When {
+        "WebSocket token" should {
+            "be refreshable via refreshjwt" {
+                client.callForMsg(ApiInfo.command)
+                val refreshed = client.callForMsg(
+                    LoxoneCommands.Tokens.refresh(authenticator.tokenHash(client, "refreshjwt"), user)
+                )
+                refreshed.validUntil shouldBeGreaterThan 0L
+                refreshed.token.shouldNotBeNull()
+            }
         }
     }
 }
@@ -51,6 +78,7 @@ class LoxoneClientAT : WordSpec() {
 
         include(commonAT(httpClient))
         include(commonAT(websocketClient))
+        include(websocketAT(websocketClient, authenticator, user))
     }
 
     private fun getLoxEnv(name: String) = "LOX_$name".let { requireNotNull(System.getenv(it)) { "Please set $it env" } }

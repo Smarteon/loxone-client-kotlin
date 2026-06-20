@@ -49,4 +49,14 @@ internal object TestingLoxValues {
             }
         """.trimIndent()
 
+    fun tokenRefreshResponse(validUntil: Long) =
+        // language=JSON
+        """
+            {
+              "token": "REFRESHED_TOKEN_VALUE",
+              "validUntil": $validUntil,
+              "unsecurePass": false
+            }
+        """.trimIndent()
+
 }
