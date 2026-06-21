@@ -107,7 +107,7 @@ The library currently implements core authentication (token-based), basic WebSoc
 - Note: Separate documentation exists for structure file format
 
 #### 4. Command Encryption
-**Status:** Not Implemented  
+**Status:** Implemented (WebSocket)  
 **Impact:** High - Required for secure command transmission  
 **Protocol Reference:** CommunicatingWithMiniserver.md, "Command Encryption"
 
@@ -115,17 +115,38 @@ The library currently implements core authentication (token-based), basic WebSoc
 - Public key retrieval: `jdev/sys/getPublicKey` ✅
 - RSA encryption (PKCS1v1.5, Base64 NoWrap), multiplatform ✅
 
-**Missing Components:**
-- AES-256-CBC key + IV generation (random, 32-byte key / 16-byte IV)
-- AES-256-CBC encryption with ZeroBytePadding
-- Key exchange: `jdev/sys/keyexchange/{encrypted-session-key}`
-- Encrypted command wrapping: `jdev/sys/enc/{cipher}`
-- Encrypted command with encrypted response: `jdev/sys/fenc/{cipher}`
-- Session salt rotation (anti-replay) per command
+**Implemented (#76):**
+- AES-256-CBC key + IV generation (random, 32-byte key / 16-byte IV), multiplatform ✅
+- AES-256-CBC encryption/decryption with ZeroBytePadding ✅
+- Key exchange: `jdev/sys/keyexchange/{encrypted-session-key}` ✅
+- Encrypted command wrapping: `jdev/sys/enc/{cipher}` ✅
+- Encrypted command with encrypted response: `jdev/sys/fenc/{cipher}` ✅
+- Session salt rotation (anti-replay) per command ✅
+- Mandatory encryption of token acquisition (`getjwt`/`authwithtoken`); opt-in
+  `CommandEncryption` mode (NONE/REQUEST/REQUEST_RESPONSE) for all other commands ✅
+- Public key fetched over **HTTP** (`jdev/sys/getPublicKey` is rejected on the websocket with 400);
+  the Miniserver returns it wrapped in `-----BEGIN CERTIFICATE-----` markers, normalized to a
+  `PUBLIC KEY` PEM by `LoxoneCrypto.normalizePublicKeyPem` ✅
+
+**Remaining / known limitations:**
+- HTTP command encryption (`?sk=` session-key query form) — only the WebSocket channel is wired
+- Public key caching via `PublicKeyRepository` (currently fetched once per session); note the
+  dormant `PublicKey` message model from PR #75 assumes a `{"publicKey":...}` object value and is
+  unused by the websocket flow
+- `REQUEST_RESPONSE` (fenc) mode is unsafe with binary/large responses (images, files, `LoxAPP3.json`)
+  — the Miniserver only supports `enc` for those
+- No reconnect: after `close()` (incl. keepalive timeout) the client is single-use
+- The JS `actual` (crypto-js) is not exercised by tests (the JS test task is disabled); the common
+  AES roundtrip would cover it once a JS test target is enabled
+- **Fixed AES-CBC IV**: the IV is generated once and reused for the entire session. Salt rotation
+  provides per-command plaintext uniqueness, but reusing the same key+IV in AES-CBC is a protocol
+  limitation — the Miniserver's key-exchange API does not support IV rotation.
 
 **Current Code Reference:**
-- `src/commonMain/kotlin/LoxoneCrypto.kt` — hashing + RSA; AES not yet implemented
-- `src/commonMain/kotlin/PublicKey.kt` — public key model
+- `src/commonMain/kotlin/LoxoneCrypto.kt` — hashing, RSA + AES (`aesEncrypt`/`aesDecrypt`)
+- `src/commonMain/kotlin/ktor/KtorWebsocketLoxoneClient.kt` — key exchange + enc/fenc wrapping
+- `src/commonMain/kotlin/LoxoneClientSettings.kt` — `CommandEncryption` setting
+- `src/commonMain/kotlin/message/PublicKey.kt` — public key model
 - `src/commonMain/kotlin/PublicKeyRepository.kt` — key caching
 
 ---

@@ -12,6 +12,14 @@ interface Command<out RESPONSE : LoxoneResponse> {
     val responseType: KClass<out RESPONSE>
 
     val authenticated: Boolean
+
+    /**
+     * Whether this command must be sent over the encrypted command channel (`jdev/sys/enc/`)
+     * regardless of the client's global command encryption setting. Required for commands the
+     * Miniserver only accepts encrypted, e.g. token acquisition (`getjwt`).
+     */
+    val encrypted: Boolean
+        get() = false
 }
 
 /**

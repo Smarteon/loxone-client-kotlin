@@ -56,7 +56,9 @@ object LoxoneCommands {
             permission.id.toString(),
             clientId,
             clientInfo,
-            authenticated = false
+            authenticated = false,
+            // getjwt must be sent over the encrypted channel; a Miniserver declines plain getjwt with 400
+            encrypted = true
         )
 
         /**
@@ -68,7 +70,8 @@ object LoxoneCommands {
         fun auth(tokenHash: String, user: String) = SimpleLoxoneMsgCommand(
             listOf("authwithtoken", tokenHash, user),
             Token::class,
-            authenticated = false
+            authenticated = false,
+            encrypted = true
         )
 
         /**

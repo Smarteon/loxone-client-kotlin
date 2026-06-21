@@ -178,6 +178,7 @@ kotlin {
         jsMain.dependencies {
             implementation(libs.ktor.client.js)
             implementation(npm("jsencrypt", "3.3.2"))
+            implementation(npm("crypto-js", "4.2.0"))
         }
         linuxMain.get().dependsOn(nativeJvmMain)
         linuxMain.dependencies {
