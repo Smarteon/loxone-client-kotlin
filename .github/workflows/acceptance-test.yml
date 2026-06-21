@@ -1,0 +1,42 @@
+---
+name: Acceptance Test
+
+# Runs the acceptance tests (jvmAcceptanceTest) against a real Loxone Miniserver.
+# Requires the Miniserver to be reachable from the runner and the LOX_* secrets to be set.
+on:
+  workflow_call:
+    secrets:
+      GRADLE_ENCRYPTION_KEY:
+        required: true
+      LOX_ADDRESS:
+        required: true
+      LOX_USER:
+        required: true
+      LOX_PASS:
+        required: true
+  workflow_dispatch:
+
+jobs:
+  acceptance-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+
+      - name: Run acceptance tests
+        env:
+          LOX_ADDRESS: ${{ secrets.LOX_ADDRESS }}
+          LOX_USER: ${{ secrets.LOX_USER }}
+          LOX_PASS: ${{ secrets.LOX_PASS }}
+        run: ./gradlew jvmAcceptanceTest

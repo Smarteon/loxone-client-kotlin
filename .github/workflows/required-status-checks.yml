@@ -59,6 +59,15 @@ jobs:
     uses: ./.github/workflows/check.yml
     secrets: inherit
 
+  # Run acceptance tests against a real Miniserver if client code changed.
+  # Informational only - not wired into required-checks-result, so it never blocks a merge.
+  acceptance-test:
+    name: Acceptance test (informational)
+    needs: detect-changes
+    if: needs.detect-changes.outputs.loxone-client == 'true'
+    uses: ./.github/workflows/acceptance-test.yml
+    secrets: inherit
+
   # Run Kotlin example check if needed
   kotlin-example-check:
     name: Kotlin example check
