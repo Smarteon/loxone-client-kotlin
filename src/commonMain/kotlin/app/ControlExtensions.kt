@@ -5,6 +5,8 @@ import cz.smarteon.loxkt.state.LoxoneState
 import cz.smarteon.loxkt.state.StateValue
 import cz.smarteon.loxkt.state.TextState
 import cz.smarteon.loxkt.state.WeatherState
+import cz.smarteon.loxkt.state.getDaytimer
+import cz.smarteon.loxkt.state.getWeather
 
 /**
  * Get a numeric value for a named state from the given [LoxoneState].

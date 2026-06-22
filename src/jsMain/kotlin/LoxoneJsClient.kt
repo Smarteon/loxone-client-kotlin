@@ -94,7 +94,16 @@ class LoxoneJsClient(url: String, user: String, password: String) {
         LoxoneTokenAuthenticator(LoxoneProfile(endpoint, LoxoneCredentials(user, password)))
     private val ws = KtorWebsocketLoxoneClient(endpoint, authenticator)
     private val http = KtorHttpLoxoneClient(endpoint, LoxoneAuth.Token(authenticator))
-    private val state = LoxoneState()
+
+    /**
+     * Live state store, exported for direct reads from JS/TS.
+     *
+     * After [connect] this is continuously updated from WebSocket events. Read current values
+     * synchronously via [LoxoneState.getValue]/[LoxoneState.getText]/[LoxoneState.get], and use
+     * [onValueChanged]/[onTextChanged] to know when to re-read (e.g. to trigger a React re-render).
+     * Writes happen internally only; consumers have read-only access.
+     */
+    val state = LoxoneState()
 
     private var cachedApp: LoxoneApp? = null
     private var connectPromise: Promise<Unit>? = null
@@ -149,7 +158,7 @@ class LoxoneJsClient(url: String, user: String, password: String) {
      * Returns a snapshot of all currently known state values keyed by UUID.
      * Only value and text states are included; states with no received value yet are omitted.
      */
-    fun getValues(): Promise<Array<LoxStateValue>> = scope.promise {
+    fun getValues(): Array<LoxStateValue> =
         state.getAllUuids().mapNotNull { uuid ->
             when (val sv = state[uuid]) {
                 is ValueState -> LoxStateValue(uuid, sv.value, null)
@@ -157,13 +166,12 @@ class LoxoneJsClient(url: String, user: String, password: String) {
                 else -> null
             }
         }.toTypedArray()
-    }
 
     /** Returns the current numeric value for [uuid], or `null` if absent or not a value state. */
-    fun getValue(uuid: String): Promise<Double?> = scope.promise { state.getValue(uuid) }
+    fun getValue(uuid: String): Double? = state.getValue(uuid)
 
     /** Returns the current text for [uuid], or `null` if absent or not a text state. */
-    fun getText(uuid: String): Promise<String?> = scope.promise { state.getText(uuid)?.text }
+    fun getText(uuid: String): String? = state.getText(uuid)?.text
 
     /** Registers a callback invoked for every numeric state update. Register before [connect]. */
     fun onValueChanged(cb: (uuid: String, value: Double) -> Unit) {

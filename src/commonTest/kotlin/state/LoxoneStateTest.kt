@@ -163,7 +163,7 @@ class LoxoneStateTest : ShouldSpec({
 
                 val uuids = state.getAllUuids()
                 uuids shouldHaveSize 3
-                uuids shouldBe setOf("uuid-1", "uuid-2", "uuid-3")
+                uuids.toSet() shouldBe setOf("uuid-1", "uuid-2", "uuid-3")
             }
 
             should("check if contains UUID") {
