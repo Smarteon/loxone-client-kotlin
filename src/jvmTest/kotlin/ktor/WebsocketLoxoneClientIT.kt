@@ -1,5 +1,6 @@
 package cz.smarteon.loxkt.ktor
 
+import cz.smarteon.loxkt.LoxoneEndpoint
 import cz.smarteon.loxkt.message.ApiInfo
 import cz.smarteon.loxkt.message.TestingLoxValues.API_INFO_MSG_VAL
 import cz.smarteon.loxkt.message.TestingMessages.okMsg
@@ -32,6 +33,12 @@ class WebsocketLoxoneClientIT : StringSpec({
         bgDispatcher.scheduler.advanceTimeBy(245.seconds)
         ctx.received.receive() shouldBe "keepalive"
 
+        client.close()
+    }
+
+    "can be constructed via the public endpoint constructor and closed without connecting" {
+        // exercises the public constructor (builds its own HttpClient); no session is opened
+        val client = KtorWebsocketLoxoneClient(LoxoneEndpoint.local("127.0.0.1"))
         client.close()
     }
 })

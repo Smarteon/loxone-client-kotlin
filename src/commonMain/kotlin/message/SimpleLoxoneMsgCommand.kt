@@ -8,7 +8,8 @@ data class SimpleLoxoneMsgCommand<out VAL : LoxoneMsgVal> @JvmOverloads construc
     override val pathSegments: List<String>,
     override val valueType: KClass<out VAL>,
     override val authenticated: Boolean = true,
-    override val expectedCode: String = LoxoneMsg.CODE_OK
+    override val expectedCode: String = LoxoneMsg.CODE_OK,
+    override val encrypted: Boolean = false
 ) : LoxoneMsgCommand<VAL>
 
 internal inline fun <reified VAL : LoxoneMsgVal> cfgCommand(path: String): LoxoneMsgCommand<VAL> =
@@ -17,6 +18,7 @@ internal inline fun <reified VAL : LoxoneMsgVal> cfgCommand(path: String): Loxon
 internal inline fun <reified VAL : LoxoneMsgVal> sysCommand(
     vararg paths: String,
     authenticated: Boolean = true,
-    expectedCode: String = LoxoneMsg.CODE_OK
+    expectedCode: String = LoxoneMsg.CODE_OK,
+    encrypted: Boolean = false
 ): LoxoneMsgCommand<VAL> =
-    SimpleLoxoneMsgCommand(listOf("jdev", "sys") + paths, VAL::class, authenticated, expectedCode)
+    SimpleLoxoneMsgCommand(listOf("jdev", "sys") + paths, VAL::class, authenticated, expectedCode, encrypted)

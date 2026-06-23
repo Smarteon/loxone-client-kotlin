@@ -41,4 +41,20 @@ class LoxoneCryptoRsaTest : ShouldSpec({
             RsaTestFixtures.decryptWithPrivateKey(encrypted) shouldBe sessionKey
         }
     }
+
+    context("public key normalization") {
+        // The Miniserver returns the key wrapped in CERTIFICATE markers on a single line.
+        val base64 = RsaTestFixtures.TEST_PUBLIC_KEY_PEM
+            .replace(Regex("-+(?:BEGIN|END) PUBLIC KEY-+"), "")
+            .replace(Regex("\\s"), "")
+        val certWrapped = "-----BEGIN CERTIFICATE-----$base64-----END CERTIFICATE-----"
+
+        should("convert a certificate-wrapped key to a usable PUBLIC KEY PEM") {
+            val normalized = LoxoneCrypto.normalizePublicKeyPem(certWrapped)
+            normalized shouldBe RsaTestFixtures.TEST_PUBLIC_KEY_PEM
+            // and it actually works for RSA encryption (decoder accepts the re-wrapped PEM)
+            val encrypted = LoxoneCrypto.rsaEncrypt("data", normalized)
+            RsaTestFixtures.decryptWithPrivateKey(encrypted) shouldBe "data"
+        }
+    }
 })

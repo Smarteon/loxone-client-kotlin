@@ -9,6 +9,11 @@ import io.kotest.matchers.shouldBe
 
 class LoxoneCommandsTest : ShouldSpec({
 
+    should("default commands to not encrypted") {
+        // KEEP_ALIVE does not override Command.encrypted, exercising the interface default
+        LoxoneCommands.KEEP_ALIVE.encrypted shouldBe false
+    }
+
     should("create kill token command") {
         LoxoneCommands.Tokens.kill("hash", "user").asClue {
             it.pathSegments shouldBe listOf("jdev", "sys", "killtoken", "hash", "user")
@@ -32,6 +37,7 @@ class LoxoneCommandsTest : ShouldSpec({
             it.valueType shouldBe Token::class
             it.authenticated shouldBe false
             it.expectedCode shouldBe "200"
+            it.encrypted shouldBe true
         }
     }
 
@@ -41,6 +47,7 @@ class LoxoneCommandsTest : ShouldSpec({
             it.valueType shouldBe Token::class
             it.authenticated shouldBe false
             it.expectedCode shouldBe "200"
+            it.encrypted shouldBe true
         }
     }
 

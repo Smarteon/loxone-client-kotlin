@@ -5,6 +5,7 @@ import cz.smarteon.loxkt.message.MessageHeader
 import cz.smarteon.loxkt.message.MessageKind.TEXT
 import io.ktor.client.*
 import io.ktor.server.application.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import io.ktor.server.websocket.*
@@ -21,7 +22,9 @@ data class WebSocketTestContext(val testedClient: HttpClient, val received: Chan
  * Each handler receives the session as receiver and the matched command string.
  */
 suspend fun startTestWebSocketServer(
-    vararg handlers: Pair<String, suspend WebSocketServerSession.(String) -> Unit>
+    vararg handlers: Pair<String, suspend WebSocketServerSession.(String) -> Unit>,
+    fallback: (suspend WebSocketServerSession.(String) -> Unit)? = null,
+    httpPublicKeyJson: String? = null
 ): WebSocketTestContext {
     val handlerMap = handlers.toMap()
     lateinit var ctx: WebSocketTestContext
@@ -31,6 +34,10 @@ suspend fun startTestWebSocketServer(
         val received = Channel<String>(Channel.BUFFERED)
 
         routing {
+            // The Miniserver serves getPublicKey over HTTP only (not the websocket channel).
+            if (httpPublicKeyJson != null) {
+                get("/jdev/sys/getPublicKey") { call.respondText(httpPublicKeyJson) }
+            }
             webSocketRaw(path = "/ws/rfc6455") {
                 incoming.consumeEach { frame ->
                     if (frame is Frame.Text) {
@@ -38,7 +45,7 @@ suspend fun startTestWebSocketServer(
                         received.send(payload)
                         when (payload) {
                             "keepalive" -> send(Frame.Binary(true, writeHeader(MessageHeader.KEEP_ALIVE)))
-                            else -> handlerMap[payload]?.invoke(this, payload)
+                            else -> (handlerMap[payload] ?: fallback)?.invoke(this, payload)
                         }
                     }
                 }
