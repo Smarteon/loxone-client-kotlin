@@ -66,7 +66,18 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
                 }
 
                 state.needsRefresh -> {
-                    TODO("refresh and merge token")
+                    logger.debug { "Token needs refresh, sending refreshjwt" }
+                    val currentToken = checkNotNull(token) { "Token must be present to refresh" }
+                    val refreshed = client.callForMsg(
+                        Tokens.refresh(LoxoneCrypto.loxoneHmac(currentToken, hashing, "refreshjwt"), user)
+                    )
+                    token = currentToken.merge(refreshed)
+                    if (client is WebsocketLoxoneClient) {
+                        logger.debug { "Authenticating websocket with refreshed token" }
+                        val authResponse = client.callForMsg(Tokens.auth(tokenHash(client, "authenticate"), user))
+                        token = checkNotNull(token).merge(authResponse)
+                        authWebsockets.add(client)
+                    }
                 }
 
                 else -> {

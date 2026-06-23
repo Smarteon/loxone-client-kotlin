@@ -8,10 +8,10 @@ import kotlinx.serialization.Serializable
 /**
  * Represents Loxone authentication token.
  *
- * @property[token] The actual token value. May be null in case of response to refresh token or `authwithtoken`
- * @property[key] The token key value. May be null in case of response to refresh token or authwithtoken.
+ * @property[token] The actual token value. May be null in case of response to `authwithtoken`.
+ * @property[key] The token key value. May be null in case of response to `refreshjwt` or `authwithtoken`.
  * @property[validUntil] Seconds since loxone epoch (1.1.2009) to which the token is valid.
- * @property[rights]
+ * @property[rights] Permission bitmap. Absent in `refreshjwt` responses; use [merge] to propagate from `getjwt`.
  * @property[unsecurePassword]
  */
 @Serializable
@@ -19,7 +19,7 @@ data class Token(
     val token: String? = null,
     @Serializable(HexSerializer::class) val key: ByteArray? = null,
     val validUntil: Long,
-    @SerialName("tokenRights") val rights: Int,
+    @SerialName("tokenRights") val rights: Int? = null,
     @SerialName("unsecurePass") val unsecurePassword: Boolean
 ) : LoxoneMsgVal {
 
@@ -47,7 +47,7 @@ data class Token(
                 token = other.token ?: token,
                 key = other.key ?: key,
                 validUntil = other.validUntil,
-                rights = other.rights,
+                rights = other.rights ?: rights,
                 unsecurePassword = other.unsecurePassword
             )
         }
@@ -71,7 +71,7 @@ data class Token(
         var result = token?.hashCode() ?: 0
         result = 31 * result + (key?.contentHashCode() ?: 0)
         result = 31 * result + validUntil.hashCode()
-        result = 31 * result + rights
+        result = 31 * result + (rights ?: 0)
         result = 31 * result + unsecurePassword.hashCode()
         result = 31 * result + filled.hashCode()
         return result
