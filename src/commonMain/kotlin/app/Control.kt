@@ -1,5 +1,6 @@
 package cz.smarteon.loxkt.app
 
+import kotlin.js.JsExport
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 
@@ -35,6 +36,7 @@ const val RESTRICTION_BIT_READ_ONLY_EXTERNAL = 5
  * @property preset Preset information if the control uses a preset (since 11.3)
  * @property links Array of linked control UUIDs (since 11.3)
  */
+@JsExport
 @Serializable
 data class Control(
     val name: String,
@@ -98,6 +100,9 @@ data class Control(
      * Check if control is read only (external).
      */
     val isReadOnlyExternal: Boolean get() = hasRestriction(RESTRICTION_BIT_READ_ONLY_EXTERNAL)
+
+    val subControlsArray: Array<SubControl>? get() = subControls?.values?.toTypedArray()
+    val linksArray: Array<String>? get() = links?.toTypedArray()
 }
 
 /**
@@ -113,6 +118,7 @@ data class Control(
  * @property states Map of state name to state UUID
  * @property details Additional type-specific details
  */
+@JsExport
 @Serializable
 data class SubControl(
     val name: String,
@@ -132,6 +138,7 @@ data class SubControl(
  * @property uuid UUID of the preset
  * @property name Name of the preset
  */
+@JsExport
 @Serializable
 data class Preset(
     val uuid: String,
@@ -143,6 +150,7 @@ data class Preset(
  *
  * @property isConfigured Whether the control is configured
  */
+@JsExport
 @Serializable
 data class ConfigState(
     val isConfigured: Boolean? = false,
@@ -154,11 +162,14 @@ data class ConfigState(
  * @property frequency How often the statistic is written
  * @property outputs Array of outputs for which statistic data is recorded
  */
+@JsExport
 @Serializable
 data class Statistic(
     val frequency: Int,
     val outputs: List<StatisticOutput> = emptyList(),
-)
+) {
+    val outputsArray: Array<StatisticOutput> get() = outputs.toTypedArray()
+}
 
 /**
  * Output configuration for statistics.
@@ -169,6 +180,7 @@ data class Statistic(
  * @property uuid UUID of the output
  * @property visuType Visualization type (0=line chart, 1=digital, 2=bar chart)
  */
+@JsExport
 @Serializable
 data class StatisticOutput(
     val id: Int,
@@ -183,10 +195,13 @@ data class StatisticOutput(
  *
  * @property groups List of statistic groups with different recording frequencies
  */
+@JsExport
 @Serializable
 data class StatisticV2(
     val groups: List<StatisticGroup> = emptyList(),
-)
+) {
+    val groupsArray: Array<StatisticGroup> get() = groups.toTypedArray()
+}
 
 /**
  * Group of statistics with the same recording frequency.
@@ -197,6 +212,7 @@ data class StatisticV2(
  * @property activeSince Unix UTC timestamp since when statistics are available
  * @property dataPoints List of data points in this group
  */
+@JsExport
 @Serializable
 data class StatisticGroup(
     val id: Int,
@@ -204,7 +220,9 @@ data class StatisticGroup(
     val accumulated: Boolean? = null,
     val activeSince: Long? = null,
     val dataPoints: List<StatisticDataPoint> = emptyList(),
-)
+) {
+    val dataPointsArray: Array<StatisticDataPoint> get() = dataPoints.toTypedArray()
+}
 
 /**
  * Data point in a V2 statistic group.
@@ -213,6 +231,7 @@ data class StatisticGroup(
  * @property format Format specifier for displaying the value
  * @property output Name of the output/state used for recording the values
  */
+@JsExport
 @Serializable
 data class StatisticDataPoint(
     val title: String? = null,

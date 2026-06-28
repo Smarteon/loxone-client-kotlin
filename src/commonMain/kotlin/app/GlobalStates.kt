@@ -1,5 +1,6 @@
 package cz.smarteon.loxkt.app
 
+import kotlin.js.JsExport
 import kotlinx.serialization.Serializable
 
 /**
@@ -16,6 +17,7 @@ import kotlinx.serialization.Serializable
  * @property liveSearch UUID for device learning information
  * @property modifications UUID for structural changes made via API
  */
+@JsExport
 @Serializable
 data class GlobalStates(
     val operatingMode: String? = null,

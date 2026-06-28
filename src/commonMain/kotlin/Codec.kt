@@ -278,7 +278,7 @@ object Codec {
 
         while (buffer.remaining() >= WeatherEvent.HEADER_SIZE_BYTES) {
             val uuid = readUuid(buffer)
-            val lastUpdate = buffer.readUnsignedInt()
+            val lastUpdate = buffer.readUnsignedInt().toInt()
             val entryCount = buffer.readInt()
 
             if (entryCount < 0 || buffer.remaining().toLong() < entryCount.toLong() * WeatherEntry.SIZE_BYTES) break

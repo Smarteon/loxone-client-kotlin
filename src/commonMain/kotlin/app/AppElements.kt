@@ -1,5 +1,6 @@
 package cz.smarteon.loxkt.app
 
+import kotlin.js.JsExport
 import kotlinx.serialization.Serializable
 
 /**
@@ -14,6 +15,7 @@ import kotlinx.serialization.Serializable
  * @property color Color for the room in the UI
  * @property isFavorite Whether the room is marked as favorite
  */
+@JsExport
 @Serializable
 data class Room(
     val uuid: String,
@@ -38,6 +40,7 @@ data class Room(
  * @property type Semantic type of the category (lights, indoortemperature, shading, media)
  * @property color Color for the category in the UI
  */
+@JsExport
 @Serializable
 data class Category(
     val uuid: String,

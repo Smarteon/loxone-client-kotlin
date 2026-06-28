@@ -1,5 +1,7 @@
 package cz.smarteon.loxkt.event
 
+import kotlin.js.JsExport
+
 /**
  * Represents a single weather entry.
  *
@@ -28,6 +30,7 @@ package cz.smarteon.loxkt.event
  * @property windSpeed Wind speed
  * @property barometricPressure Barometric pressure in hPa
  */
+@JsExport
 data class WeatherEntry(
     val timestamp: Int,
     val weatherType: Int,
@@ -63,7 +66,7 @@ data class WeatherEntry(
  */
 data class WeatherEvent(
     override val uuid: String,
-    val lastUpdate: UInt,
+    val lastUpdate: Int,
     val entries: List<WeatherEntry>
 ) : LoxoneEvent {
     companion object {

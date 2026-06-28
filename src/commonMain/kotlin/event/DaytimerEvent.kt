@@ -1,5 +1,7 @@
 package cz.smarteon.loxkt.event
 
+import kotlin.js.JsExport
+
 private const val MINUTES_PER_HOUR = 60
 private const val TIME_FORMAT_WIDTH = 2
 
@@ -22,6 +24,7 @@ private const val TIME_FORMAT_WIDTH = 2
  * @property needActivate Whether this entry needs activation/trigger
  * @property value Value for analog daytimer
  */
+@JsExport
 data class DaytimerEntry(
     val mode: Int,
     val from: Int,

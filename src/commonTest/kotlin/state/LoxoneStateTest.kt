@@ -107,7 +107,7 @@ class LoxoneStateTest : ShouldSpec({
                         barometricPressure = 1013.25
                     )
                 )
-                val event = WeatherEvent("uuid-weather", 100000u, entries)
+                val event = WeatherEvent("uuid-weather", 100000, entries)
 
                 state.update(event)
 
@@ -115,7 +115,7 @@ class LoxoneStateTest : ShouldSpec({
                 state["uuid-weather"].shouldBeInstanceOf<WeatherState>()
                 val weatherState = state.getWeather("uuid-weather")
                 weatherState.shouldNotBeNull()
-                weatherState.lastUpdate shouldBe 100000u
+                weatherState.lastUpdate shouldBe 100000
                 weatherState.entries shouldHaveSize 1
                 weatherState.entries[0].temperature shouldBe 22.5
             }
@@ -163,7 +163,7 @@ class LoxoneStateTest : ShouldSpec({
 
                 val uuids = state.getAllUuids()
                 uuids shouldHaveSize 3
-                uuids shouldBe setOf("uuid-1", "uuid-2", "uuid-3")
+                uuids.toSet() shouldBe setOf("uuid-1", "uuid-2", "uuid-3")
             }
 
             should("check if contains UUID") {

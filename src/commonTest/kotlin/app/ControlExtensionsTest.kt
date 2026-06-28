@@ -71,10 +71,10 @@ class ControlExtensionsTest : ShouldSpec({
         should("getWeather returns weather state when state exists") {
             val state = LoxoneState()
             val entries = listOf(WeatherEntry(timestamp = 1000, weatherType = 1, windDirection = 0, solarRadiation = 0, relativeHumidity = 0, temperature = 20.0, perceivedTemperature = 20.0, dewPoint = 10.0, precipitation = 0.0, windSpeed = 0.0, barometricPressure = 1000.0))
-            state.update(WeatherEvent("uuid-weather", 2000u, entries))
+            state.update(WeatherEvent("uuid-weather", 2000, entries))
 
             val result = control.getWeather(state, "weather")
-            result?.lastUpdate shouldBe 2000u
+            result?.lastUpdate shouldBe 2000
         }
 
         should("getStateValue returns raw state value") {

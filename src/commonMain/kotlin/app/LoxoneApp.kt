@@ -1,6 +1,7 @@
 package cz.smarteon.loxkt.app
 
 import cz.smarteon.loxkt.LoxoneResponse
+import kotlin.js.JsExport
 import kotlinx.serialization.Serializable
 
 /**
@@ -17,6 +18,7 @@ import kotlinx.serialization.Serializable
  * @property weatherServer Weather server configuration (if configured)
  * @property mediaServer Map of media server UUID to media server definition
  */
+@JsExport
 @Serializable
 data class LoxoneApp(
     val lastModified: String,
@@ -28,4 +30,9 @@ data class LoxoneApp(
     val controls: Map<String, Control>,
     val weatherServer: WeatherServer? = null,
     val mediaServer: Map<String, MediaServer>? = null,
-) : LoxoneResponse
+) : LoxoneResponse {
+    val roomsArray: Array<Room> get() = rooms.values.toTypedArray()
+    val catsArray: Array<Category> get() = cats.values.toTypedArray()
+    val controlsArray: Array<Control> get() = controls.values.toTypedArray()
+    val mediaServerArray: Array<MediaServer>? get() = mediaServer?.values?.toTypedArray()
+}
