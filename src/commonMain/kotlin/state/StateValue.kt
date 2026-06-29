@@ -2,6 +2,7 @@ package cz.smarteon.loxkt.state
 
 import cz.smarteon.loxkt.event.DaytimerEntry
 import cz.smarteon.loxkt.event.WeatherEntry
+import kotlin.js.JsExport
 
 /**
  * Sealed interface for storing typed event payloads in [LoxoneState].
@@ -13,6 +14,7 @@ import cz.smarteon.loxkt.event.WeatherEntry
  * @see DaytimerState
  * @see WeatherState
  */
+@JsExport
 sealed interface StateValue
 
 /**
@@ -20,6 +22,7 @@ sealed interface StateValue
  *
  * @property value The numeric value
  */
+@JsExport
 data class ValueState(val value: Double) : StateValue
 
 /**
@@ -28,6 +31,7 @@ data class ValueState(val value: Double) : StateValue
  * @property text The text content
  * @property iconUuid UUID of the associated icon
  */
+@JsExport
 data class TextState(
     val text: String,
     val iconUuid: String
@@ -39,10 +43,13 @@ data class TextState(
  * @property defaultValue Default value when no entry is active
  * @property entries List of daytimer entries
  */
+@JsExport
 data class DaytimerState(
     val defaultValue: Double,
     val entries: List<DaytimerEntry>
-) : StateValue
+) : StateValue {
+    val entriesArray: Array<DaytimerEntry> get() = entries.toTypedArray()
+}
 
 /**
  * State value from a [cz.smarteon.loxkt.event.WeatherEvent].
@@ -50,7 +57,10 @@ data class DaytimerState(
  * @property lastUpdate Last update timestamp (seconds since Loxone epoch 2009, UTC)
  * @property entries List of weather forecast entries
  */
+@JsExport
 data class WeatherState(
-    val lastUpdate: UInt,
+    val lastUpdate: Int,
     val entries: List<WeatherEntry>
-) : StateValue
+) : StateValue {
+    val entriesArray: Array<WeatherEntry> get() = entries.toTypedArray()
+}

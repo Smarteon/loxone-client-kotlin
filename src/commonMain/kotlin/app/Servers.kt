@@ -1,5 +1,6 @@
 package cz.smarteon.loxkt.app
 
+import kotlin.js.JsExport
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -12,6 +13,7 @@ import kotlinx.serialization.Serializable
  * @property mac MAC address of server (since 11.1)
  * @property localIP Local resolved IP address (Audioserver/Compact only)
  */
+@JsExport
 @Serializable
 data class MediaServer(
     val type: Int,
@@ -29,13 +31,16 @@ data class MediaServer(
  * @property weatherTypeTexts User-friendly texts for weather types
  * @property weatherFieldTypes Possible weather field types (since v8)
  */
+@JsExport
 @Serializable
 data class WeatherServer(
     val states: WeatherStates? = null,
     val format: WeatherFormat? = null,
     val weatherTypeTexts: Map<String, String>? = null,
     val weatherFieldTypes: Map<String, WeatherFieldType>? = null,
-)
+) {
+    val weatherFieldTypesArray: Array<WeatherFieldType>? get() = weatherFieldTypes?.values?.toTypedArray()
+}
 
 /**
  * Weather field type information.
@@ -46,6 +51,7 @@ data class WeatherServer(
  * @property unit Unit of measurement
  * @property format Format specifier
  */
+@JsExport
 @Serializable
 data class WeatherFieldType(
     val id: Int? = null,
@@ -61,6 +67,7 @@ data class WeatherFieldType(
  * @property actual UUID for current weather data
  * @property forecast UUID for weather forecast (next 96 hours)
  */
+@JsExport
 @Serializable
 data class WeatherStates(
     val actual: String? = null,
@@ -76,6 +83,7 @@ data class WeatherStates(
  * @property precipitation Format for precipitation
  * @property barometricPressure Format for barometric pressure
  */
+@JsExport
 @Serializable
 data class WeatherFormat(
     val relativeHumidity: String? = null,

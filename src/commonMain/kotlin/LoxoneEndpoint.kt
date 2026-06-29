@@ -1,6 +1,8 @@
 package cz.smarteon.loxkt
 
 import io.ktor.http.*
+import kotlin.js.JsExport
+import kotlin.js.JsStatic
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 
@@ -12,6 +14,7 @@ import kotlin.jvm.JvmStatic
  * @param useSsl Whether to use SSL, default is true.
  * @param path Loxone path, url encoded, default is empty string.
  */
+@JsExport
 data class LoxoneEndpoint @JvmOverloads constructor(
     val host: String,
     val port: Int = HTTPS_PORT,
@@ -32,6 +35,7 @@ data class LoxoneEndpoint @JvmOverloads constructor(
          * @param url Loxone URL.
          */
         @JvmStatic
+        @JsStatic
         fun fromUrl(url: String): LoxoneEndpoint {
             val parsed = URLBuilder().takeFrom(url)
             val port = when {
@@ -49,7 +53,7 @@ data class LoxoneEndpoint @JvmOverloads constructor(
          * @param port Loxone port, default is 80 (HTTP).
          * @param path Loxone path, url encoded, default is empty string.
          */
-        @JvmStatic @JvmOverloads
+        @JvmStatic @JvmOverloads @JsStatic
         fun local(address: String, port: Int = HTTP_PORT, path: String = ""): LoxoneEndpoint {
             require(hostIsIp(address)) { "Local address must be IP" }
             return LoxoneEndpoint(address, port, false, path)
@@ -62,7 +66,7 @@ data class LoxoneEndpoint @JvmOverloads constructor(
          * @param port Loxone port, default is 443 (HTTPS).
          * @param path Loxone path, url encoded, default is empty string.
          */
-        @JvmStatic @JvmOverloads
+        @JvmStatic @JvmOverloads @JsStatic
         fun public(domain: String, port: Int = HTTPS_PORT, path: String = ""): LoxoneEndpoint {
             require(!hostIsIp(domain)) { "Public domain must not be IP" }
             return LoxoneEndpoint(domain, port, true, path)

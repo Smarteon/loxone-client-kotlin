@@ -4,6 +4,13 @@ This directory contains documentation for the Loxone Kotlin Client library.
 
 ## Contents
 
+- **[js-interop-design.md](js-interop-design.md)** - Design decisions for the TypeScript/JS export surface
+  - Why core Kotlin types are exported directly (no JS facade)
+  - What is and is not exportable (`UInt`, `JsonElement`, `suspend`, `SharedFlow`)
+  - `LoxoneMiniserver` two-class hierarchy and the TypeScript declaration problem
+  - Array convenience getters on domain types for `KtList`/`KtMap` fields
+  - Build configuration for ES module output and TypeScript definitions
+
 - **[loxone/](loxone/)** - Loxone Miniserver communication protocol documentation
   - [CommunicatingWithMiniserver.md](loxone/CommunicatingWithMiniserver.md) - Official protocol specification (v16.0)
   

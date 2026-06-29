@@ -1,5 +1,6 @@
 package cz.smarteon.loxkt.app
 
+import kotlin.js.JsExport
 import kotlinx.serialization.Serializable
 
 /**
@@ -29,6 +30,7 @@ import kotlinx.serialization.Serializable
  * @property sortByRating Whether controls should be sorted by rating
  * @property currentUser Information about the current user
  */
+@JsExport
 @Serializable
 data class MiniserverInfo(
     val serialNr: String,
@@ -65,6 +67,7 @@ data class MiniserverInfo(
  * @property changePassword Whether the user can change password via WebService
  * @property userRights Permissions available for this user
  */
+@JsExport
 @Serializable
 data class CurrentUser(
     val name: String,

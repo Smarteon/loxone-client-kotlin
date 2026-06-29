@@ -49,6 +49,14 @@ detekt {
 
 kotlin {
     jvmToolchain(21)
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            "-opt-in=kotlin.js.ExperimentalJsExport",
+            "-opt-in=kotlin.js.ExperimentalJsStatic",
+            "-Xes-long-as-bigint",
+            "-XXLanguage:+JsAllowLongInExportedDeclarations"
+        )
+    }
     jvm {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
@@ -113,16 +121,13 @@ kotlin {
     }
     js {
         browser {
-            commonWebpackConfig {
-                cssSupport {
-                    enabled.set(true)
-                }
-            }
             testTask {
-                // enabling needs headless browser, skipped for now
                 enabled = false
             }
         }
+        useEsModules()
+        binaries.library()
+        generateTypeScriptDefinitions()
     }
     linuxArm64()
     linuxX64()

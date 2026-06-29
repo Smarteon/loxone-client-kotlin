@@ -50,7 +50,7 @@ class WeatherEventTest : ShouldSpec({
 
             events shouldHaveSize 1
             events[0].uuid shouldBe "11111111-2222-3333-4444444444444444"
-            events[0].lastUpdate shouldBe 500000000u
+            events[0].lastUpdate shouldBe 500000000
             events[0].entries.shouldBeEmpty()
         }
 
@@ -90,7 +90,7 @@ class WeatherEventTest : ShouldSpec({
 
             events shouldHaveSize 1
             events[0].uuid shouldBe "aaaaaaaa-bbbb-cccc-dddddddddddddddd"
-            events[0].lastUpdate shouldBe 600000000u
+            events[0].lastUpdate shouldBe 600000000
             events[0].entries shouldHaveSize 1
 
             val entry = events[0].entries[0]
@@ -214,9 +214,9 @@ class WeatherEventTest : ShouldSpec({
 
             events shouldHaveSize 2
             events[0].uuid shouldBe "11111111-1111-1111-1111111111111111"
-            events[0].lastUpdate shouldBe 1u
+            events[0].lastUpdate shouldBe 1
             events[1].uuid shouldBe "22222222-2222-2222-2222222222222222"
-            events[1].lastUpdate shouldBe 2u
+            events[1].lastUpdate shouldBe 2
         }
     }
 })
