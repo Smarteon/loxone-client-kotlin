@@ -128,6 +128,27 @@ kotlin {
         useEsModules()
         binaries.library()
         generateTypeScriptDefinitions()
+
+        compilations.named("main").configure {
+            packageJson {
+                customField("name", "@smarteon/loxone-client")
+                customField("description", "TypeScript/JavaScript client for the Loxone™ home automation system")
+                customField("license", "BSD-3-Clause")
+                customField("repository", mapOf(
+                    "type" to "git",
+                    "url" to "git+https://github.com/Smarteon/loxone-client-kotlin.git"
+                ))
+                customField("homepage", "https://github.com/Smarteon/loxone-client-kotlin")
+                customField("keywords", listOf("loxone", "home-automation", "smarthome", "kotlin", "multiplatform", "typescript"))
+                customField("exports", mapOf(
+                    "." to mapOf(
+                        "import" to "./loxone-client-kotlin.mjs",
+                        "types" to "./loxone-client-kotlin.d.mts"
+                    )
+                ))
+                customField("publishConfig", mapOf("access" to "public"))
+            }
+        }
     }
     linuxArm64()
     linuxX64()
