@@ -184,11 +184,11 @@ full `createSessionKey` → node-forge private-key decrypt) on the Node target.
 
 ## JS testing (Kotlin/JS + Kotest)
 
-The `js` target defines a `nodejs()` test task (`jsNodeTest`). The shared `commonTest` specs use
-Kotest **nested** containers (`context { should { } }`, WordSpec `When { should { } }`), which the
-Kotlin/JS test runner does not support — nested registration throws
-`IllegalStateException: Nested tests are not supported`. The JS run is therefore filtered to
-flat, JS-only specs:
+The `js` target runs tests on both **Node** (`jsNodeTest`, mocha) and a **headless browser**
+(`jsBrowserTest`, karma + Chrome). The shared `commonTest` specs use Kotest **nested** containers
+(`context { should { } }`, WordSpec `When { should { } }`), which the Kotlin/JS test runner does
+not support — nested registration throws `IllegalStateException: Nested tests are not supported`.
+Both JS runs are therefore filtered to flat, JS-only specs:
 
 ```kotlin
 js {
@@ -198,13 +198,29 @@ js {
             filter.includeTestsMatching("*JsTest*")
         }
     }
-    browser { testTask { enabled = false } }
+    browser {
+        testTask {
+            filter.includeTestsMatching("*JsTest*")
+            useKarma { useChromeHeadless() }
+        }
+    }
 }
 ```
 
 JS-only specs live in `src/jsTest` with a `…JsTest` class-name suffix and use a single-level
 style (`StringSpec`/`FunSpec`). They cover the JS-specific `actual`s (crypto interop) that
 `commonTest` cannot. Platform-agnostic logic remains covered by `commonTest` on the JVM.
+
+`karma.config.d/chrome-headless.js` runs Chrome with `--no-sandbox --disable-gpu
+--disable-dev-shm-usage` for CI/sandboxed environments. karma-chrome-launcher auto-detects
+`google-chrome` on `PATH`; set `CHROME_BIN` if the binary is elsewhere. GitHub `ubuntu-latest`
+runners ship Chrome, so `./gradlew check` runs the browser tests there with no extra setup.
+
+The browser tests verify only that the library **loads and its crypto works in a browser JS
+engine** — the specs are self-contained (no network). A full `connect()` from a browser is not
+possible cross-origin (see Known limitations): the `getPublicKey` HTTP GET is CORS-blocked and the
+`wss://` handshake hits self-signed-cert / mixed-content limits, so real browser usage needs a
+same-origin gateway.
 
 ---
 
@@ -217,3 +233,9 @@ style (`StringSpec`/`FunSpec`). They cover the JS-specific `actual`s (crypto int
   either using the JVM API or subscribing through the callback API.
 - Sending commands from TypeScript is not yet supported (depends on stable AES encryption
   being plumbed through to an exported API surface).
+- A full `connect()` from a **browser** is not possible cross-origin without a reverse proxy.
+  The `getPublicKey` HTTP GET is CORS-blocked (the Miniserver sends no `Access-Control-Allow-Origin`
+  header), and the `wss://` handshake — though exempt from CORS — is blocked by the Miniserver's
+  self-signed/untrusted TLS certificate and by mixed-content rules on HTTPS pages. Browser usage
+  therefore requires a same-origin gateway that adds CORS headers and terminates a trusted cert;
+  Node is the supported JS runtime for real connections.

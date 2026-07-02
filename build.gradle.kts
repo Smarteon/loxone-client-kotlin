@@ -129,7 +129,10 @@ kotlin {
         }
         browser {
             testTask {
-                enabled = false
+                filter.includeTestsMatching("*JsTest*") // flat *JsTest* only, as on Node (AGENTS.md)
+                useKarma {
+                    useChromeHeadless()
+                }
             }
         }
         useEsModules()
