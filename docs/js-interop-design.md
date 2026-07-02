@@ -157,6 +157,57 @@ kotlin {
 
 ---
 
+## Crypto module resolution (ESM)
+
+The `jsMain` crypto `actual`s depend on two npm packages. Because the build emits an ES module
+(`useEsModules()`), `require(...)` is **undefined at runtime** — in browsers there is no `require`
+at all, and Node loads the `.mjs` as ESM. The npm modules must therefore be declared as
+`@JsModule` externals so the compiler emits `import` statements:
+
+```kotlin
+@JsModule("node-forge")
+internal external val forge: dynamic
+
+@JsModule("crypto-js")
+internal external val cryptoJs: dynamic
+```
+
+- **AES** uses `crypto-js` (`4.2.0`) — its CJS/UMD default export carries the whole API and
+  resolves cleanly under both Node ESM and browser bundlers.
+- **RSA** uses `node-forge` (`1.3.1`, `RSAES-PKCS1-V1_5`). It replaced `jsencrypt`, whose npm
+  `main` is a browser-only webpack bundle that references `window` and throws
+  `ReferenceError: window is not defined` when loaded under Node. `node-forge` has a proper CJS
+  entrypoint that loads in Node and is also bundler-friendly.
+
+Regression guard: `src/jsTest/kotlin/CryptoJsTest.kt` round-trips both (crypto-js AES, and a
+full `createSessionKey` → node-forge private-key decrypt) on the Node target.
+
+## JS testing (Kotlin/JS + Kotest)
+
+The `js` target defines a `nodejs()` test task (`jsNodeTest`). The shared `commonTest` specs use
+Kotest **nested** containers (`context { should { } }`, WordSpec `When { should { } }`), which the
+Kotlin/JS test runner does not support — nested registration throws
+`IllegalStateException: Nested tests are not supported`. The JS run is therefore filtered to
+flat, JS-only specs:
+
+```kotlin
+js {
+    nodejs {
+        testTask {
+            useMocha { timeout = "30s" } // mocha's 2s default is too low for async specs
+            filter.includeTestsMatching("*JsTest*")
+        }
+    }
+    browser { testTask { enabled = false } }
+}
+```
+
+JS-only specs live in `src/jsTest` with a `…JsTest` class-name suffix and use a single-level
+style (`StringSpec`/`FunSpec`). They cover the JS-specific `actual`s (crypto interop) that
+`commonTest` cannot. Platform-agnostic logic remains covered by `commonTest` on the JVM.
+
+---
+
 ## Known limitations
 
 - `Control.details` and `SubControl.details` (`JsonElement?`) are typed as `any` in the

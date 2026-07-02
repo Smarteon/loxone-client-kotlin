@@ -120,6 +120,17 @@ kotlin {
         }
     }
     js {
+        nodejs {
+            testTask {
+                // Mocha's 2s default is too low for the async / WebSocket-mock specs.
+                useMocha { timeout = "30s" }
+                // The shared commonTest specs use Kotest nested containers
+                // (context/should, WordSpec), which the Kotlin/JS test runner does not support
+                // ("Nested tests are not supported"). Restrict the JS run to the flat, JS-only
+                // specs (class name suffix `JsTest`) that cover the jsMain crypto actuals.
+                filter.includeTestsMatching("*JsTest*")
+            }
+        }
         browser {
             testTask {
                 enabled = false
@@ -203,7 +214,10 @@ kotlin {
         }
         jsMain.dependencies {
             implementation(libs.ktor.client.js)
-            implementation(npm("jsencrypt", "3.3.2"))
+            // node-forge (RSA) and crypto-js (AES) both resolve cleanly under Node ESM and in
+            // browser bundlers. jsencrypt was dropped: its npm `main` is a browser-only webpack
+            // bundle that references `window` and fails to load under Node.
+            implementation(npm("node-forge", "1.3.1"))
             implementation(npm("crypto-js", "4.2.0"))
         }
         linuxMain.get().dependsOn(nativeJvmMain)
