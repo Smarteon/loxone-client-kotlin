@@ -122,12 +122,8 @@ kotlin {
     js {
         nodejs {
             testTask {
-                // Mocha's 2s default is too low for the async / WebSocket-mock specs.
-                useMocha { timeout = "30s" }
-                // The shared commonTest specs use Kotest nested containers
-                // (context/should, WordSpec), which the Kotlin/JS test runner does not support
-                // ("Nested tests are not supported"). Restrict the JS run to the flat, JS-only
-                // specs (class name suffix `JsTest`) that cover the jsMain crypto actuals.
+                useMocha { timeout = "30s" } // 2s default is too low for the async specs
+                // Kotest nesting is unsupported on JS — run only the flat *JsTest* specs (AGENTS.md).
                 filter.includeTestsMatching("*JsTest*")
             }
         }

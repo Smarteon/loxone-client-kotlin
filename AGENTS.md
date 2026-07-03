@@ -21,8 +21,11 @@ Published as `cz.smarteon.loxone:loxone-client-kotlin` on Maven Central.
 
 - **JDK 21 required** for build; produces JVM 17 bytecode.
 - Version catalog at `gradle/libs.versions.toml` — never hardcode versions.
-- Native tests (`linuxX64Test`, `linuxArm64Test`) and JS browser tests are **disabled**.
+- Native tests (`linuxX64Test`, `linuxArm64Test`) and JS browser tests are **disabled**; JS runs on Node (`jsNodeTest`).
 - Ktor engine: CIO on JVM/Linux, JS engine on browser.
+- **Kotlin/JS is an ES module** (`useEsModules()`): reference npm packages via `@JsModule`
+  externals — `require(...)` is undefined at runtime. JS crypto uses `node-forge` (RSA) and
+  `crypto-js` (AES); `jsencrypt` is unusable (its npm `main` is a browser bundle needing `window`).
 - **npm dependencies**: after adding, changing, or removing any `npm("pkg", "version")` call in
   `build.gradle.kts`, run `./gradlew kotlinUpgradeYarnLock` and commit the updated
   `kotlin-js-store/yarn.lock`. CI enforces this via `kotlinStoreYarnLock`.
@@ -41,7 +44,10 @@ Published as `cz.smarteon.loxone:loxone-client-kotlin` on Maven Central.
 - Integration (JVM): `ktor-server-test-host` for WebSocket server simulation.
 - **Acceptance tests** (`jvmAcceptanceTest`): require real miniserver.
   Set env: `LOX_ADDRESS`, `LOX_USER`, `LOX_PASS`. Excluded from CI.
-- All tests run on JUnit Platform.
+- All JVM tests run on JUnit Platform.
+- **Kotlin/JS**: Kotest nested specs (`context/should`, `WordSpec`) do **not** run on the JS test
+  runner. JS-only specs must be flat (`StringSpec`/`FunSpec`) and named `*JsTest`; `jsNodeTest`
+  filters to `*JsTest*`. Platform-agnostic logic stays in `commonTest` (covered on the JVM).
 
 ## Key frameworks
 

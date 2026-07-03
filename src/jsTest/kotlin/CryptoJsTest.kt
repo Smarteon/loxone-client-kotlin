@@ -7,15 +7,8 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldNotBeEmpty
 
 /**
- * JS-target crypto interop tests. These exercise the `jsMain` `actual` crypto implementations
- * (node-forge for RSA, crypto-js for AES) that cannot be covered by the shared `commonTest`
- * suite — commonTest uses Kotest nested containers (`context { should { } }` / WordSpec), which
- * are not supported on the Kotlin/JS test runner. Kept as a single-level [StringSpec] for that
- * reason.
- *
- * Regression guard for the ES-module fix: the packages must load via `import` (not `require`) and
- * resolve under Node ESM. jsencrypt was replaced by node-forge here because its npm entrypoint is
- * a browser-only bundle that fails to load under Node.
+ * Crypto interop for the jsMain `actual`s (node-forge RSA, crypto-js AES). Flat [StringSpec]
+ * because the shared commonTest specs use Kotest nesting, unsupported on the JS runner (AGENTS.md).
  */
 @OptIn(ExperimentalStdlibApi::class)
 class CryptoJsTest : StringSpec({
