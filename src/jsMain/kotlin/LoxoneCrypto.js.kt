@@ -1,22 +1,22 @@
 package cz.smarteon.loxkt
 
-import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
+import kotlin.js.JsModule
 
-@OptIn(ExperimentalEncodingApi::class)
+@JsModule("node-forge")
+internal external val forge: dynamic
+
+@JsModule("crypto-js")
+internal external val cryptoJs: dynamic
+
 internal actual fun rsaEncryptBytes(data: ByteArray, publicKeyPem: String): ByteArray {
     val jsData = data.toTypedArray()
-    // String.fromCharCode.apply is safe here: RSA-2048/PKCS1v1.5 limits plaintext to 245 bytes
+    // fromCharCode.apply is bounded: RSA-2048/PKCS1v1.5 caps plaintext at 245 bytes.
     val binaryStr: String = js("String.fromCharCode.apply(null, jsData)").unsafeCast<String>()
-    val enc: dynamic = js("new (require('jsencrypt').JSEncrypt)()")
-    enc.setPublicKey(publicKeyPem)
-    // encrypt() returns string | false — false means invalid key or data too large
-    val base64: dynamic = enc.encrypt(binaryStr)
-    if (base64 == false) throw LoxoneException("RSA encryption failed — check key format and data size")
-    return Base64.decode(base64 as String)
+    val publicKey = forge.pki.publicKeyFromPem(publicKeyPem)
+    // node-forge defaults to the RSAES-PKCS1-V1_5 scheme Loxone expects.
+    val encrypted: String = publicKey.encrypt(binaryStr).unsafeCast<String>()
+    return ByteArray(encrypted.length) { encrypted[it].code.toByte() }
 }
-
-private val cryptoJs: dynamic get() = js("require('crypto-js')")
 
 private fun aesConfig(iv: ByteArray): dynamic {
     val cfg = js("({})")
