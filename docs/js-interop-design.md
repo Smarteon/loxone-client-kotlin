@@ -217,10 +217,28 @@ style (`StringSpec`/`FunSpec`). They cover the JS-specific `actual`s (crypto int
 runners ship Chrome, so `./gradlew check` runs the browser tests there with no extra setup.
 
 The browser tests verify only that the library **loads and its crypto works in a browser JS
-engine** — the specs are self-contained (no network). A full `connect()` from a browser is not
-possible cross-origin (see Known limitations): the `getPublicKey` HTTP GET is CORS-blocked and the
-`wss://` handshake hits self-signed-cert / mixed-content limits, so real browser usage needs a
-same-origin gateway.
+engine** — the unit specs are self-contained (no network). A full `connect()` from a browser is
+not possible cross-origin by default (see Known limitations): the `getPublicKey` HTTP GET is
+CORS-blocked and the `wss://` handshake hits self-signed-cert / mixed-content limits.
+
+### Acceptance test (real Miniserver)
+
+`src/jsTest/kotlin/LoxoneClientAcceptanceJsTest.kt` mirrors the JVM `LoxoneClientAT` — it connects
+over real HTTP + WebSocket and is gated on `LOX_ADDRESS` / `LOX_USER` / `LOX_PASS`. When those are
+unset it registers no tests, so `jsNodeTest` / `jsBrowserTest` / `check` stay green offline. Run it
+with:
+
+```
+LOX_ADDRESS=https://your-miniserver LOX_USER=user LOX_PASS=pass ./gradlew jsBrowserTest
+LOX_ADDRESS=https://your-miniserver LOX_USER=user LOX_PASS=pass ./gradlew jsNodeTest
+```
+
+- **Node** reads `process.env` at runtime.
+- **Browser** has no `process.env`, so the credentials are injected at build time by
+  `webpack.config.d/lox-env.js` (DefinePlugin), and cross-origin HTTP is unblocked by running
+  Chrome with `--disable-web-security` — enabled only when `LOX_ADDRESS` is set
+  (`karma.config.d/chrome-headless.js`). A **trusted TLS certificate** on the Miniserver is
+  required for `wss://` (there is no browser bypass for an untrusted cert).
 
 ---
 
