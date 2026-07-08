@@ -280,7 +280,14 @@ class KtorWebsocketLoxoneClient internal constructor(
                 logger.trace { "Incoming message: $textData" }
                 textMessages.send(textData)
             }
-            else -> error("Unexpected frame of type ${frame.frameType}")
+            FrameType.CLOSE -> {
+                val reason = (frame as Frame.Close).readReason()
+                logger.info { "WebSocket session closed by peer${reason?.let { ": $it" } ?: ""}" }
+                session = null
+                sessionKey = null
+                publicKey = null
+            }
+            FrameType.PING, FrameType.PONG -> {}
         }
     }
 
@@ -381,7 +388,7 @@ class KtorWebsocketLoxoneClient internal constructor(
 
     companion object {
         private const val WS_PATH = "/ws/rfc6455"
-        private const val DEFAULT_EVENT_BUFFER_SIZE = 100
+        private const val DEFAULT_EVENT_BUFFER_SIZE = 8192
         private const val GET_PUBLIC_KEY_PATH = "/jdev/sys/getPublicKey"
         private const val KEY_EXCHANGE_PREFIX = "jdev/sys/keyexchange/"
         private const val ENC_PREFIX = "jdev/sys/enc/"

@@ -1,7 +1,9 @@
 package cz.smarteon.loxkt.state
 
 import cz.smarteon.loxkt.event.LoxoneEvent
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.produceIn
 
 /**
  * Collects events from a flow into this [LoxoneState].
@@ -34,8 +36,18 @@ import kotlinx.coroutines.flow.Flow
  *
  * @param events Flow of Loxone events to collect
  */
-suspend fun LoxoneState.collectFrom(events: Flow<LoxoneEvent>) {
-    events.collect { event ->
-        update(event)
+suspend fun LoxoneState.collectFrom(events: Flow<LoxoneEvent>): Unit = coroutineScope {
+    val channel = events.produceIn(this)
+    try {
+        for (first in channel) {
+            val batch = ArrayList<LoxoneEvent>()
+            batch.add(first)
+            while (true) {
+                batch.add(channel.tryReceive().getOrNull() ?: break)
+            }
+            updateAll(batch)
+        }
+    } finally {
+        channel.cancel()
     }
 }

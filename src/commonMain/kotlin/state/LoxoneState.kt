@@ -49,13 +49,22 @@ class LoxoneState {
     fun contains(uuid: String): Boolean = states.containsKey(uuid)
 
     internal fun update(event: LoxoneEvent) {
-        val state = when (event) {
-            is ValueEvent -> ValueState(event.value)
-            is TextEvent -> TextState(event.text, event.iconUuid)
-            is DaytimerEvent -> DaytimerState(event.defaultValue, event.entries)
-            is WeatherEvent -> WeatherState(event.lastUpdate, event.entries)
+        updateAll(listOf(event))
+    }
+
+    internal fun updateAll(events: List<LoxoneEvent>) {
+        if (events.isEmpty()) return
+
+        val next = states.toMutableMap()
+        for (event in events) {
+            next[event.uuid] = when (event) {
+                is ValueEvent -> ValueState(event.value)
+                is TextEvent -> TextState(event.text, event.iconUuid)
+                is DaytimerEvent -> DaytimerState(event.defaultValue, event.entries)
+                is WeatherEvent -> WeatherState(event.lastUpdate, event.entries)
+            }
         }
-        states = states + (event.uuid to state)
+        states = next
     }
 
     fun clear() {
