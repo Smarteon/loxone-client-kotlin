@@ -1,9 +1,12 @@
 package cz.smarteon.loxkt
 
 import cz.smarteon.loxkt.app.LoxoneApp
+import cz.smarteon.loxkt.event.LoxoneEvent
 import cz.smarteon.loxkt.event.TextEvent
 import cz.smarteon.loxkt.event.ValueEvent
 import cz.smarteon.loxkt.state.LoxoneState
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.promise
 import kotlin.js.JsExport
@@ -65,12 +68,26 @@ class JsLoxoneMiniserver(endpoint: LoxoneEndpoint, user: String, password: Strin
 
     override fun startEventCollection() {
         collectJob = sessionScope.launch {
-            ws.events.collect { event ->
-                state.update(event)
-                when (event) {
-                    is ValueEvent -> valueListeners.forEach { it(event.uuid, event.value) }
-                    is TextEvent -> textListeners.forEach { it(event.uuid, event.text) }
-                    else -> Unit
+            coroutineScope {
+                val channel = ws.events.produceIn(this)
+                try {
+                    for (first in channel) {
+                        val batch = ArrayList<LoxoneEvent>()
+                        batch.add(first)
+                        while (true) {
+                            batch.add(channel.tryReceive().getOrNull() ?: break)
+                        }
+                        state.updateAll(batch)
+                        for (event in batch) {
+                            when (event) {
+                                is ValueEvent -> valueListeners.forEach { it(event.uuid, event.value) }
+                                is TextEvent -> textListeners.forEach { it(event.uuid, event.text) }
+                                else -> Unit
+                            }
+                        }
+                    }
+                } finally {
+                    channel.cancel()
                 }
             }
         }
