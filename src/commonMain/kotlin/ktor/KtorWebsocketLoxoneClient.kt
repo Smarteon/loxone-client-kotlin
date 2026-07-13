@@ -74,6 +74,11 @@ class KtorWebsocketLoxoneClient internal constructor(
     private val sessionMutex = Mutex()
     private var session: ClientWebSocketSession? = null
 
+    /** Set before we ourselves close the session, so a resulting CLOSE frame on [processFrame]
+     *  isn't misreported as peer-initiated (the peer echoes a CLOSE frame back as part of the
+     *  closing handshake we started). */
+    @Volatile private var closingLocally = false
+
     /** Serializes the send + receive (+ salt rotation) of a single command over the socket. */
     private val callMutex = Mutex()
 
@@ -230,9 +235,9 @@ class KtorWebsocketLoxoneClient internal constructor(
             logger.error(e) { "Error closing authenticator" }
         }
         logger.debug { "Closing session" }
+        closingLocally = true
         session?.close(CloseReason(NORMAL, "LoxoneKotlin finished"))
         sessionKey = null
-        publicKey = null
         scope.cancel("Closing the connection")
     }
 
@@ -282,10 +287,13 @@ class KtorWebsocketLoxoneClient internal constructor(
             }
             FrameType.CLOSE -> {
                 val reason = (frame as Frame.Close).readReason()
-                logger.info { "WebSocket session closed by peer${reason?.let { ": $it" } ?: ""}" }
+                if (closingLocally) {
+                    logger.debug { "WebSocket session closed${reason?.let { ": $it" } ?: ""}" }
+                } else {
+                    logger.info { "WebSocket session closed by peer${reason?.let { ": $it" } ?: ""}" }
+                }
                 session = null
                 sessionKey = null
-                publicKey = null
             }
             FrameType.PING, FrameType.PONG -> {}
         }

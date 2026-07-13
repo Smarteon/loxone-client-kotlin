@@ -5,6 +5,7 @@ import cz.smarteon.loxkt.event.LoxoneEvent
 import cz.smarteon.loxkt.event.TextEvent
 import cz.smarteon.loxkt.event.ValueEvent
 import cz.smarteon.loxkt.state.LoxoneState
+import cz.smarteon.loxkt.state.drainBatch
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.launch
@@ -72,11 +73,7 @@ class JsLoxoneMiniserver(endpoint: LoxoneEndpoint, user: String, password: Strin
                 val channel = ws.events.produceIn(this)
                 try {
                     for (first in channel) {
-                        val batch = ArrayList<LoxoneEvent>()
-                        batch.add(first)
-                        while (true) {
-                            batch.add(channel.tryReceive().getOrNull() ?: break)
-                        }
+                        val batch = channel.drainBatch(first)
                         state.updateAll(batch)
                         for (event in batch) {
                             when (event) {
