@@ -74,6 +74,11 @@ class KtorWebsocketLoxoneClient internal constructor(
     private val sessionMutex = Mutex()
     private var session: ClientWebSocketSession? = null
 
+    /** Set before we ourselves close the session, so a resulting CLOSE frame on [processFrame]
+     *  isn't misreported as peer-initiated (the peer echoes a CLOSE frame back as part of the
+     *  closing handshake we started). */
+    @Volatile private var closingLocally = false
+
     /** Serializes the send + receive (+ salt rotation) of a single command over the socket. */
     private val callMutex = Mutex()
 
@@ -230,9 +235,9 @@ class KtorWebsocketLoxoneClient internal constructor(
             logger.error(e) { "Error closing authenticator" }
         }
         logger.debug { "Closing session" }
+        closingLocally = true
         session?.close(CloseReason(NORMAL, "LoxoneKotlin finished"))
         sessionKey = null
-        publicKey = null
         scope.cancel("Closing the connection")
     }
 
@@ -280,7 +285,17 @@ class KtorWebsocketLoxoneClient internal constructor(
                 logger.trace { "Incoming message: $textData" }
                 textMessages.send(textData)
             }
-            else -> error("Unexpected frame of type ${frame.frameType}")
+            FrameType.CLOSE -> {
+                val reason = (frame as Frame.Close).readReason()
+                if (closingLocally) {
+                    logger.debug { "WebSocket session closed${reason?.let { ": $it" } ?: ""}" }
+                } else {
+                    logger.info { "WebSocket session closed by peer${reason?.let { ": $it" } ?: ""}" }
+                }
+                session = null
+                sessionKey = null
+            }
+            FrameType.PING, FrameType.PONG -> {}
         }
     }
 
@@ -381,7 +396,7 @@ class KtorWebsocketLoxoneClient internal constructor(
 
     companion object {
         private const val WS_PATH = "/ws/rfc6455"
-        private const val DEFAULT_EVENT_BUFFER_SIZE = 100
+        private const val DEFAULT_EVENT_BUFFER_SIZE = 8192
         private const val GET_PUBLIC_KEY_PATH = "/jdev/sys/getPublicKey"
         private const val KEY_EXCHANGE_PREFIX = "jdev/sys/keyexchange/"
         private const val ENC_PREFIX = "jdev/sys/enc/"
