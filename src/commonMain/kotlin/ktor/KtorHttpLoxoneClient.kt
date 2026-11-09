@@ -11,6 +11,7 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.*
 import io.ktor.client.plugins.*
+import io.ktor.client.plugins.api.*
 import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -19,6 +20,7 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.util.*
 import kotlin.jvm.JvmOverloads
 
 class KtorHttpLoxoneClient internal constructor(
@@ -54,6 +56,10 @@ class KtorHttpLoxoneClient internal constructor(
                 basic {
                     credentials { BasicAuthCredentials(authentication.username, authentication.password) }
                 }
+            }
+            install(PreemptiveBasicAuth) {
+                username = authentication.username
+                password = authentication.password
             }
         }
         install(HttpRedirect) {
@@ -127,5 +133,30 @@ class KtorHttpLoxoneClient internal constructor(
                 parameters.append("autht", userAndHash.second)
             }
         }
+    }
+}
+
+private const val CLOUD_DNS_HOST = "dns.loxonecloud.com"
+
+private class PreemptiveBasicAuthConfig {
+    var username: String = ""
+    var password: String = ""
+}
+
+/**
+ * Sends Basic credentials with the first request instead of waiting for a 401. Unlike Ktor's
+ * `sendWithoutRequest`, a [Send] hook also covers requests made by [HttpRedirect]. Never over plain
+ * http or to Cloud DNS, as both only redirect.
+ */
+private val PreemptiveBasicAuth = createClientPlugin("PreemptiveBasicAuth", ::PreemptiveBasicAuthConfig) {
+    val header = "Basic " + "${pluginConfig.username}:${pluginConfig.password}".encodeBase64()
+    on(Send) { request ->
+        if (request.url.protocol.isSecure() &&
+            request.url.host != CLOUD_DNS_HOST &&
+            !request.headers.contains(HttpHeaders.Authorization)
+        ) {
+            request.headers[HttpHeaders.Authorization] = header
+        }
+        proceed(request)
     }
 }
