@@ -2,6 +2,7 @@ package cz.smarteon.loxkt.ktor
 
 import cz.smarteon.loxkt.LoxoneAuth
 import cz.smarteon.loxkt.LoxoneCredentials
+import cz.smarteon.loxkt.LoxoneEndpoint
 import cz.smarteon.loxkt.LoxoneEndpoint.Companion.local
 import cz.smarteon.loxkt.LoxoneProfile
 import cz.smarteon.loxkt.LoxoneTokenAuthenticator
@@ -119,6 +120,81 @@ class HttpLoxoneClientTest : WordSpec({
                 val response = call(sysCommand<LoxoneMsgVal>("basicAuthTest"))
                 response.code shouldBe "200"
             }
+        }
+
+        suspend fun requestsToLogIn(at: LoxoneEndpoint): Int {
+            val engine = MockEngine { request ->
+                if (request.headers.contains("Authorization")) {
+                    respond(
+                        okMsg("dev/sys/basicAuthTest", "authenticated"),
+                        headers = headersOf("Content-Type", "application/json")
+                    )
+                } else {
+                    respondError(
+                        HttpStatusCode.Unauthorized,
+                        headers = headersOf("WWW-Authenticate", "Basic realm=\"Loxone\"")
+                    )
+                }
+            }
+            val client = KtorHttpLoxoneClient(at, LoxoneAuth.Basic(profile), engine)
+            try {
+                client.callRaw("jdev/sys/basicAuthTest")
+            } finally {
+                client.close()
+            }
+            return engine.requestHistory.size
+        }
+
+        "send basic auth on the first request over https" {
+            requestsToLogIn(LoxoneEndpoint("miniserver.example")) shouldBe 1
+        }
+
+        "send basic auth only when asked over plain http or to Cloud DNS" {
+            requestsToLogIn(endpoint) shouldBe 2
+            requestsToLogIn(LoxoneEndpoint("dns.loxonecloud.com")) shouldBe 2
+        }
+
+        "send basic auth on the first request after Cloud DNS redirects to https" {
+            val engine = MockEngine { request ->
+                when {
+                    request.url.host == "dns.loxonecloud.com" ->
+                        respondRedirect("https://miniserver.example${request.url.encodedPath}")
+                    request.headers.contains("Authorization") -> respond(
+                        okMsg("dev/sys/basicAuthTest", "authenticated"),
+                        headers = headersOf("Content-Type", "application/json")
+                    )
+                    else -> respondError(
+                        HttpStatusCode.Unauthorized,
+                        headers = headersOf("WWW-Authenticate", "Basic realm=\"Loxone\"")
+                    )
+                }
+            }
+            val client = KtorHttpLoxoneClient(LoxoneEndpoint("dns.loxonecloud.com"), LoxoneAuth.Basic(profile), engine)
+            try {
+                client.callRaw("jdev/sys/basicAuthTest")
+            } finally {
+                client.close()
+            }
+            engine.requestHistory.map { it.url.host to it.headers.contains("Authorization") } shouldBe listOf(
+                "dns.loxonecloud.com" to false,
+                "miniserver.example" to true,
+            )
+        }
+
+        "try a wrong password no more times than before" {
+            val engine = MockEngine {
+                respondError(
+                    HttpStatusCode.Unauthorized,
+                    headers = headersOf("WWW-Authenticate", "Basic realm=\"Loxone\"")
+                )
+            }
+            val client = KtorHttpLoxoneClient(LoxoneEndpoint("miniserver.example"), LoxoneAuth.Basic(profile), engine)
+            try {
+                shouldThrow<ClientRequestException> { client.callRaw("jdev/sys/basicAuthTest") }
+            } finally {
+                client.close()
+            }
+            engine.requestHistory.size shouldBe 2
         }
 
         "call basic auth with redirect" {
