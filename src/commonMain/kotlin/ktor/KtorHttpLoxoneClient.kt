@@ -50,6 +50,7 @@ class KtorHttpLoxoneClient internal constructor(
                 }
             }
             level = LogLevel.ALL
+            sanitizeHeader { it == HttpHeaders.Authorization }
         }
         if (authentication is LoxoneAuth.Basic) {
             install(Auth) {
