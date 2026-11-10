@@ -73,18 +73,18 @@ ergonomic in TypeScript than a plain array. This is a breaking change from the p
 
 ---
 
-## Session class: commonMain base + jsMain extension
+## Session class: commonMain class + jsMain wrapper
 
 The `LoxoneMiniserver` class (wiring up WebSocket client, HTTP client, authentication, and
 live state) lives in `commonMain` so JVM and native targets benefit too — not just JS. But
 `SharedFlow<LoxoneEvent>` is not JS-exportable, and `@JsExport` classes cannot declare
-`suspend fun` members. Annotating the base class directly fails for the same reason.
+`suspend fun` members. Annotating the class directly fails for the same reason.
 
-### Two-class hierarchy
+### Composition, not inheritance
 
 ```
-commonMain  LoxoneMiniserver       open class, suspend API, SharedFlow events
-jsMain      JsLoxoneMiniserver     @JsExport @JsName("LoxoneMiniserver"), extends LoxoneMiniserver
+commonMain  LoxoneMiniserver       final class, suspend API, SharedFlow events
+jsMain      JsLoxoneMiniserver     @JsExport @JsName("LoxoneMiniserver"), wraps a LoxoneMiniserver
 ```
 
 - JVM/native consumers use `LoxoneMiniserver` directly with `events.collect { }`.
@@ -92,27 +92,28 @@ jsMain      JsLoxoneMiniserver     @JsExport @JsName("LoxoneMiniserver"), extend
   generated `.d.mts`. Suspend methods are exposed as explicit Promise-returning wrappers.
   Live events are subscribed via `onValueChanged` / `onTextChanged` callbacks.
 
-### Workaround: explicit wrappers with `@JsName`
+`JsLoxoneMiniserver` used to extend an `open` `LoxoneMiniserver`. Inheritance bought nothing on
+the TypeScript side — Kotlin/JS leaves members of a non-exported base class out of the `.d.mts`,
+so every exposed member had to be redeclared anyway — while it made `ws`, `http`, the session
+scope and the event-collection hook subclassable public API on the JVM.
 
-Kotlin/JS does not include inherited members of non-exported base classes in the generated
-TypeScript declarations. Each inherited member that needs to appear in the TypeScript declaration
-is redeclared in `JsLoxoneMiniserver` under a unique Kotlin name, then renamed to the idiomatic
-JS name via `@JsName`:
+### Event hook
+
+`LoxoneMiniserver` runs the only event-collection loop. The wrapper plugs into it through an
+`internal` constructor parameter, invoked with every batch right after it was applied to
+`state` (so callbacks reading `state` already see the new values):
 
 ```kotlin
-// Kotlin name avoids conflict with inherited suspend connect(); @JsName sets the JS name
-@JsName("connect")
-fun connectAsync(): Promise<Unit> = sessionScope.promise { super.connect() }
+// jsMain
+private val delegate = LoxoneMiniserver(endpoint, user, password) { batch -> dispatch(batch) }
 
-// Kotlin can't shadow an inherited open val with override inside @JsExport, so a new
-// property name is used; @JsName makes it appear as `state` in TypeScript
-@JsName("state")
-val jsState: LoxoneState get() = super.state
+@JsName("connect")
+fun connectAsync(): Promise<Unit> = promiseScope.promise { delegate.connect() }
+
+val state: LoxoneState get() = delegate.state
 ```
 
-The inherited `suspend fun connect()` compiles to a continuation-passing JS function
-(`connect($completion)`), so the `@JsName("connect")` wrapper (`connect()`) does not collide
-with it in the JavaScript prototype chain.
+The Kotlin names (`connectAsync`, …) avoid clashing with the JS names chosen via `@JsName`.
 
 Result in the generated `.d.mts`:
 ```typescript
