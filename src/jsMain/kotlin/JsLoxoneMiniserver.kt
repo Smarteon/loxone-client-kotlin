@@ -7,6 +7,7 @@ import cz.smarteon.loxkt.event.ValueEvent
 import cz.smarteon.loxkt.state.LoxoneState
 import cz.smarteon.loxkt.state.drainBatch
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.promise
@@ -67,10 +68,10 @@ class JsLoxoneMiniserver(endpoint: LoxoneEndpoint, user: String, password: Strin
     private val valueListeners = mutableListOf<(String, Double) -> Unit>()
     private val textListeners = mutableListOf<(String, String) -> Unit>()
 
-    override fun startEventCollection() {
+    override fun startEventCollection(events: Flow<LoxoneEvent>) {
         collectJob = sessionScope.launch {
             coroutineScope {
-                val channel = ws.events.produceIn(this)
+                val channel = events.produceIn(this)
                 try {
                     for (first in channel) {
                         val batch = channel.drainBatch(first)
