@@ -6,11 +6,14 @@ import cz.smarteon.loxkt.ktor.KtorHttpLoxoneClient
 import cz.smarteon.loxkt.ktor.KtorWebsocketLoxoneClient
 import cz.smarteon.loxkt.state.LoxoneState
 import cz.smarteon.loxkt.state.collectFrom
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.launch
 
 /**
@@ -69,21 +72,44 @@ open class LoxoneMiniserver(val endpoint: LoxoneEndpoint, user: String, password
     /**
      * Opens the WebSocket session, authenticates, and enables binary status updates.
      * Idempotent: repeated calls return immediately if already connected.
+     *
+     * Event collection is subscribed **before** binary status updates are enabled: the Miniserver
+     * sends the full initial state right after `enablebinstatusupdate`, and [events] has no replay,
+     * so anything emitted before the subscription exists would be lost.
      */
     open suspend fun connect() {
         if (collectJob?.isActive == true) return
-        ws.callForMsg(LoxoneCommands.App.enableBinStatusUpdate())
-        startEventCollection()
+
+        val subscribed = CompletableDeferred<Unit>()
+        startEventCollection(ws.events.onSubscription { subscribed.complete(Unit) })
+        collectJob?.invokeOnCompletion { cause ->
+            subscribed.completeExceptionally(
+                cause ?: IllegalStateException("Event collection ended before subscribing")
+            )
+        }
+
+        var enabled = false
+        try {
+            subscribed.await()
+            ws.callForMsg(LoxoneCommands.App.enableBinStatusUpdate())
+            enabled = true
+        } finally {
+            if (!enabled) {
+                collectJob?.cancel()
+                collectJob = null
+            }
+        }
     }
 
     /**
-     * Starts collecting WebSocket events into [state]. Subclasses may override to add
+     * Starts collecting [events] into [state]. Subclasses may override to add
      * additional per-event side effects (e.g. firing JS callbacks) in the same loop.
-     * The launched [Job] should be stored in [collectJob] by the implementation.
+     * The launched [Job] should be stored in [collectJob] by the implementation, and it must
+     * collect [events] itself (not [ws] events directly) so [connect] knows when it subscribed.
      */
-    protected open fun startEventCollection() {
+    protected open fun startEventCollection(events: Flow<LoxoneEvent>) {
         collectJob = sessionScope.launch {
-            state.collectFrom(ws.events)
+            state.collectFrom(events)
         }
     }
 
