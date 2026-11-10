@@ -5,9 +5,11 @@ import cz.smarteon.loxkt.event.LoxoneEvent
 import cz.smarteon.loxkt.event.TextEvent
 import cz.smarteon.loxkt.event.ValueEvent
 import cz.smarteon.loxkt.state.LoxoneState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import cz.smarteon.loxkt.state.drainBatch
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.produceIn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.promise
 import kotlin.js.JsExport
 import kotlin.js.JsName
@@ -17,9 +19,10 @@ import kotlin.js.Promise
  * JS/TypeScript entry point to a Loxone Miniserver. Exported as `LoxoneMiniserver` in the
  * generated `.d.mts`.
  *
- * Wraps a [LoxoneMiniserver] (composition, not inheritance): `@JsExport` classes cannot declare
- * `suspend fun` members and [kotlinx.coroutines.flow.SharedFlow] is not exportable, so the
- * lifecycle is exposed as Promise-returning functions and live events as callbacks.
+ * All lifecycle methods are exposed as Promise-returning functions (no suspend) so TypeScript
+ * sees them directly. Suspend functions from the Kotlin base class are wrapped here explicitly
+ * because Kotlin/JS does not include inherited members of non-exported base classes in the
+ * generated TypeScript declarations.
  *
  * Typical usage:
  * ```ts
@@ -38,31 +41,55 @@ import kotlin.js.Promise
  */
 @JsExport
 @JsName("LoxoneMiniserver")
-class JsLoxoneMiniserver(endpoint: LoxoneEndpoint, user: String, password: String) {
+class JsLoxoneMiniserver(endpoint: LoxoneEndpoint, user: String, password: String)
+    : LoxoneMiniserver(endpoint, user, password) {
 
     @JsName("fromUrl")
     constructor(url: String, user: String, password: String)
         : this(LoxoneEndpoint.fromUrl(url), user, password)
 
+    // Expose state and lifecycle methods explicitly so they appear in the TypeScript declaration.
+    // Kotlin/JS does not include inherited members of non-exported base classes in .d.mts.
+    // For suspend funs: @JsName renames wrappers to idiomatic JS names; Kotlin-level names avoid
+    //   conflicts with the inherited suspend methods (distinguished by continuation argument).
+    // For `state`: a fresh @JsName alias is needed since override properties are also excluded.
+    @JsName("state")
+    val jsState: LoxoneState get() = super.state
+
+    @JsName("connect")
+    fun connectAsync(): Promise<Unit> = sessionScope.promise { super.connect() }
+
+    @JsName("loadStructure")
+    fun loadStructureAsync(): Promise<LoxoneApp> = sessionScope.promise { super.loadStructure() }
+
+    @JsName("close")
+    fun closeAsync(): Promise<Unit> = sessionScope.promise { super.close() }
+
     private val valueListeners = mutableListOf<(String, Double) -> Unit>()
     private val textListeners = mutableListOf<(String, String) -> Unit>()
 
-    private val delegate = LoxoneMiniserver(endpoint, user, password) { batch -> dispatch(batch) }
-
-    // Only runs the Promise wrappers below; the delegate owns the session and its collection.
-    private val promiseScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-
-    /** Live state store — updated continuously after [connect]. */
-    val state: LoxoneState get() = delegate.state
-
-    @JsName("connect")
-    fun connectAsync(): Promise<Unit> = promiseScope.promise { delegate.connect() }
-
-    @JsName("loadStructure")
-    fun loadStructureAsync(): Promise<LoxoneApp> = promiseScope.promise { delegate.loadStructure() }
-
-    @JsName("close")
-    fun closeAsync(): Promise<Unit> = promiseScope.promise { delegate.close() }
+    override fun startEventCollection(events: Flow<LoxoneEvent>) {
+        collectJob = sessionScope.launch {
+            coroutineScope {
+                val channel = events.produceIn(this)
+                try {
+                    for (first in channel) {
+                        val batch = channel.drainBatch(first)
+                        state.updateAll(batch)
+                        for (event in batch) {
+                            when (event) {
+                                is ValueEvent -> valueListeners.forEach { it(event.uuid, event.value) }
+                                is TextEvent -> textListeners.forEach { it(event.uuid, event.text) }
+                                else -> Unit
+                            }
+                        }
+                    }
+                } finally {
+                    channel.cancel()
+                }
+            }
+        }
+    }
 
     /**
      * Registers a callback invoked for every numeric state update.
@@ -80,17 +107,5 @@ class JsLoxoneMiniserver(endpoint: LoxoneEndpoint, user: String, password: Strin
     fun onTextChanged(cb: (uuid: String, text: String) -> Unit): () -> Unit {
         textListeners += cb
         return { textListeners -= cb }
-    }
-
-    // Called by the delegate after the batch was applied to state, so listeners reading
-    // state from inside the callback already see the new values.
-    private fun dispatch(batch: List<LoxoneEvent>) {
-        for (event in batch) {
-            when (event) {
-                is ValueEvent -> valueListeners.forEach { it(event.uuid, event.value) }
-                is TextEvent -> textListeners.forEach { it(event.uuid, event.text) }
-                else -> Unit
-            }
-        }
     }
 }

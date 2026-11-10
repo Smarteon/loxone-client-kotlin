@@ -37,24 +37,16 @@ import kotlinx.coroutines.flow.produceIn
  *
  * @param events Flow of Loxone events to collect
  */
-suspend fun LoxoneState.collectFrom(events: Flow<LoxoneEvent>): Unit =
-    events.collectBatches { batch -> updateAll(batch) }
-
-/**
- * Collects this flow in batches: each [onBatch] call receives the next event together with
- * the events already buffered behind it (see [drainBatch]), so bursts are handled in one go.
- */
-internal suspend fun Flow<LoxoneEvent>.collectBatches(onBatch: (List<LoxoneEvent>) -> Unit): Unit =
-    coroutineScope {
-        val channel = produceIn(this)
-        try {
-            for (first in channel) {
-                onBatch(channel.drainBatch(first))
-            }
-        } finally {
-            channel.cancel()
+suspend fun LoxoneState.collectFrom(events: Flow<LoxoneEvent>): Unit = coroutineScope {
+    val channel = events.produceIn(this)
+    try {
+        for (first in channel) {
+            updateAll(channel.drainBatch(first))
         }
+    } finally {
+        channel.cancel()
     }
+}
 
 /**
  * Caps how many events a single [drainBatch] call accumulates. Without a cap, a sustained
