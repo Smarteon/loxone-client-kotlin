@@ -67,6 +67,14 @@ class JsLoxoneMiniserver(endpoint: LoxoneEndpoint, user: String, password: Strin
 
     private val valueListeners = mutableListOf<(String, Double) -> Unit>()
     private val textListeners = mutableListOf<(String, String) -> Unit>()
+    private val disconnectListeners = mutableListOf<() -> Unit>()
+
+    init {
+        sessionScope.launch {
+            // copy: a listener typically unsubscribes itself while handling the loss
+            disconnects.collect { disconnectListeners.toList().forEach { it() } }
+        }
+    }
 
     override fun startEventCollection(events: Flow<LoxoneEvent>) {
         collectJob = sessionScope.launch {
@@ -89,6 +97,17 @@ class JsLoxoneMiniserver(endpoint: LoxoneEndpoint, user: String, password: Strin
                 }
             }
         }
+    }
+
+    /**
+     * Registers a callback invoked when the connection is lost without `close()` having been
+     * called (Miniserver restart, network drop, missed keepalive). Live updates have stopped by
+     * then: close this instance and create a new one to reconnect. May fire more than once.
+     * @return An unsubscribe function — call it to remove the listener.
+     */
+    fun onDisconnected(cb: () -> Unit): () -> Unit {
+        disconnectListeners += cb
+        return { disconnectListeners -= cb }
     }
 
     /**
