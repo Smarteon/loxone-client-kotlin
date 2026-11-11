@@ -239,8 +239,12 @@ class KtorWebsocketLoxoneClient internal constructor(
     @Suppress("TooGenericExceptionCaught")
     override suspend fun close() {
         try {
-            logger.debug { "Closing authenticator" }
-            authenticator?.close(this@KtorWebsocketLoxoneClient)
+            // Kill the token only over a session that still exists: after the Miniserver closed it,
+            // calling through ensureSession() would open (and authenticate) a new one just for that.
+            if (session != null) {
+                logger.debug { "Closing authenticator" }
+                authenticator?.close(this@KtorWebsocketLoxoneClient)
+            }
         } catch (e: Exception) {
             logger.error(e) { "Error closing authenticator" }
         }

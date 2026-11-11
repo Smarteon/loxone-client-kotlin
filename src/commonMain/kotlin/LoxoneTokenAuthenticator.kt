@@ -99,8 +99,20 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
         authWebsockets.remove(client)
     }
 
+    /**
+     * Kills the token on close ([LoxoneClientSettings.killTokenOnClose]) — only over a WebSocket.
+     *
+     * A successful `killtoken` is answered with 401 (the token used for the request is dead now).
+     * Over a WebSocket that's just a message in an authenticated session; over HTTP it's an
+     * HTTP 401, which the Miniserver counts as a failed login. Enough of them and it blocks the
+     * client IP (WebSocket closed with 4003 right after opening) — for every client behind the same
+     * NAT, and for as long as attempts keep coming. The HTTP kill used to run whenever the
+     * WebSocket kill failed, i.e. exactly when the connection was lost, so every reconnect cycle
+     * of a flaky connection added a failed login. A token that can't be killed over its WebSocket
+     * is left to expire instead.
+     */
     suspend fun close(client: LoxoneClient) {
-        if (settings.killTokenOnClose) {
+        if (settings.killTokenOnClose && client is WebsocketLoxoneClient) {
             killToken(client)
         }
     }
