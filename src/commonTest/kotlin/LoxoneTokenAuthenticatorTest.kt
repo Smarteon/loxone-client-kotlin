@@ -120,6 +120,22 @@ class LoxoneTokenAuthenticatorTest : ShouldSpec({
         }
     }
 
+    context("closing an HTTP client") {
+        val initialToken = Token("token", byteArrayOf(1), TimeUtils.currentLoxoneSeconds().plus(400), 0, false)
+        val (authenticator, repository) = authenticatorOf(initialToken)
+        val client = httpClient()
+
+        should("not kill token over HTTP") {
+            // the HTTP 401 a successful killtoken returns counts as a failed login on the Miniserver
+            val verification = client.stubMsg("killtoken", "", code = "401")
+
+            authenticator.close(client)
+
+            repository.getToken(PROFILE) shouldBe initialToken
+            verification.matches.size shouldBe 0
+        }
+    }
+
     context("with killTokenOnClose disabled") {
         val initialToken = Token("token", byteArrayOf(1), TimeUtils.currentLoxoneSeconds().plus(400), 0, false)
         val (authenticator, repository) = authenticatorOf(initialToken, LoxoneClientSettings(killTokenOnClose = false))

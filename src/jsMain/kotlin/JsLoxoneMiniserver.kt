@@ -4,6 +4,7 @@ import cz.smarteon.loxkt.app.LoxoneApp
 import cz.smarteon.loxkt.event.LoxoneEvent
 import cz.smarteon.loxkt.event.TextEvent
 import cz.smarteon.loxkt.event.ValueEvent
+import cz.smarteon.loxkt.message.TokenPermission
 import cz.smarteon.loxkt.state.LoxoneState
 import cz.smarteon.loxkt.state.drainBatch
 import kotlinx.coroutines.coroutineScope
@@ -14,6 +15,8 @@ import kotlinx.coroutines.promise
 import kotlin.js.JsExport
 import kotlin.js.JsName
 import kotlin.js.Promise
+
+private val BROWSER_SETTINGS = LoxoneClientSettings(tokenPermission = TokenPermission.WEB)
 
 /**
  * JS/TypeScript entry point to a Loxone Miniserver. Exported as `LoxoneMiniserver` in the
@@ -38,11 +41,17 @@ import kotlin.js.Promise
  * unsubscribe()
  * await miniserver.close()
  * ```
+ *
+ * Authenticates with a web-permission token ([TokenPermission.WEB], lives hours) rather than an
+ * app-permission one (weeks): a token is only killed over its own live WebSocket, so after a lost
+ * connection it stays on the Miniserver until it expires. Browser clients reconnect often (page
+ * reloads, kiosks on flaky networks) and each connection takes a new token — with weeks of
+ * lifespan they would pile up.
  */
 @JsExport
 @JsName("LoxoneMiniserver")
 class JsLoxoneMiniserver(endpoint: LoxoneEndpoint, user: String, password: String)
-    : LoxoneMiniserver(endpoint, user, password) {
+    : LoxoneMiniserver(endpoint, user, password, BROWSER_SETTINGS) {
 
     @JsName("fromUrl")
     constructor(url: String, user: String, password: String)
