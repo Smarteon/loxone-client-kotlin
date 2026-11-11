@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -101,6 +102,15 @@ class KtorWebsocketLoxoneClient internal constructor(
 
     private val _events = MutableSharedFlow<LoxoneEvent>(extraBufferCapacity = eventBufferSize)
     override val events: SharedFlow<LoxoneEvent> = _events.asSharedFlow()
+
+    private val _sessionLost = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+
+    /**
+     * Emits when the WebSocket session ends without [close] having been called: closed by the
+     * Miniserver (e.g. program restart after a Config save), dropped by the network, or torn down
+     * after a missed keepalive. May emit more than once for the same loss.
+     */
+    internal val sessionLost: SharedFlow<Unit> = _sessionLost.asSharedFlow()
 
     override suspend fun <RESPONSE : LoxoneResponse> call(command: Command<RESPONSE>): RESPONSE {
         ensureSession()
@@ -254,7 +264,12 @@ class KtorWebsocketLoxoneClient internal constructor(
                 ).let { newSession ->
                     logger.debug { "WebSocketSession session created" }
                     session = newSession
-                    newSession.incoming.receiveAsFlow().onEach(::processFrame).launchIn(scope)
+                    newSession.incoming.receiveAsFlow()
+                        .onEach(::processFrame)
+                        // incoming completes however the session ends (CLOSE frame, network
+                        // error, cancellation); only an end we did not initiate is a loss.
+                        .onCompletion { if (!closingLocally) _sessionLost.tryEmit(Unit) }
+                        .launchIn(scope)
                     startKeepAlive(newSession)
                 }
             }
@@ -355,6 +370,8 @@ class KtorWebsocketLoxoneClient internal constructor(
             }
             if (keepAliveResponse == null) {
                 logger.info { "Keepalive response not received within timeout, closing connection" }
+                // close() marks the end as local, so report the loss before it does
+                _sessionLost.tryEmit(Unit)
                 close()
             }
         }

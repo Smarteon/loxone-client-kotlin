@@ -65,6 +65,14 @@ open class LoxoneMiniserver(val endpoint: LoxoneEndpoint, user: String, password
     val events: SharedFlow<LoxoneEvent>
         get() = ws.events
 
+    /**
+     * Emits when the connection is lost without [close] having been called (Miniserver restart,
+     * network drop, missed keepalive). Live updates have stopped by then and this instance can't
+     * resume them: close it and create a new [LoxoneMiniserver]. May emit more than once per loss.
+     */
+    val disconnects: SharedFlow<Unit>
+        get() = ws.sessionLost
+
     protected val sessionScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     protected var collectJob: Job? = null
     private var cachedApp: LoxoneApp? = null
