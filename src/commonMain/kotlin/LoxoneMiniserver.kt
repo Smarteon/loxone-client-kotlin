@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.launch
+import kotlin.jvm.JvmOverloads
 
 /**
  * High-level entry point to a Loxone Miniserver.
@@ -41,14 +42,23 @@ import kotlinx.coroutines.launch
  * await miniserver.connect()
  * const app = await miniserver.loadStructure()
  * ```
+ *
+ * @param settings Token and client settings, e.g. the token permission (which sets its lifespan).
  */
-open class LoxoneMiniserver(val endpoint: LoxoneEndpoint, user: String, password: String) {
+open class LoxoneMiniserver @JvmOverloads constructor(
+    val endpoint: LoxoneEndpoint,
+    user: String,
+    password: String,
+    settings: LoxoneClientSettings = LoxoneClientSettings(),
+) {
 
-    constructor(url: String, user: String, password: String)
-        : this(LoxoneEndpoint.fromUrl(url), user, password)
+    @JvmOverloads
+    constructor(url: String, user: String, password: String, settings: LoxoneClientSettings = LoxoneClientSettings())
+        : this(LoxoneEndpoint.fromUrl(url), user, password, settings)
 
     private val authenticator = LoxoneTokenAuthenticator(
-        LoxoneProfile(endpoint, LoxoneCredentials(user, password))
+        LoxoneProfile(endpoint, LoxoneCredentials(user, password)),
+        settings = settings,
     )
 
     protected val ws = KtorWebsocketLoxoneClient(endpoint, authenticator)
