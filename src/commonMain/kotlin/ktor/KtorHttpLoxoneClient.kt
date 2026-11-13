@@ -26,19 +26,24 @@ import kotlin.jvm.JvmOverloads
 class KtorHttpLoxoneClient internal constructor(
     private val endpoint: LoxoneEndpoint,
     private val authentication: LoxoneAuth = LoxoneAuth.None,
-    httpClientEngine: HttpClientEngine? = null
+    httpClientEngine: HttpClientEngine? = null,
+    private val customHeaders: Map<String, String> = emptyMap(),
 ) : HttpLoxoneClient {
 
     @JvmOverloads constructor(
         endpoint: LoxoneEndpoint,
         authentication: LoxoneAuth = LoxoneAuth.None,
-    ) : this(endpoint, authentication, null)
+        /** Extra headers sent with every request, e.g. if a gateway in front of the Miniserver
+         *  (Loxone Cloud DNS included) requires something this library has no opinion on. */
+        customHeaders: Map<String, String> = emptyMap(),
+    ) : this(endpoint, authentication, null, customHeaders)
 
     private val logger = KotlinLogging.logger {}
 
     private val httpClient = httpClientEngine?.let { HttpClient(it) { configure() } } ?: HttpClient { configure() }
 
     private fun HttpClientConfig<*>.configure() {
+        installCustomHeaders(customHeaders)
         expectSuccess = true
         install(ContentNegotiation) {
             json(Codec.loxJson)

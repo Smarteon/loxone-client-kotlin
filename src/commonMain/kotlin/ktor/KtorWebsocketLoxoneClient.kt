@@ -60,9 +60,16 @@ class KtorWebsocketLoxoneClient internal constructor(
         endpoint: LoxoneEndpoint,
         authenticator: LoxoneTokenAuthenticator? = null,
         commandEncryption: CommandEncryption = CommandEncryption.NONE,
-        eventBufferSize: Int = DEFAULT_EVENT_BUFFER_SIZE
+        eventBufferSize: Int = DEFAULT_EVENT_BUFFER_SIZE,
+        /** Extra headers sent on the state socket's upgrade request, e.g. if a gateway in front of
+         *  the Miniserver (Loxone Cloud DNS included) requires something this library has no
+         *  opinion on. */
+        customHeaders: Map<String, String> = emptyMap(),
     ) : this(
-        HttpClient { install(WebSockets) },
+        HttpClient {
+            install(WebSockets)
+            installCustomHeaders(customHeaders)
+        },
         endpoint,
         authenticator,
         commandEncryption,
