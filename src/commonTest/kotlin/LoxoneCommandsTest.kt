@@ -41,6 +41,15 @@ class LoxoneCommandsTest : ShouldSpec({
         }
     }
 
+    should("ask for combined permissions in one token") {
+        val permission = TokenPermission.APP + TokenPermission.EXPERT_MODE + TokenPermission.SYS_WS +
+            TokenPermission.USER_MANAGEMENT + TokenPermission.TRIGGER_UPDATE
+
+        LoxoneCommands.Tokens.get("hash", "user", permission).pathSegments[5] shouldBe "35140"
+        (TokenPermission.SYS_WS in TokenPermission(1988)) shouldBe true
+        (TokenPermission.SYS_WS in TokenPermission(1732)) shouldBe false
+    }
+
     should("create authwithtoken command") {
         LoxoneCommands.Tokens.auth("hash", "user").asClue {
             it.pathSegments shouldBe listOf("authwithtoken", "hash", "user")
