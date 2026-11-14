@@ -189,18 +189,6 @@ The library currently implements core authentication (token-based), basic WebSoc
 - `src/commonMain/kotlin/message/TokenState.kt` - Refresh detection exists but no command
 - `src/commonMain/kotlin/LoxoneCommands.kt` - Only get, auth, kill implemented
 
-#### 8. CloudDNS Support
-**Status:** Not Implemented  
-**Impact:** Medium - Cannot discover Miniserver via CloudDNS  
-**Protocol Reference:** CommunicatingWithMiniserver.md, "General Info" → "CloudDNS"
-
-**Missing Components:**
-- CloudDNS lookup: `dns.loxonecloud.com/?getip&snr={SNR}&json=true`
-- Response parsing (IP, port, code, PortOpen, LastUpdated, IPHTTPS, etc.)
-- Error code handling (403, 405, 409, 412, 418, 481, 482, 483)
-- HTTPS/WSS support detection
-- Remote Connect Service support
-
 #### 9. Icon/Image Download
 **Status:** Not Implemented  
 **Impact:** Low-Medium - Cannot display visual elements  
@@ -289,7 +277,6 @@ The library currently implements core authentication (token-based), basic WebSoc
 **Missing Components:**
 - Support for distributed data centers
 - Remote connect protocol handling
-- Automatic fallback to CloudDNS
 
 #### 16. Message Size Estimation
 **Status:** Partially Implemented  
@@ -382,19 +369,8 @@ The library currently implements core authentication (token-based), basic WebSoc
     - Support token save/load across sessions
     - Handle token revocation and cleanup
 
-### Phase 6: CloudDNS & Discovery (Medium Priority)
-**Goal:** Automatic Miniserver discovery
-
-13. **Issue: Implement CloudDNS Client**
-    - Create CloudDNS lookup client
-    - Parse CloudDNS response (IP, port, status, etc.)
-    - Handle all CloudDNS error codes
-    - Support HTTPS/WSS detection
-
-14. **Issue: Implement Automatic Endpoint Resolution**
-    - Create factory method for CloudDNS-based endpoint creation
-    - Implement automatic HTTP/HTTPS protocol selection
-    - Add Remote Connect Service support
+### Phase 6: Dropped
+CloudDNS discovery (formerly Issues 13-14) was dropped because dns.loxonecloud.com is no longer operational.
 
 ### Phase 7: Enhanced Error Handling (Low Priority)
 **Goal:** Better diagnostics and user feedback
@@ -442,7 +418,6 @@ Phase 2 (Structure/Controls) → Phase 1 (for state mapping)
 Phase 3 (Encryption) → Requires crypto library selection
 Phase 4 (Certificates) → Phase 3 (public key extraction)
 Phase 5 (Token Extensions) → No dependencies (can be done in parallel)
-Phase 6 (CloudDNS) → Phase 4 (HTTPS detection)
 Phase 7-8 (Enhancements) → No critical dependencies
 ```
 
@@ -527,9 +502,9 @@ The loxone-client-kotlin library has a solid foundation with authentication, bas
 
 1. **Critical additions:** Event processing, structure file support, command encryption
 2. **Important features:** Control commands, certificate handling, token management
-3. **Enhancements:** CloudDNS, error handling, additional protocol features
+3. **Enhancements:** Error handling, additional protocol features
 
-The proposed 8-phase roadmap provides a clear path to full protocol coverage, with phases 1-3 being critical for a functional real-time control client.
+The proposed phased roadmap provides a clear path to full protocol coverage, with phases 1-3 being critical for a functional real-time control client.
 
 **Estimated Effort:**
 - Phase 1-2: ~4-6 weeks (core functionality)
