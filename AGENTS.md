@@ -85,5 +85,4 @@ Published as `cz.smarteon.loxone:loxone-client-kotlin` on Maven Central.
 
 - Control commands
 - Token persistence and refresh
-- CloudDNS discovery
 - Icon/image download, statistics data

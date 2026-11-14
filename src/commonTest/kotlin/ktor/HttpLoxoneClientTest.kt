@@ -149,15 +149,14 @@ class HttpLoxoneClientTest : WordSpec({
             requestsToLogIn(LoxoneEndpoint("miniserver.example")) shouldBe 1
         }
 
-        "send basic auth only when asked over plain http or to Cloud DNS" {
+        "send basic auth only when asked over plain http" {
             requestsToLogIn(endpoint) shouldBe 2
-            requestsToLogIn(LoxoneEndpoint("dns.loxonecloud.com")) shouldBe 2
         }
 
-        "send basic auth on the first request after Cloud DNS redirects to https" {
+        "send basic auth on the first request after a redirect to https" {
             val engine = MockEngine { request ->
                 when {
-                    request.url.host == "dns.loxonecloud.com" ->
+                    !request.url.protocol.isSecure() ->
                         respondRedirect("https://miniserver.example${request.url.encodedPath}")
                     request.headers.contains("Authorization") -> respond(
                         okMsg("dev/sys/basicAuthTest", "authenticated"),
@@ -169,14 +168,14 @@ class HttpLoxoneClientTest : WordSpec({
                     )
                 }
             }
-            val client = KtorHttpLoxoneClient(LoxoneEndpoint("dns.loxonecloud.com"), LoxoneAuth.Basic(profile), engine)
+            val client = KtorHttpLoxoneClient(endpoint, LoxoneAuth.Basic(profile), engine)
             try {
                 client.callRaw("jdev/sys/basicAuthTest")
             } finally {
                 client.close()
             }
             engine.requestHistory.map { it.url.host to it.headers.contains("Authorization") } shouldBe listOf(
-                "dns.loxonecloud.com" to false,
+                "10.0.1.77" to false,
                 "miniserver.example" to true,
             )
         }
