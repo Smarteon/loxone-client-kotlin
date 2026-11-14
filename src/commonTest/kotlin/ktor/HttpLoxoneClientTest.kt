@@ -1,5 +1,6 @@
 package cz.smarteon.loxkt.ktor
 
+import cz.smarteon.loxkt.InMemoryTokenRepository
 import cz.smarteon.loxkt.LoxoneAuth
 import cz.smarteon.loxkt.LoxoneCredentials
 import cz.smarteon.loxkt.LoxoneEndpoint
@@ -12,8 +13,10 @@ import cz.smarteon.loxkt.message.LoxoneMsgVal
 import cz.smarteon.loxkt.message.TestingLoxValues.API_INFO_MSG_VAL
 import cz.smarteon.loxkt.message.TestingLoxValues.HASHING
 import cz.smarteon.loxkt.message.TestingLoxValues.token
+import cz.smarteon.loxkt.message.TestingLoxValues.tokenRefreshResponse
 import cz.smarteon.loxkt.message.TestingMessages.htmlError
 import cz.smarteon.loxkt.message.TestingMessages.okMsg
+import cz.smarteon.loxkt.message.Token
 import cz.smarteon.loxkt.message.sysCommand
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
@@ -22,6 +25,8 @@ import io.ktor.client.engine.mock.*
 import io.ktor.client.plugins.*
 import io.ktor.http.*
 import io.ktor.utils.io.core.*
+import kotlinx.coroutines.withTimeout
+import kotlin.time.Duration.Companion.seconds
 
 class HttpLoxoneClientTest : WordSpec({
 
@@ -113,6 +118,38 @@ class HttpLoxoneClientTest : WordSpec({
                 val response = call(sysCommand<LoxoneMsgVal>("tokenAuthTest"))
                 response.code shouldBe "200"
             }
+        }
+
+        "refresh and kill a token with autht" {
+            val engine = MockEngine { request ->
+                val path = request.url.encodedPath
+                val signed = request.url.parameters.contains("autht")
+                fun ok(value: String) =
+                    respond(okMsg(path.substring(1), value), headers = headersOf("Content-Type", "application/json"))
+                when {
+                    path == "/jdev/sys/getkey2/user" -> ok(HASHING)
+                    path.startsWith("/jdev/sys/refreshjwt/") && signed ->
+                        ok(tokenRefreshResponse(TimeUtils.currentLoxoneSeconds().plus(1000)))
+                    path.startsWith("/jdev/sys/killtoken/") && signed -> ok("\"\"")
+                    path == "/jdev/sys/tokenAuthTest" && signed -> ok("\"authenticated\"")
+                    else -> respondError(HttpStatusCode.Unauthorized)
+                }
+            }
+            val repository = InMemoryTokenRepository()
+            repository.putToken(profile, Token("old", byteArrayOf(1), TimeUtils.currentLoxoneSeconds().plus(200), 4, false))
+            val authenticator = LoxoneTokenAuthenticator(profile, repository)
+            val client = KtorHttpLoxoneClient(endpoint, LoxoneAuth.Token(authenticator), engine)
+            try {
+                withTimeout(10.seconds) { client.call(sysCommand<LoxoneMsgVal>("tokenAuthTest")) }.code shouldBe "200"
+                repository.getToken(profile)?.token shouldBe "REFRESHED_TOKEN_VALUE"
+
+                authenticator.killToken(client)
+                repository.getToken(profile) shouldBe null
+            } finally {
+                client.close()
+            }
+            engine.requestHistory.map { it.url.encodedPath.split('/')[3] }.filter { it != "getkey2" } shouldBe
+                listOf("refreshjwt", "tokenAuthTest", "killtoken")
         }
 
         "call authenticated by basic auth" {

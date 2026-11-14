@@ -3,11 +3,16 @@ package cz.smarteon.loxkt
 import cz.smarteon.loxkt.LoxoneCommands.Tokens
 import cz.smarteon.loxkt.LoxoneCrypto.loxoneHashing
 import cz.smarteon.loxkt.message.Hashing.Companion.commandForUser
+import cz.smarteon.loxkt.message.LoxoneMsg
 import cz.smarteon.loxkt.message.Token
 import cz.smarteon.loxkt.message.TokenState
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.AbstractCoroutineContextElement
+import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmOverloads
 import kotlin.properties.Delegates
 
@@ -91,9 +96,17 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
             }
         }
 
+    /**
+     * Kills the token on the Miniserver, over a WebSocket or HTTP. Over HTTP the request is signed with the
+     * killed token's `autht` and answered 200, which is no failed login (firmware 17.2); any request with the
+     * token afterwards is one, so nothing may use it any more.
+     */
     suspend fun killToken(client: LoxoneClient) = execConditionalWithMutex({ TokenState(token).isUsable }) {
         logger.debug { "Going to kill token $token" }
-        client.callForMsg(Tokens.kill(tokenHash(client, "killtoken"), user))
+        val code = client.call(Tokens.kill(tokenHash(client, "killtoken"), user)).code
+        if (code != LoxoneMsg.CODE_AUTH_FAIL && code != LoxoneMsg.CODE_OK) {
+            throw LoxoneException("Miniserver answered killtoken with $code")
+        }
         logger.info { "Token killed" }
         token = null
         authWebsockets.remove(client)
@@ -102,14 +115,11 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
     /**
      * Kills the token on close ([LoxoneClientSettings.killTokenOnClose]) — only over a WebSocket.
      *
-     * A successful `killtoken` is answered with 401 (the token used for the request is dead now).
-     * Over a WebSocket that's just a message in an authenticated session; over HTTP it's an
-     * HTTP 401, which the Miniserver counts as a failed login. Enough of them and it blocks the
+     * The HTTP kill used to run whenever the WebSocket kill failed, i.e. exactly when the connection
+     * was lost, and a flaky connection then collected failed logins until the Miniserver blocked the
      * client IP (WebSocket closed with 4003 right after opening) — for every client behind the same
-     * NAT, and for as long as attempts keep coming. The HTTP kill used to run whenever the
-     * WebSocket kill failed, i.e. exactly when the connection was lost, so every reconnect cycle
-     * of a flaky connection added a failed login. A token that can't be killed over its WebSocket
-     * is left to expire instead.
+     * NAT. A token that can't be killed over its WebSocket is left to expire instead; [killToken]
+     * kills it over HTTP when the caller knows it's no longer needed.
      */
     suspend fun close(client: LoxoneClient) {
         if (settings.killTokenOnClose && client is WebsocketLoxoneClient) {
@@ -125,12 +135,20 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
         )
 
     private suspend fun execConditionalWithMutex(condition: () -> Boolean, block: suspend () -> Unit) {
+        // The block's own refreshjwt and killtoken are authenticated: over HTTP the client signs them with
+        // `autht` and asks for authentication first, which must not wait for the lock the block holds.
+        if (currentCoroutineContext()[Authenticating]?.authenticator === this) return
         if (condition()) {
             mutex.withLock {
                 if (condition()) {
-                    block()
+                    withContext(Authenticating(this)) { block() }
                 }
             }
         }
+    }
+
+    private class Authenticating(val authenticator: LoxoneTokenAuthenticator) :
+        AbstractCoroutineContextElement(Authenticating) {
+        companion object Key : CoroutineContext.Key<Authenticating>
     }
 }

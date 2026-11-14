@@ -126,7 +126,7 @@ class LoxoneTokenAuthenticatorTest : ShouldSpec({
         val client = httpClient()
 
         should("not kill token over HTTP") {
-            // the HTTP 401 a successful killtoken returns counts as a failed login on the Miniserver
+            // a closing HTTP client may only have lost its connection: the token is left to expire
             val verification = client.stubMsg("killtoken", "", code = "401")
 
             authenticator.close(client)

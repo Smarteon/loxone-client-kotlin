@@ -77,13 +77,14 @@ object LoxoneCommands {
         /**
          * Command to refresh token. Uses the modern `refreshjwt` endpoint (protocol ≥ 10.2).
          * The [tokenHash] must be HMAC of the current token string using a fresh `getkey2` result.
+         * Authenticated, as the Miniserver answers it over HTTP only with `autht` (401 without).
          */
         @JvmStatic
-        fun refresh(tokenHash: String, user: String) =
-            sysCommand<Token>("refreshjwt", tokenHash, user, authenticated = false)
+        fun refresh(tokenHash: String, user: String) = sysCommand<Token>("refreshjwt", tokenHash, user)
 
         /**
-         * Command to kill token.
+         * Command to kill token. Over a WebSocket the Miniserver answers 401 (the session's token is dead
+         * now); over HTTP, signed with the killed token's `autht`, it answers 200.
          * @param tokenHash The token hash to kill.
          * @param user The user to kill the token for.
          */
