@@ -2,12 +2,14 @@ package cz.smarteon.loxkt.ktor
 
 import cz.smarteon.loxkt.InMemoryTokenRepository
 import cz.smarteon.loxkt.LoxoneAuth
+import cz.smarteon.loxkt.LoxoneCommands
 import cz.smarteon.loxkt.LoxoneCredentials
 import cz.smarteon.loxkt.LoxoneEndpoint
 import cz.smarteon.loxkt.LoxoneEndpoint.Companion.local
 import cz.smarteon.loxkt.LoxoneProfile
 import cz.smarteon.loxkt.LoxoneTokenAuthenticator
 import cz.smarteon.loxkt.TimeUtils
+import cz.smarteon.loxkt.callForMsg
 import cz.smarteon.loxkt.message.ApiInfo
 import cz.smarteon.loxkt.message.LoxoneMsgVal
 import cz.smarteon.loxkt.message.TestingLoxValues.API_INFO_MSG_VAL
@@ -17,6 +19,7 @@ import cz.smarteon.loxkt.message.TestingLoxValues.tokenRefreshResponse
 import cz.smarteon.loxkt.message.TestingMessages.htmlError
 import cz.smarteon.loxkt.message.TestingMessages.okMsg
 import cz.smarteon.loxkt.message.Token
+import cz.smarteon.loxkt.message.TokenPermission
 import cz.smarteon.loxkt.message.sysCommand
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
@@ -150,6 +153,26 @@ class HttpLoxoneClientTest : WordSpec({
             }
             engine.requestHistory.map { it.url.encodedPath.split('/')[3] }.filter { it != "getkey2" } shouldBe
                 listOf("refreshjwt", "tokenAuthTest", "killtoken")
+        }
+
+        "send a command's query parameters" {
+            val engine = MockEngine { request ->
+                if (request.url.parameters["tokenHash"] == "true") {
+                    respond(
+                        okMsg("dev/sys/getjwt", token(TimeUtils.currentLoxoneSeconds().plus(43200))),
+                        headers = headersOf("Content-Type", "application/json")
+                    )
+                } else {
+                    respondError(HttpStatusCode.PreconditionFailed)
+                }
+            }
+            val client = KtorHttpLoxoneClient(endpoint, LoxoneAuth.None, engine)
+            try {
+                client.callForMsg(LoxoneCommands.Tokens.getWithToken("hash", "user", TokenPermission.WEB))
+                    .token shouldBe "8E2AA590E996B321C0E17C3FA9F7A3C17BD376CC"
+            } finally {
+                client.close()
+            }
         }
 
         "call authenticated by basic auth" {

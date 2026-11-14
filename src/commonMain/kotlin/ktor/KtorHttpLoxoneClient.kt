@@ -76,6 +76,7 @@ class KtorHttpLoxoneClient internal constructor(
         return httpClient.get {
             commandRequest(command.authenticated) {
                 appendPathSegments(command.pathSegments)
+                command.query.forEach { (name, value) -> parameters.append(name, value) }
             }
         }.body(command.responseType.typeInfo)
     }

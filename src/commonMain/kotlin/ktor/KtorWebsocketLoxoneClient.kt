@@ -12,6 +12,7 @@ import cz.smarteon.loxkt.LoxoneResponse
 import cz.smarteon.loxkt.LoxoneTokenAuthenticator
 import cz.smarteon.loxkt.WebsocketLoxoneClient
 import cz.smarteon.loxkt.event.LoxoneEvent
+import cz.smarteon.loxkt.queryString
 import cz.smarteon.loxkt.message.LoxoneMsg
 import cz.smarteon.loxkt.message.MessageHeader
 import cz.smarteon.loxkt.message.MessageKind
@@ -124,7 +125,8 @@ class KtorWebsocketLoxoneClient internal constructor(
             authenticator?.ensureAuthenticated(this)
         }
 
-        val response = exchange(command.pathSegments.joinToString(separator = "/"), command.encrypted)
+        val plain = command.pathSegments.joinToString(separator = "/") + command.queryString()
+        val response = exchange(plain, command.encrypted)
 
         @Suppress("UNCHECKED_CAST")
         return loxJson.decodeFromString(command.responseType.deserializer, response) as RESPONSE

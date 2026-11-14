@@ -62,6 +62,32 @@ object LoxoneCommands {
         )
 
         /**
+         * Command to get a new token signed with an existing one instead of the password (`?tokenHash=true`).
+         * The Miniserver issues only rights the existing token has and refuses more with 412.
+         * @param tokenHash HMAC-SHA256 of the existing token, keyed with a fresh `jdev/sys/getkey`.
+         * @param user The user of the existing token.
+         * @param permission The permission of the new token.
+         * @param clientId Unique identifier of this client.
+         * @param clientInfo Information about this client.
+         */
+        @JvmStatic
+        fun getWithToken(
+            tokenHash: String,
+            user: String,
+            permission: TokenPermission,
+            clientId: String = LoxoneClientSettings.DEFAULT_CLIENT_ID,
+            clientInfo: String = LoxoneClientSettings.DEFAULT_CLIENT_INFO
+        ): LoxoneMsgCommand<Token> = object : LoxoneMsgCommand<Token> by get(
+            tokenHash,
+            user,
+            permission,
+            clientId,
+            clientInfo
+        ) {
+            override val query = mapOf("tokenHash" to "true")
+        }
+
+        /**
          * Command to authenticate with token.
          * @param tokenHash The token hash to authenticate with.
          * @param user The user to authenticate as.

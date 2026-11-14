@@ -8,6 +8,7 @@ import cz.smarteon.loxkt.message.TestingLoxValues.token
 import cz.smarteon.loxkt.message.TestingLoxValues.tokenAuthResponse
 import cz.smarteon.loxkt.message.TestingLoxValues.tokenRefreshResponse
 import cz.smarteon.loxkt.message.Token
+import cz.smarteon.loxkt.message.TokenPermission
 import io.kotest.assertions.asClue
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec
@@ -82,6 +83,17 @@ class LoxoneTokenAuthenticatorTest : ShouldSpec({
             shouldThrow<IllegalStateException> { authenticator.killToken(client) }
 
             repository.getToken(PROFILE) shouldBe null
+        }
+    }
+
+    context("killing a token the Miniserver refuses to kill") {
+        val token = Token("token", byteArrayOf(1), TimeUtils.currentLoxoneSeconds().plus(4000), 0, false)
+        val (authenticator, _) = authenticatorOf(token)
+        val client = wsClient()
+        client.stubMsg("killtoken", "", code = "500")
+
+        should("say the Miniserver's code") {
+            shouldThrow<LoxoneException> { authenticator.killToken(client) }.code shouldBe "500"
         }
     }
 
@@ -202,6 +214,30 @@ class LoxoneTokenAuthenticatorTest : ShouldSpec({
                 it.validUntil shouldBe newValidUntil
                 it.rights shouldBe 4
             }
+        }
+    }
+
+    context("minting a token") {
+        val main = Token("main", byteArrayOf(1), TimeUtils.currentLoxoneSeconds().plus(4000), 4, false)
+        val (authenticator, repository) = authenticatorOf(main)
+        val client = wsClient()
+        client.stubMsg("authwithtoken", tokenAuthResponse(TimeUtils.currentLoxoneSeconds().plus(4000)))
+        client.stubMsg("getkey", "\"3132333435363738\"")
+        fun mint(perm: String) = { it: Command<*> ->
+            it.pathSegments.contains("getjwt") && it.query["tokenHash"] == "true" && it.pathSegments[5] == perm
+        }
+        val web = client.stubCall(LoxoneMsg("getjwt", "200", token(TimeUtils.currentLoxoneSeconds().plus(43200))), mint("2"))
+        val config = client.stubCall(LoxoneMsg("getjwt", "412", "\"\""), mint("12"))
+
+        should("get a new token signed with the token, and keep the token") {
+            authenticator.mintToken(client, TokenPermission.WEB).token shouldBe "8E2AA590E996B321C0E17C3FA9F7A3C17BD376CC"
+            repository.getToken(PROFILE).shouldNotBeNull().token shouldBe "main"
+            web.matches.size shouldBe 1
+        }
+
+        should("refuse more rights than the token has, once") {
+            shouldThrow<LoxoneException> { authenticator.mintToken(client, TokenPermission.CONFIG) }.code shouldBe "412"
+            config.matches.size shouldBe 1
         }
     }
 

@@ -14,7 +14,10 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.string.shouldMatch
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Common acceptance tests for all LoxoneClient types
@@ -63,13 +66,16 @@ fun websocketAT(
 private val ADMIN_TOKEN_PERMISSION = TokenPermission.APP + TokenPermission.EXPERT_MODE + TokenPermission.SYS_WS +
     TokenPermission.USER_MANAGEMENT + TokenPermission.TRIGGER_UPDATE
 
+private val WEB_TOKEN_LIFETIME = 12.hours
+
 /**
  * A token with [ADMIN_TOKEN_PERMISSION], taken with the password, then used, refreshed and killed over HTTP
- * without it. Needs an admin user. Every token it takes is killed again.
+ * without it, and a WEB token made from it over a WebSocket. Needs an admin user. Every token it takes is
+ * killed again.
  */
 fun tokenWithoutPasswordAT(endpoint: LoxoneEndpoint, user: String, password: String) = wordSpec {
-    "A token without password over HTTP" should {
-        "be used, refreshed and killed" {
+    "A token without password" should {
+        "be used, refreshed, made a WEB token from and killed" {
             val tokens = InMemoryTokenRepository()
             val withPassword = LoxoneProfile(endpoint, LoxoneCredentials(user, password))
             val settings = LoxoneClientSettings(tokenPermission = ADMIN_TOKEN_PERMISSION, killTokenOnClose = false)
@@ -93,6 +99,24 @@ fun tokenWithoutPasswordAT(endpoint: LoxoneEndpoint, user: String, password: Str
                 val previous =
                     LoxoneTokenAuthenticator(tokenOnly, InMemoryTokenRepository().apply { putToken(tokenOnly, token) })
                 withTokenClient(endpoint, previous) { it.callRaw("jdev/sps/LoxAPPversion3") shouldContain "200" }
+
+                val ws = KtorWebsocketLoxoneClient(endpoint, authenticator)
+                val web = try {
+                    authenticator.mintToken(ws, TokenPermission.WEB).also {
+                        shouldThrow<LoxoneException> { authenticator.mintToken(ws, TokenPermission.CONFIG) }
+                            .code shouldBe "412"
+                    }
+                } finally {
+                    ws.close()
+                }
+                (TokenPermission.WEB in TokenPermission(web.rights.shouldNotBeNull())) shouldBe true
+                (web.secondsToExpireFromNow().seconds - WEB_TOKEN_LIFETIME).absoluteValue shouldBeLessThan 1.hours
+                val webOnly =
+                    LoxoneTokenAuthenticator(tokenOnly, InMemoryTokenRepository().apply { putToken(tokenOnly, web) })
+                withTokenClient(endpoint, webOnly) {
+                    it.callRaw("jdev/sps/LoxAPPversion3") shouldContain "200"
+                    webOnly.killToken(it)
+                }
 
                 // Kills the token from before the refresh too, so this run leaves none behind.
                 authenticator.killToken(client)

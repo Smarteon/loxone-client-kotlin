@@ -2,16 +2,20 @@ package cz.smarteon.loxkt
 
 import cz.smarteon.loxkt.LoxoneCommands.Tokens
 import cz.smarteon.loxkt.LoxoneCrypto.loxoneHashing
+import cz.smarteon.loxkt.message.EmptyLoxoneMsgVal
 import cz.smarteon.loxkt.message.Hashing
 import cz.smarteon.loxkt.message.Hashing.Companion.commandForUser
 import cz.smarteon.loxkt.message.LoxoneMsg
 import cz.smarteon.loxkt.message.Token
+import cz.smarteon.loxkt.message.TokenPermission
 import cz.smarteon.loxkt.message.TokenState
+import cz.smarteon.loxkt.message.sysCommand
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.decodeFromString
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmOverloads
@@ -129,6 +133,30 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
         return checkNotNull(token) { "Token of $user missing after refresh" }
     }
 
+    /**
+     * Gets a new token with [permission], signed with this authenticator's token instead of the password, e.g.
+     * a short [TokenPermission.WEB] token to hand to a browser. It isn't kept here, and killing it leaves this
+     * token alive (firmware 17.2).
+     *
+     * Only over a WebSocket, as the Loxone app does it: over HTTP the Miniserver accepts it only on a connection
+     * this token already authenticated a request on (412 otherwise), which an HTTP client can't promise.
+     *
+     * The Miniserver issues only rights this token has: it refuses more with [LoxoneException] code 412, and that
+     * isn't retried.
+     */
+    suspend fun mintToken(
+        client: WebsocketLoxoneClient,
+        permission: TokenPermission,
+        clientInfo: String = settings.clientInfo
+    ): Token {
+        ensureAuthenticated(client)
+        val current = checkNotNull(token) { "Token must be present to mint another" }
+        // Keyed with jdev/sys/getkey: a getkey2-keyed hash is refused with 412.
+        val key = Codec.hexToBytes(Codec.loxJson.decodeFromString<String>(client.call(ONE_TIME_KEY).value))
+        val tokenHash = LoxoneCrypto.loxoneHmac(current, Hashing(key, "", "SHA256"), "getjwt-tokenHash")
+        return client.callForMsg(Tokens.getWithToken(tokenHash, user, permission, settings.clientId, clientInfo))
+    }
+
     private suspend fun refresh(client: LoxoneClient, current: Token, hashing: Hashing) {
         val refreshed = client.callForMsg(Tokens.refresh(LoxoneCrypto.loxoneHmac(current, hashing, "refreshjwt"), user))
         token = current.merge(refreshed)
@@ -146,7 +174,7 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
         try {
             val code = client.call(Tokens.kill(tokenHash(client, "killtoken"), user)).code
             if (code != LoxoneMsg.CODE_AUTH_FAIL && code != LoxoneMsg.CODE_OK) {
-                throw LoxoneException("Miniserver answered killtoken with $code")
+                throw LoxoneException("Miniserver answered killtoken with $code", code = code)
             }
             logger.info { "Token killed" }
         } finally {
@@ -191,6 +219,10 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
                 }
             }
         }
+    }
+
+    private companion object {
+        val ONE_TIME_KEY = sysCommand<EmptyLoxoneMsgVal>("getkey", authenticated = false)
     }
 
     private class Authenticating(val authenticator: LoxoneTokenAuthenticator) :
