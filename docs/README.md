@@ -49,7 +49,6 @@ This directory contains documentation for the Loxone Kotlin Client library.
 ### 🟢 Medium Priority (Phase 5-6)
 - Token refresh and validation
 - Token persistence
-- CloudDNS discovery
 
 ### ⚪ Low Priority (Phase 7-8)
 - Enhanced error handling
