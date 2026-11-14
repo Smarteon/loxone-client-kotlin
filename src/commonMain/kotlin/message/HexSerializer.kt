@@ -17,6 +17,6 @@ object HexSerializer : KSerializer<ByteArray> {
     }
 
     override fun serialize(encoder: Encoder, value: ByteArray) {
-        TODO("Not yet implemented")
+        encoder.encodeString(Codec.bytesToHex(value, HexFormat.UpperCase))
     }
 }

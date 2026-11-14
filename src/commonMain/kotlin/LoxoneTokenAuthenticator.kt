@@ -2,6 +2,7 @@ package cz.smarteon.loxkt
 
 import cz.smarteon.loxkt.LoxoneCommands.Tokens
 import cz.smarteon.loxkt.LoxoneCrypto.loxoneHashing
+import cz.smarteon.loxkt.message.Hashing
 import cz.smarteon.loxkt.message.Hashing.Companion.commandForUser
 import cz.smarteon.loxkt.message.LoxoneMsg
 import cz.smarteon.loxkt.message.Token
@@ -16,6 +17,15 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmOverloads
 import kotlin.properties.Delegates
 
+/**
+ * Authenticates [profile]'s user with a Miniserver token: gets one with the password, refreshes it before it
+ * expires and authenticates WebSockets with it; HTTP clients sign each request with it (`autht`).
+ *
+ * Without a password ([LoxoneCredentials.password] null) it works with the token in [repository] only: it uses
+ * and refreshes the token, but never asks for a new one (a missing or expired token throws [LoxoneException]
+ * before anything is sent). [close] kills only a token this authenticator got with the password itself, never
+ * one it was handed in [repository].
+ */
 class LoxoneTokenAuthenticator @JvmOverloads constructor(
     private val profile: LoxoneProfile,
     private val repository: TokenRepository = DEFAULT_TOKEN_REPO,
@@ -27,6 +37,8 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
     val user: String = requireNotNull(profile.credentials) {
         "Credentials can't be null for authenticator"
     }.username
+
+    private val password: String? = profile.credentials?.password
 
     private val mutex = Mutex()
 
@@ -45,25 +57,33 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
     // Websockets that are authenticated
     private val authWebsockets = mutableSetOf<WebsocketLoxoneClient>()
 
+    // Whether this authenticator got the token with the password, rather than from the repository
+    private var gotToken = false
+
     suspend fun ensureAuthenticated(client: LoxoneClient) =
         execConditionalWithMutex({
             !TokenState(token).isUsable ||
                 (client is WebsocketLoxoneClient && !authWebsockets.contains(client))
         }) {
-            val hashing = client.callForMsg(commandForUser(user))
             val state = TokenState(token)
+            val password = password
+            if (state.isExpired && password == null) {
+                throw LoxoneException("No valid token of $user and no password to get a new one")
+            }
+            val hashing = client.callForMsg(commandForUser(user))
             when {
-                state.isExpired -> {
+                state.isExpired && password != null -> {
                     logger.debug { "Token expired, requesting new one" }
                     token = client.callForMsg(
                         Tokens.get(
-                            loxoneHashing(profile.credentials!!.password, hashing, "getttoken", user),
+                            loxoneHashing(password, hashing, "getttoken", user),
                             user,
                             settings.tokenPermission,
                             settings.clientId,
                             settings.clientInfo
                         )
                     )
+                    gotToken = true
                     logger.debug { "Received token: $token" }
                     if (client is WebsocketLoxoneClient) {
                         authWebsockets.add(client)
@@ -72,11 +92,7 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
 
                 state.needsRefresh -> {
                     logger.debug { "Token needs refresh, sending refreshjwt" }
-                    val currentToken = checkNotNull(token) { "Token must be present to refresh" }
-                    val refreshed = client.callForMsg(
-                        Tokens.refresh(LoxoneCrypto.loxoneHmac(currentToken, hashing, "refreshjwt"), user)
-                    )
-                    token = currentToken.merge(refreshed)
+                    refresh(client, checkNotNull(token) { "Token must be present to refresh" }, hashing)
                     if (client is WebsocketLoxoneClient) {
                         logger.debug { "Authenticating websocket with refreshed token" }
                         val authResponse = client.callForMsg(Tokens.auth(tokenHash(client, "authenticate"), user))
@@ -97,19 +113,47 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
         }
 
     /**
-     * Kills the token on the Miniserver, over a WebSocket or HTTP. Over HTTP the request is signed with the
-     * killed token's `autht` and answered 200, which is no failed login (firmware 17.2); any request with the
-     * token afterwards is one, so nothing may use it any more.
+     * Refreshes the token now, without the password: the Miniserver issues a new token with a new validity and
+     * the same rights, which goes to the repository. The previous token stays valid until it expires or the
+     * new one is killed (verified on firmware 17.2), so whoever still holds it isn't cut off.
+     *
+     * @return the new token
+     * @throws LoxoneException when there's no valid token to refresh
+     */
+    suspend fun refreshToken(client: LoxoneClient): Token {
+        execConditionalWithMutex({ true }) {
+            val current = token?.takeIf { it.filled && it.secondsToExpireFromNow() > 0 }
+                ?: throw LoxoneException("No valid token of $user to refresh")
+            refresh(client, current, client.callForMsg(commandForUser(user)))
+        }
+        return checkNotNull(token) { "Token of $user missing after refresh" }
+    }
+
+    private suspend fun refresh(client: LoxoneClient, current: Token, hashing: Hashing) {
+        val refreshed = client.callForMsg(Tokens.refresh(LoxoneCrypto.loxoneHmac(current, hashing, "refreshjwt"), user))
+        token = current.merge(refreshed)
+    }
+
+    /**
+     * Kills the token on the Miniserver, over a WebSocket or HTTP, with the tokens it was refreshed from. Over
+     * HTTP the request is signed with the killed token's `autht` and answered 200, which is no failed login
+     * (firmware 17.2); any request with one of those tokens afterwards is, so nothing may use them any more.
+     * The token is forgotten even when no answer comes: over a WebSocket the Miniserver may close the session
+     * instead. Does nothing when the token is missing or expires within five minutes.
      */
     suspend fun killToken(client: LoxoneClient) = execConditionalWithMutex({ TokenState(token).isUsable }) {
         logger.debug { "Going to kill token $token" }
-        val code = client.call(Tokens.kill(tokenHash(client, "killtoken"), user)).code
-        if (code != LoxoneMsg.CODE_AUTH_FAIL && code != LoxoneMsg.CODE_OK) {
-            throw LoxoneException("Miniserver answered killtoken with $code")
+        try {
+            val code = client.call(Tokens.kill(tokenHash(client, "killtoken"), user)).code
+            if (code != LoxoneMsg.CODE_AUTH_FAIL && code != LoxoneMsg.CODE_OK) {
+                throw LoxoneException("Miniserver answered killtoken with $code")
+            }
+            logger.info { "Token killed" }
+        } finally {
+            token = null
+            gotToken = false
+            authWebsockets.remove(client)
         }
-        logger.info { "Token killed" }
-        token = null
-        authWebsockets.remove(client)
     }
 
     /**
@@ -119,10 +163,12 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
      * was lost, and a flaky connection then collected failed logins until the Miniserver blocked the
      * client IP (WebSocket closed with 4003 right after opening) — for every client behind the same
      * NAT. A token that can't be killed over its WebSocket is left to expire instead; [killToken]
-     * kills it over HTTP when the caller knows it's no longer needed.
+     * kills it over HTTP when the caller knows it's no longer needed. Only a token this authenticator got
+     * with the password: one handed in through the repository may be held by others too (and without a
+     * password there would be no way to get a new one).
      */
     suspend fun close(client: LoxoneClient) {
-        if (settings.killTokenOnClose && client is WebsocketLoxoneClient) {
+        if (settings.killTokenOnClose && gotToken && client is WebsocketLoxoneClient) {
             killToken(client)
         }
     }

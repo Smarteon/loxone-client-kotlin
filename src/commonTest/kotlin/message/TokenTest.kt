@@ -104,4 +104,9 @@ class TokenTest : StringSpec({
         val t = loxJson.decodeFromString<Token>(tokenAuthResponse(342151839))
         loxJson.decodeFromString<Token>(loxJson.encodeToString(t)) shouldBe t
     }
+
+    "should serialize and deserialize a full token, to be stored" {
+        val t = loxJson.decodeFromString<Token>(token(342151839))
+        loxJson.decodeFromString<Token>(loxJson.encodeToString(t)) shouldBe t
+    }
 })
