@@ -76,4 +76,9 @@ data class Token(
         result = 31 * result + filled.hashCode()
         return result
     }
+
+    /** Without [token] and [key], which log statements print otherwise. */
+    override fun toString() =
+        "Token(token=${token?.let { "***" }}, key=${key?.let { "***" }}, validUntil=$validUntil, rights=$rights, " +
+            "unsecurePassword=$unsecurePassword)"
 }

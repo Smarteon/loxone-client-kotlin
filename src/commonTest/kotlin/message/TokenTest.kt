@@ -105,6 +105,11 @@ class TokenTest : StringSpec({
         loxJson.decodeFromString<Token>(loxJson.encodeToString(t)) shouldBe t
     }
 
+    "should print without token and key" {
+        loxJson.decodeFromString<Token>(token(342151839)).toString() shouldBe
+            "Token(token=***, key=***, validUntil=342151839, rights=1666, unsecurePassword=false)"
+    }
+
     "should serialize and deserialize a full token, to be stored" {
         val t = loxJson.decodeFromString<Token>(token(342151839))
         loxJson.decodeFromString<Token>(loxJson.encodeToString(t)) shouldBe t

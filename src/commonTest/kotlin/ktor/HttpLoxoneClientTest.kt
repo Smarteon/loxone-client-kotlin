@@ -155,6 +155,13 @@ class HttpLoxoneClientTest : WordSpec({
                 listOf("refreshjwt", "tokenAuthTest", "killtoken")
         }
 
+        "log requests without autht and tokens" {
+            redactSecrets("REQUEST: https://ms/jdev/sps/LoxAPPversion3?user=u&autht=0A1B2C3D") shouldBe
+                "REQUEST: https://ms/jdev/sps/LoxAPPversion3?user=u&autht=***"
+            redactSecrets("""{"LL": {"value": {"token": "eyJ0.eyJ1.c2ln", "key": "4142", "validUntil": 1}}}""") shouldBe
+                """{"LL": {"value": {"token": "***", "key": "***", "validUntil": 1}}}"""
+        }
+
         "send a command's query parameters" {
             val engine = MockEngine { request ->
                 if (request.url.parameters["tokenHash"] == "true") {
