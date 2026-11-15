@@ -1,9 +1,10 @@
 package cz.smarteon.loxkt.message
 
 import cz.smarteon.loxkt.LoxoneTime
-import kotlinx.datetime.Clock
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 /**
  * Represents Loxone authentication token.
@@ -26,9 +27,11 @@ data class Token(
     val filled = token != null && key != null
 
     /**
-     * Seconds remaining to token expiry.
+     * Seconds remaining to token expiry. Uses the standard library's clock: kotlinx-datetime 0.7 dropped
+     * its own, so an application on a newer kotlinx-datetime would fail here at runtime.
      * @return seconds to expire
      */
+    @OptIn(ExperimentalTime::class)
     fun secondsToExpireFromNow() = LoxoneTime.getUnixEpochSeconds(validUntil) - Clock.System.now().epochSeconds
 
     /**
