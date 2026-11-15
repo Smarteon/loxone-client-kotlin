@@ -219,7 +219,7 @@ class CommandEncryptionIT : StringSpec({
                 }
             }
         )
-        val profile = LoxoneProfile(LoxoneEndpoint.local("10.0.0.1"), LoxoneCredentials("user"))
+        val profile = LoxoneProfile(LoxoneEndpoint.local("10.0.0.1"), LoxoneCredentials("user", "pass"))
         val tokens = InMemoryTokenRepository()
         tokens.putToken(profile, Token("old", byteArrayOf(1), TimeUtils.currentLoxoneSeconds() + 200, 4, false))
         val client = KtorWebsocketLoxoneClient(

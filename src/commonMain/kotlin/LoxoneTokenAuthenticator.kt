@@ -26,9 +26,10 @@ import kotlin.properties.Delegates
  * expires and authenticates WebSockets with it; HTTP clients sign each request with it (`autht`).
  *
  * Without a password ([LoxoneCredentials.password] null) it works with the token in [repository] only: it uses
- * and refreshes the token, but never asks for a new one (a missing or expired token throws [LoxoneException]
- * before anything is sent). [close] kills only a token this authenticator got with the password itself, never
- * one it was handed in [repository].
+ * the token until it expires and never asks for a new one (a missing or expired token throws [LoxoneException]
+ * before anything is sent). It doesn't refresh it on its own either, only on request ([refreshToken]): whoever
+ * handed the token over keeps it, and would never learn of a token refreshed here. [close] kills only a token
+ * this authenticator got with the password itself, never one it was handed in [repository].
  */
 class LoxoneTokenAuthenticator @JvmOverloads constructor(
     private val profile: LoxoneProfile,
@@ -74,10 +75,10 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
             if (state.isExpired && password == null) {
                 throw LoxoneException("No valid token of $user and no password to get a new one")
             }
-            val hashing = client.callForMsg(commandForUser(user))
             when {
                 state.isExpired && password != null -> {
                     logger.debug { "Token expired, requesting new one" }
+                    val hashing = client.callForMsg(commandForUser(user))
                     token = client.callForMsg(
                         Tokens.get(
                             loxoneHashing(password, hashing, "getttoken", user),
@@ -94,8 +95,9 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
                     }
                 }
 
-                state.needsRefresh -> {
+                state.needsRefresh && password != null -> {
                     logger.debug { "Token needs refresh, sending refreshjwt" }
+                    val hashing = client.callForMsg(commandForUser(user))
                     refresh(client, checkNotNull(token) { "Token must be present to refresh" }, hashing)
                     if (client is WebsocketLoxoneClient) {
                         logger.debug { "Authenticating websocket with refreshed token" }

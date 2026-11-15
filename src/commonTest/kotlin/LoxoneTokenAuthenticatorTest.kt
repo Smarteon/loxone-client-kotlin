@@ -200,6 +200,18 @@ class LoxoneTokenAuthenticatorTest : ShouldSpec({
             getKey.matches.size shouldBe 0
         }
 
+        should("not refresh the token on its own before it expires") {
+            val token = Token("token", byteArrayOf(1), TimeUtils.currentLoxoneSeconds().plus(200), 4, false)
+            val repository = InMemoryTokenRepository().also { it.putToken(tokenOnly, token) }
+            val client = httpClient()
+            val refresh = client.stubMsg("refreshjwt", tokenRefreshResponse(TimeUtils.currentLoxoneSeconds().plus(9000)))
+
+            LoxoneTokenAuthenticator(tokenOnly, repository).ensureAuthenticated(client)
+
+            refresh.matches.size shouldBe 0
+            repository.getToken(tokenOnly) shouldBe token
+        }
+
         should("refresh the token on request") {
             val token = Token("oldTokenValue", byteArrayOf(1), TimeUtils.currentLoxoneSeconds().plus(4000), 4, false)
             val repository = InMemoryTokenRepository().also { it.putToken(tokenOnly, token) }
