@@ -63,6 +63,6 @@ suspend inline fun <reified VAL : LoxoneMsgVal> LoxoneClient.callForMsg(command:
             loxJson.decodeFromString<VAL>(msg.valueForDecoding(VAL::class))
         }
     } else {
-        error("TODO")
+        throw LoxoneException("Miniserver answered ${msg.code} instead of ${command.expectedCode}", code = msg.code)
     }
 }

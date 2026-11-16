@@ -20,7 +20,15 @@ interface Command<out RESPONSE : LoxoneResponse> {
      */
     val encrypted: Boolean
         get() = false
+
+    /** Query parameters sent after the path, e.g. `tokenHash=true`. */
+    val query: Map<String, String>
+        get() = emptyMap()
 }
+
+/** [Command.query] as it follows the path: empty, or `?` and the parameters. */
+internal fun Command<*>.queryString(): String =
+    if (query.isEmpty()) "" else query.entries.joinToString("&", prefix = "?") { "${it.key}=${it.value}" }
 
 /**
  * Skeleton for commands which have no response from Loxone miniserver.

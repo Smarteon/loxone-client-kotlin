@@ -12,6 +12,7 @@ import cz.smarteon.loxkt.LoxoneResponse
 import cz.smarteon.loxkt.LoxoneTokenAuthenticator
 import cz.smarteon.loxkt.WebsocketLoxoneClient
 import cz.smarteon.loxkt.event.LoxoneEvent
+import cz.smarteon.loxkt.queryString
 import cz.smarteon.loxkt.message.LoxoneMsg
 import cz.smarteon.loxkt.message.MessageHeader
 import cz.smarteon.loxkt.message.MessageKind
@@ -124,7 +125,8 @@ class KtorWebsocketLoxoneClient internal constructor(
             authenticator?.ensureAuthenticated(this)
         }
 
-        val response = exchange(command.pathSegments.joinToString(separator = "/"), command.encrypted)
+        val plain = command.pathSegments.joinToString(separator = "/") + command.queryString()
+        val response = exchange(plain, command.encrypted)
 
         @Suppress("UNCHECKED_CAST")
         return loxJson.decodeFromString(command.responseType.deserializer, response) as RESPONSE
@@ -148,7 +150,7 @@ class KtorWebsocketLoxoneClient internal constructor(
     private suspend fun exchange(plain: String, forceEncrypt: Boolean): String = callMutex.withLock {
         val ws = checkNotNull(session) { "WebSocketSession should not be null" }
         val wrapped = wrap(plain, forceEncrypt)
-        logger.trace { "Sending command: ${wrapped.wire}" }
+        logger.trace { "Sending command: ${redactSecrets(wrapped.wire)}" }
         ws.send(wrapped.wire)
         val raw = receiveTextMessage()
         // Advance the salt only after a successful round-trip, so a failed send/receive doesn't
@@ -301,7 +303,7 @@ class KtorWebsocketLoxoneClient internal constructor(
             }
             FrameType.TEXT -> {
                 val textData = frame.data.decodeToString()
-                logger.trace { "Incoming message: $textData" }
+                logger.trace { "Incoming message: ${redactSecrets(textData)}" }
                 textMessages.send(textData)
             }
             FrameType.CLOSE -> {
@@ -384,7 +386,7 @@ class KtorWebsocketLoxoneClient internal constructor(
     // Used solely for the keepalive command, which is never encrypted.
     private suspend fun ClientWebSocketSession.send(command: Command<*>) {
         val joinedCmd = command.pathSegments.joinToString(separator = "/")
-        logger.trace { "Sending command: $joinedCmd" }
+        logger.trace { "Sending command: ${redactSecrets(joinedCmd)}" }
         send(joinedCmd)
     }
 

@@ -1,9 +1,20 @@
 package cz.smarteon.loxkt.ktor
 
 import cz.smarteon.loxkt.CommandEncryption
+import cz.smarteon.loxkt.InMemoryTokenRepository
+import cz.smarteon.loxkt.LoxoneCredentials
+import cz.smarteon.loxkt.LoxoneEndpoint
 import cz.smarteon.loxkt.LoxoneException
+import cz.smarteon.loxkt.LoxoneProfile
+import cz.smarteon.loxkt.LoxoneTokenAuthenticator
 import cz.smarteon.loxkt.RsaTestFixtures
+import cz.smarteon.loxkt.TimeUtils
 import cz.smarteon.loxkt.message.EmptyLoxoneMsgVal
+import cz.smarteon.loxkt.message.TestingLoxValues.HASHING
+import cz.smarteon.loxkt.message.TestingLoxValues.tokenAuthResponse
+import cz.smarteon.loxkt.message.TestingLoxValues.tokenRefreshResponse
+import cz.smarteon.loxkt.message.TestingMessages.okMsg
+import cz.smarteon.loxkt.message.Token
 import cz.smarteon.loxkt.message.SimpleLoxoneMsgCommand
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
@@ -11,11 +22,13 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.withTimeout
 import java.net.URLDecoder
 import java.util.Base64
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * End-to-end command encryption test: a simulated Miniserver performs the RSA key exchange and
@@ -180,6 +193,47 @@ class CommandEncryptionIT : StringSpec({
             dispatcher = UnconfinedTestDispatcher()
         )
         shouldThrow<LoxoneException> { client.callRaw("jdev/cfg/api") }
+        client.close()
+    }
+
+    "refreshes a token due for it and authenticates the websocket with it" {
+        val miniserver = MiniserverCryptoSimulator()
+        val ctx = startTestWebSocketServer(
+            httpPublicKeyJson = publicKeyResponse(),
+            fallback = { payload ->
+                val now = TimeUtils.currentLoxoneSeconds()
+                when {
+                    payload.startsWith("jdev/sys/keyexchange/") -> {
+                        miniserver.acceptKeyExchange(payload.substringAfter("jdev/sys/keyexchange/"))
+                        sendLoxoneResponse(okMsg("dev/sys/keyexchange", "\"\""))
+                    }
+                    payload.startsWith("jdev/sys/getkey2/") -> sendLoxoneResponse(okMsg("dev/sys/getkey2", HASHING))
+                    payload.startsWith("jdev/sys/refreshjwt/") ->
+                        sendLoxoneResponse(okMsg("dev/sys/refreshjwt", tokenRefreshResponse(now + 9000)))
+                    payload.startsWith("jdev/sys/enc/") -> {
+                        val inner = miniserver.decryptCommand(payload.substringAfter("jdev/sys/enc/"))
+                        check(inner.contains("/authwithtoken/")) { "unexpected encrypted command" }
+                        sendLoxoneResponse(okMsg("authwithtoken", tokenAuthResponse(now + 9000)))
+                    }
+                    else -> sendLoxoneResponse(okMsg(payload.removePrefix("j"), "\"ok\""))
+                }
+            }
+        )
+        val profile = LoxoneProfile(LoxoneEndpoint.local("10.0.0.1"), LoxoneCredentials("user", "pass"))
+        val tokens = InMemoryTokenRepository()
+        tokens.putToken(profile, Token("old", byteArrayOf(1), TimeUtils.currentLoxoneSeconds() + 200, 4, false))
+        val client = KtorWebsocketLoxoneClient(
+            ctx.testedClient,
+            authenticator = LoxoneTokenAuthenticator(profile, tokens),
+            dispatcher = UnconfinedTestDispatcher()
+        )
+
+        withTimeout(10.seconds) { client.callRaw("jdev/sps/io/AI1/on") }
+
+        tokens.getToken(profile)?.token shouldBe "REFRESHED_TOKEN_VALUE"
+        val commands = generateSequence { ctx.received.tryReceive().getOrNull() }.toList()
+        commands.map { it.split('/').getOrElse(2) { "" } }.filter { it != "getkey2" } shouldBe
+            listOf("keyexchange", "refreshjwt", "enc", "io")
         client.close()
     }
 })

@@ -21,7 +21,10 @@ sealed interface LoxoneAuth {
      * @param[password] Loxone password.
      */
     class Basic(val username: String, val password: String) : LoxoneAuth {
-        constructor(credentials: LoxoneCredentials) : this(credentials.username, credentials.password)
+        constructor(credentials: LoxoneCredentials) : this(
+            credentials.username,
+            requireNotNull(credentials.password) { "Password is required for Basic authentication" }
+        )
         constructor(profile: LoxoneProfile) : this(
             requireNotNull(profile.credentials) { "Credentials are required for Basic authentication" }
         )

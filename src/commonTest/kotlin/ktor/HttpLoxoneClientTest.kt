@@ -1,19 +1,25 @@
 package cz.smarteon.loxkt.ktor
 
+import cz.smarteon.loxkt.InMemoryTokenRepository
 import cz.smarteon.loxkt.LoxoneAuth
+import cz.smarteon.loxkt.LoxoneCommands
 import cz.smarteon.loxkt.LoxoneCredentials
 import cz.smarteon.loxkt.LoxoneEndpoint
 import cz.smarteon.loxkt.LoxoneEndpoint.Companion.local
 import cz.smarteon.loxkt.LoxoneProfile
 import cz.smarteon.loxkt.LoxoneTokenAuthenticator
 import cz.smarteon.loxkt.TimeUtils
+import cz.smarteon.loxkt.callForMsg
 import cz.smarteon.loxkt.message.ApiInfo
 import cz.smarteon.loxkt.message.LoxoneMsgVal
 import cz.smarteon.loxkt.message.TestingLoxValues.API_INFO_MSG_VAL
 import cz.smarteon.loxkt.message.TestingLoxValues.HASHING
 import cz.smarteon.loxkt.message.TestingLoxValues.token
+import cz.smarteon.loxkt.message.TestingLoxValues.tokenRefreshResponse
 import cz.smarteon.loxkt.message.TestingMessages.htmlError
 import cz.smarteon.loxkt.message.TestingMessages.okMsg
+import cz.smarteon.loxkt.message.Token
+import cz.smarteon.loxkt.message.TokenPermission
 import cz.smarteon.loxkt.message.sysCommand
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
@@ -22,6 +28,8 @@ import io.ktor.client.engine.mock.*
 import io.ktor.client.plugins.*
 import io.ktor.http.*
 import io.ktor.utils.io.core.*
+import kotlinx.coroutines.withTimeout
+import kotlin.time.Duration.Companion.seconds
 
 class HttpLoxoneClientTest : WordSpec({
 
@@ -112,6 +120,65 @@ class HttpLoxoneClientTest : WordSpec({
             withClient(LoxoneAuth.Token(LoxoneTokenAuthenticator(profile))) {
                 val response = call(sysCommand<LoxoneMsgVal>("tokenAuthTest"))
                 response.code shouldBe "200"
+            }
+        }
+
+        "refresh and kill a token with autht" {
+            val engine = MockEngine { request ->
+                val path = request.url.encodedPath
+                val signed = request.url.parameters.contains("autht")
+                fun ok(value: String) =
+                    respond(okMsg(path.substring(1), value), headers = headersOf("Content-Type", "application/json"))
+                when {
+                    path == "/jdev/sys/getkey2/user" -> ok(HASHING)
+                    path.startsWith("/jdev/sys/refreshjwt/") && signed ->
+                        ok(tokenRefreshResponse(TimeUtils.currentLoxoneSeconds().plus(1000)))
+                    path.startsWith("/jdev/sys/killtoken/") && signed -> ok("\"\"")
+                    path == "/jdev/sys/tokenAuthTest" && signed -> ok("\"authenticated\"")
+                    else -> respondError(HttpStatusCode.Unauthorized)
+                }
+            }
+            val repository = InMemoryTokenRepository()
+            repository.putToken(profile, Token("old", byteArrayOf(1), TimeUtils.currentLoxoneSeconds().plus(200), 4, false))
+            val authenticator = LoxoneTokenAuthenticator(profile, repository)
+            val client = KtorHttpLoxoneClient(endpoint, LoxoneAuth.Token(authenticator), engine)
+            try {
+                withTimeout(10.seconds) { client.call(sysCommand<LoxoneMsgVal>("tokenAuthTest")) }.code shouldBe "200"
+                repository.getToken(profile)?.token shouldBe "REFRESHED_TOKEN_VALUE"
+
+                authenticator.killToken(client)
+                repository.getToken(profile) shouldBe null
+            } finally {
+                client.close()
+            }
+            engine.requestHistory.map { it.url.encodedPath.split('/')[3] }.filter { it != "getkey2" } shouldBe
+                listOf("refreshjwt", "tokenAuthTest", "killtoken")
+        }
+
+        "log requests without autht and tokens" {
+            redactSecrets("REQUEST: https://ms/jdev/sps/LoxAPPversion3?user=u&autht=0A1B2C3D") shouldBe
+                "REQUEST: https://ms/jdev/sps/LoxAPPversion3?user=u&autht=***"
+            redactSecrets("""{"LL": {"value": {"token": "eyJ0.eyJ1.c2ln", "key": "4142", "validUntil": 1}}}""") shouldBe
+                """{"LL": {"value": {"token": "***", "key": "***", "validUntil": 1}}}"""
+        }
+
+        "send a command's query parameters" {
+            val engine = MockEngine { request ->
+                if (request.url.parameters["tokenHash"] == "true") {
+                    respond(
+                        okMsg("dev/sys/getjwt", token(TimeUtils.currentLoxoneSeconds().plus(43200))),
+                        headers = headersOf("Content-Type", "application/json")
+                    )
+                } else {
+                    respondError(HttpStatusCode.PreconditionFailed)
+                }
+            }
+            val client = KtorHttpLoxoneClient(endpoint, LoxoneAuth.None, engine)
+            try {
+                client.callForMsg(LoxoneCommands.Tokens.getWithToken("hash", "user", TokenPermission.WEB))
+                    .token shouldBe "8E2AA590E996B321C0E17C3FA9F7A3C17BD376CC"
+            } finally {
+                client.close()
             }
         }
 

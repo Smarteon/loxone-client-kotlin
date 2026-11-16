@@ -46,7 +46,7 @@ class KtorHttpLoxoneClient internal constructor(
         install(Logging) {
             logger = object : Logger {
                 override fun log(message: String) {
-                    this@KtorHttpLoxoneClient.logger.debug { message }
+                    this@KtorHttpLoxoneClient.logger.debug { redactSecrets(message) }
                 }
             }
             level = LogLevel.ALL
@@ -76,6 +76,7 @@ class KtorHttpLoxoneClient internal constructor(
         return httpClient.get {
             commandRequest(command.authenticated) {
                 appendPathSegments(command.pathSegments)
+                command.query.forEach { (name, value) -> parameters.append(name, value) }
             }
         }.body(command.responseType.typeInfo)
     }
@@ -136,6 +137,11 @@ class KtorHttpLoxoneClient internal constructor(
         }
     }
 }
+
+private val SECRETS = Regex("""(autht=|"token"\s*:\s*"|"key"\s*:\s*")[^&"\s]+""")
+
+/** [text] without `autht` values and the `token` and `key` of token responses, for logging requests. */
+internal fun redactSecrets(text: String): String = text.replace(SECRETS, "\$1***")
 
 private class PreemptiveBasicAuthConfig {
     var username: String = ""

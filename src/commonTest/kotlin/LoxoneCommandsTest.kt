@@ -41,6 +41,25 @@ class LoxoneCommandsTest : ShouldSpec({
         }
     }
 
+    should("ask for combined permissions in one token") {
+        val permission = TokenPermission.APP + TokenPermission.EXPERT_MODE + TokenPermission.SYS_WS +
+            TokenPermission.USER_MANAGEMENT + TokenPermission.TRIGGER_UPDATE
+
+        LoxoneCommands.Tokens.get("hash", "user", permission).pathSegments[5] shouldBe "35140"
+        (TokenPermission.SYS_WS in TokenPermission(1988)) shouldBe true
+        (TokenPermission.SYS_WS in TokenPermission(1732)) shouldBe false
+    }
+
+    should("create gettoken command signed with a token") {
+        LoxoneCommands.Tokens.getWithToken("hash", "user", TokenPermission.WEB).asClue {
+            it.pathSegments shouldBe LoxoneCommands.Tokens.get("hash", "user", TokenPermission.WEB).pathSegments
+            it.query shouldBe mapOf("tokenHash" to "true")
+            it.queryString() shouldBe "?tokenHash=true"
+            it.authenticated shouldBe false
+            it.encrypted shouldBe true
+        }
+    }
+
     should("create authwithtoken command") {
         LoxoneCommands.Tokens.auth("hash", "user").asClue {
             it.pathSegments shouldBe listOf("authwithtoken", "hash", "user")
@@ -55,7 +74,7 @@ class LoxoneCommandsTest : ShouldSpec({
         LoxoneCommands.Tokens.refresh("hash", "user").asClue {
             it.pathSegments shouldBe listOf("jdev", "sys", "refreshjwt", "hash", "user")
             it.valueType shouldBe Token::class
-            it.authenticated shouldBe false
+            it.authenticated shouldBe true
             it.expectedCode shouldBe "200"
         }
     }
