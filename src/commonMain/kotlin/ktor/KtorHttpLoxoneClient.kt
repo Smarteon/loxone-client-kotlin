@@ -137,8 +137,6 @@ class KtorHttpLoxoneClient internal constructor(
     }
 }
 
-private const val CLOUD_DNS_HOST = "dns.loxonecloud.com"
-
 private class PreemptiveBasicAuthConfig {
     var username: String = ""
     var password: String = ""
@@ -147,15 +145,12 @@ private class PreemptiveBasicAuthConfig {
 /**
  * Sends Basic credentials with the first request instead of waiting for a 401. Unlike Ktor's
  * `sendWithoutRequest`, a [Send] hook also covers requests made by [HttpRedirect]. Never over plain
- * http or to Cloud DNS, as both only redirect.
+ * http, as the Miniserver only redirects it.
  */
 private val PreemptiveBasicAuth = createClientPlugin("PreemptiveBasicAuth", ::PreemptiveBasicAuthConfig) {
     val header = "Basic " + "${pluginConfig.username}:${pluginConfig.password}".encodeBase64()
     on(Send) { request ->
-        if (request.url.protocol.isSecure() &&
-            request.url.host != CLOUD_DNS_HOST &&
-            !request.headers.contains(HttpHeaders.Authorization)
-        ) {
+        if (request.url.protocol.isSecure() && !request.headers.contains(HttpHeaders.Authorization)) {
             request.headers[HttpHeaders.Authorization] = header
         }
         proceed(request)
