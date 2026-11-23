@@ -138,10 +138,20 @@ class KtorHttpLoxoneClient internal constructor(
     }
 }
 
-private val SECRETS = Regex("""(autht=|"token"\s*:\s*"|"key"\s*:\s*")[^&"\s]+""")
+private val SECRETS = Regex("""(autht=|"token"\s*:\s*"|"key"\s*:\s*"|updateuserpwdh/[^/\s"]+/)[^&"\s?]+""")
 
-/** [text] without `autht` values and the `token` and `key` of token responses, for logging requests. */
-internal fun redactSecrets(text: String): String = text.replace(SECRETS, "\$1***")
+/** The string `value` of an answer to `updateuserpwdh` or to an encrypted command: it may echo a secret. */
+private val ECHOED_SECRET =
+    Regex("""("control"\s*:\s*"[^"]*(?:updateuserpwdh|sys/enc/)[^"]*"[^{}]*?"value"\s*:\s*")(?:[^"\\]|\\.)*""")
+
+/**
+ * [text] without `autht` values, the `token` and `key` of token responses, the password hash of
+ * `updateuserpwdh` and the `value` the Miniserver answers to it or to an encrypted command, for the client's
+ * own logging of requests and messages. Ktor's own loggers and the message of a `ClientRequestException` still
+ * carry the whole URL.
+ */
+internal fun redactSecrets(text: String): String =
+    text.replace(SECRETS, "\$1***").replace(ECHOED_SECRET, "\$1***")
 
 private class PreemptiveBasicAuthConfig {
     var username: String = ""

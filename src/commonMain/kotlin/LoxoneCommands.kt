@@ -203,9 +203,14 @@ object LoxoneCommands {
 
         /**
          * Sets the password of the user with [uuid]. Only its hash is sent, salted with [hashing], which
-         * [Hashing.commandForUser] returns for that user. A WebSocket client sends it encrypted; the HTTP client
-         * can't, so over plain `http://` the hash, which can stand in for the password, is as readable as the
-         * Basic credentials of every request, and Ktor's request logging at DEBUG writes it in the URL.
+         * [Hashing.commandForUser] returns for that user; the hash can stand in for the password.
+         *
+         * The hash travels in the request path, so over plain `http://` it is as readable as the Basic credentials
+         * of every request. A WebSocket client encrypts the request (`jdev/sys/enc`), but the Miniserver's answer
+         * echoes the hash unencrypted. The client's own logger masks both; Ktor's internal loggers and the message
+         * of a `ClientRequestException` on a 4xx answer still carry the URL, as they do for `autht`.
+         *
+         * A token needs [TokenPermission.CHANGE_PWD] besides [TokenPermission.USER_MANAGEMENT].
          */
         @JvmStatic
         fun setPassword(uuid: String, password: String, hashing: Hashing) = SimpleLoxoneMsgCommand(
