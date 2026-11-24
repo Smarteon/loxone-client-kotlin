@@ -110,10 +110,19 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
      * WebSocket kill failed, i.e. exactly when the connection was lost, so every reconnect cycle
      * of a flaky connection added a failed login. A token that can't be killed over its WebSocket
      * is left to expire instead.
+     *
+     * Only over a WebSocket this authenticator authenticated: one that never got that far (a
+     * connect abandoned midway) has no session to kill the token in, and the kill would only wait
+     * for a reply that never comes.
      */
     suspend fun close(client: LoxoneClient) {
-        if (settings.killTokenOnClose && client is WebsocketLoxoneClient) {
-            killToken(client)
+        if (client !is WebsocketLoxoneClient || client !in authWebsockets) return
+        try {
+            if (settings.killTokenOnClose) {
+                killToken(client)
+            }
+        } finally {
+            authWebsockets.remove(client)
         }
     }
 

@@ -22,6 +22,7 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.util.*
 import kotlin.jvm.JvmOverloads
+import kotlin.time.Duration.Companion.seconds
 
 class KtorHttpLoxoneClient internal constructor(
     private val endpoint: LoxoneEndpoint,
@@ -65,6 +66,11 @@ class KtorHttpLoxoneClient internal constructor(
         }
         install(HttpRedirect) {
             checkHttpMethod = false
+        }
+        // A request the Miniserver never answers would otherwise hang the caller forever. Generous
+        // enough for the structure file (LoxAPP3.json) of a large installation on a slow link.
+        install(HttpTimeout) {
+            requestTimeoutMillis = REQUEST_TIMEOUT.inWholeMilliseconds
         }
     }
 
@@ -138,6 +144,7 @@ class KtorHttpLoxoneClient internal constructor(
 }
 
 private const val CLOUD_DNS_HOST = "dns.loxonecloud.com"
+private val REQUEST_TIMEOUT = 60.seconds
 
 private class PreemptiveBasicAuthConfig {
     var username: String = ""

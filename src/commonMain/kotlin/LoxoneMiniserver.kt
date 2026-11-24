@@ -8,9 +8,13 @@ import cz.smarteon.loxkt.state.LoxoneState
 import cz.smarteon.loxkt.state.collectFrom
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.onSubscription
@@ -87,6 +91,9 @@ open class LoxoneMiniserver @JvmOverloads constructor(
     protected var collectJob: Job? = null
     private var cachedApp: LoxoneApp? = null
 
+    /** The connect in progress, so [close] can abort it. */
+    private var connecting: Deferred<Unit>? = null
+
     /**
      * Opens the WebSocket session, authenticates, and enables binary status updates.
      * Idempotent: repeated calls return immediately if already connected.
@@ -94,10 +101,26 @@ open class LoxoneMiniserver @JvmOverloads constructor(
      * Event collection is subscribed **before** binary status updates are enabled: the Miniserver
      * sends the full initial state right after `enablebinstatusupdate`, and [events] has no replay,
      * so anything emitted before the subscription exists would be lost.
+     *
+     * The work runs in this instance's scope rather than the caller's, so [close] aborts it — a
+     * caller that gives up on a slow connect and closes this instance would otherwise leave it
+     * running, and the socket it eventually opens would never be closed. Cancelling the caller
+     * aborts it too.
      */
     open suspend fun connect() {
         if (collectJob?.isActive == true) return
 
+        val attempt = sessionScope.async { openSession() }
+        connecting = attempt
+        try {
+            attempt.await()
+        } finally {
+            attempt.cancel()
+            if (connecting === attempt) connecting = null
+        }
+    }
+
+    private suspend fun openSession() {
         val subscribed = CompletableDeferred<Unit>()
         startEventCollection(ws.events.onSubscription { subscribed.complete(Unit) })
         collectJob?.invokeOnCompletion { cause ->
@@ -135,12 +158,19 @@ open class LoxoneMiniserver @JvmOverloads constructor(
     open suspend fun loadStructure(): LoxoneApp =
         cachedApp ?: http.call(LoxoneCommands.App.get()).also { cachedApp = it }
 
-    /** Closes both transports and cancels all background collection. */
+    /**
+     * Aborts a connect in progress, closes both transports and cancels all background work.
+     * The instance can't be connected again afterwards; create a new one.
+     */
     open suspend fun close() {
+        // Joined, so the transports below are closed only once the attempt has stopped touching them.
+        connecting?.cancelAndJoin()
+        connecting = null
         collectJob?.cancel()
         collectJob = null
         cachedApp = null
         ws.close()
         http.close()
+        sessionScope.cancel("Miniserver closed")
     }
 }
