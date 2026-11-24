@@ -15,6 +15,9 @@ data class SimpleLoxoneMsgCommand<out VAL : LoxoneMsgVal> @JvmOverloads construc
 internal inline fun <reified VAL : LoxoneMsgVal> cfgCommand(path: String): LoxoneMsgCommand<VAL> =
     SimpleLoxoneMsgCommand(listOf("jdev", "cfg", path), VAL::class, false)
 
+internal inline fun <reified VAL : LoxoneMsgVal> spsCommand(vararg paths: String): LoxoneMsgCommand<VAL> =
+    SimpleLoxoneMsgCommand(listOf("jdev", "sps") + paths, VAL::class)
+
 internal inline fun <reified VAL : LoxoneMsgVal> sysCommand(
     vararg paths: String,
     authenticated: Boolean = true,

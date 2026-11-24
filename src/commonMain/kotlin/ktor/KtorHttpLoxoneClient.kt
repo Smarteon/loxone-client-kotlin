@@ -47,7 +47,7 @@ class KtorHttpLoxoneClient internal constructor(
         install(Logging) {
             logger = object : Logger {
                 override fun log(message: String) {
-                    this@KtorHttpLoxoneClient.logger.debug { message }
+                    this@KtorHttpLoxoneClient.logger.debug { redactSecrets(message) }
                 }
             }
             level = LogLevel.ALL
@@ -82,6 +82,7 @@ class KtorHttpLoxoneClient internal constructor(
         return httpClient.get {
             commandRequest(command.authenticated) {
                 appendPathSegments(command.pathSegments)
+                command.query.forEach { (name, value) -> parameters.append(name, value) }
             }
         }.body(command.responseType.typeInfo)
     }
@@ -143,8 +144,22 @@ class KtorHttpLoxoneClient internal constructor(
     }
 }
 
-private const val CLOUD_DNS_HOST = "dns.loxonecloud.com"
 private val REQUEST_TIMEOUT = 60.seconds
+
+private val SECRETS = Regex("""(autht=|"token"\s*:\s*"|"key"\s*:\s*"|updateuserpwdh/[^/\s"]+/)[^&"\s?]+""")
+
+/** The string `value` of an answer to `updateuserpwdh` or to an encrypted command: it may echo a secret. */
+private val ECHOED_SECRET =
+    Regex("""("control"\s*:\s*"[^"]*(?:updateuserpwdh|sys/enc/)[^"]*"[^{}]*?"value"\s*:\s*")(?:[^"\\]|\\.)*""")
+
+/**
+ * [text] without `autht` values, the `token` and `key` of token responses, the password hash of
+ * `updateuserpwdh` and the `value` the Miniserver answers to it or to an encrypted command, for the client's
+ * own logging of requests and messages. Ktor's own loggers and the message of a `ClientRequestException` still
+ * carry the whole URL.
+ */
+internal fun redactSecrets(text: String): String =
+    text.replace(SECRETS, "\$1***").replace(ECHOED_SECRET, "\$1***")
 
 private class PreemptiveBasicAuthConfig {
     var username: String = ""
@@ -154,15 +169,12 @@ private class PreemptiveBasicAuthConfig {
 /**
  * Sends Basic credentials with the first request instead of waiting for a 401. Unlike Ktor's
  * `sendWithoutRequest`, a [Send] hook also covers requests made by [HttpRedirect]. Never over plain
- * http or to Cloud DNS, as both only redirect.
+ * http, as the Miniserver only redirects it.
  */
 private val PreemptiveBasicAuth = createClientPlugin("PreemptiveBasicAuth", ::PreemptiveBasicAuthConfig) {
     val header = "Basic " + "${pluginConfig.username}:${pluginConfig.password}".encodeBase64()
     on(Send) { request ->
-        if (request.url.protocol.isSecure() &&
-            request.url.host != CLOUD_DNS_HOST &&
-            !request.headers.contains(HttpHeaders.Authorization)
-        ) {
+        if (request.url.protocol.isSecure() && !request.headers.contains(HttpHeaders.Authorization)) {
             request.headers[HttpHeaders.Authorization] = header
         }
         proceed(request)

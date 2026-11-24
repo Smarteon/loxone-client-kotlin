@@ -110,10 +110,8 @@ internal object LoxoneCrypto {
         operation: String,
         loxoneUser: String? = null
     ): String {
+        // Not logged: this hash of the password logs in as well as the password does.
         val secretHash = loxoneDigest(secret, hashing)
-
-        logger.trace { "$operation hash: $secretHash" }
-
         val toFinalHash = loxoneUser?.let { concat(it, secretHash) } ?: secretHash
         return loxoneHmac(toFinalHash, hashing, operation)
     }
@@ -134,16 +132,20 @@ internal object LoxoneCrypto {
             "SHA256" -> HmacSHA256(hashing.key)
             else -> throw LoxoneException("Unsupported hashing algorithm \"${hashing.hashAlg}\"")
         }
-        return bytesToHex(mac.doFinal(secret.encodeToByteArray())).also { finalHash ->
-            logger.trace { "$operation final hash: $finalHash" }
-        }
+        // Only the operation: the hash itself authenticates a request (autht, getjwt).
+        logger.trace { "$operation hashed" }
+        return bytesToHex(mac.doFinal(secret.encodeToByteArray()))
     }
 
     fun loxoneHmac(token: Token, hashing: Hashing, operation: String): String =
         loxoneHmac(checkNotNull(token.token) { "Can't hash non-filled token" }, hashing, operation)
 
+    /**
+     * Uppercase hex `SHA(secret:salt)` with [hashing]'s salt and algorithm: the stored form of a password,
+     * as `jdev/sps/updateuserpwdh` expects it.
+     */
     @OptIn(ExperimentalStdlibApi::class)
-    private fun loxoneDigest(secret: String, hashing: Hashing): String {
+    internal fun loxoneDigest(secret: String, hashing: Hashing): String {
         val digest = when (hashing.hashAlg) {
             null, "SHA1" -> SHA1()
             "SHA256" -> SHA256()

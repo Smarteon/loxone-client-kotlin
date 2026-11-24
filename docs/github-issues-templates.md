@@ -789,171 +789,6 @@ None (but benefits from Issue #10, #11 for token management)
 
 ---
 
-## Phase 6: CloudDNS & Discovery
-
-### Issue 13: Implement CloudDNS Client
-
-**Labels:** `enhancement`, `protocol`, `priority:medium`
-
-```markdown
-## Description
-Implement CloudDNS client to discover Miniserver IP address and port using the Loxone CloudDNS service.
-
-## Protocol Reference
-- Document: `docs/loxone/CommunicatingWithMiniserver.md`
-- Section: "General Info" → "CloudDNS"
-- Protocol Version: 16.0
-
-## Current Status
-No CloudDNS support exists.
-
-## Implementation Tasks
-- [ ] Create CloudDNS client
-- [ ] Add DNS lookup: `dns.loxonecloud.com/?getip&snr={SNR}&json=true`
-- [ ] Create CloudDnsResponse model
-- [ ] Parse all response fields (Code, IP, PortOpen, LastUpdated, IPHTTPS, etc.)
-- [ ] Handle all error codes (403, 405, 409, 412, 418, 481, 482, 483)
-- [ ] Detect HTTPS/WSS support
-- [ ] Add timeout and retry logic
-- [ ] Write unit tests
-- [ ] Write integration tests
-- [ ] Update documentation
-
-## Technical Details
-- HTTP GET request to CloudDNS service
-- Returns JSON with Miniserver info
-- Response codes indicate various states
-- IPHTTPS and PortOpenHTTPS for Gen 2+ Miniservers
-- LastUpdated shows when Miniserver last reported
-
-## Response Codes
-- 200: OK
-- 403: CloudDNS disabled
-- 405: Miniserver not reporting
-- 409: Insecure password, external access blocked
-- 412: Port not opened
-- 418: Denied (see responseJSON)
-- 481: Could not connect to remote connect
-- 482: Remote connect timeout
-- 483: Scheduled restart
-
-## API Design
-```kotlin
-data class CloudDnsResponse(
-    val code: Int,
-    val ip: String?,
-    val port: Int?,
-    val portOpen: Boolean?,
-    val lastUpdated: String?,
-    val ipHttps: String?,
-    val portHttps: Int?,
-    val portOpenHttps: Boolean?
-)
-
-interface CloudDnsClient {
-    suspend fun lookup(serialNumber: String): CloudDnsResponse
-}
-```
-
-## Testing
-- Mock CloudDNS responses
-- Test all response codes
-- Test HTTPS detection
-- Test error handling
-
-## Dependencies
-None
-
-## Acceptance Criteria
-- [ ] CloudDNS lookup works
-- [ ] All response codes handled
-- [ ] HTTPS/WSS detection works
-- [ ] All tests pass
-```
-
----
-
-### Issue 14: Implement Automatic Endpoint Resolution
-
-**Labels:** `enhancement`, `protocol`, `priority:medium`
-
-```markdown
-## Description
-Implement factory methods to automatically create LoxoneEndpoint from CloudDNS lookup, including automatic HTTP/HTTPS protocol selection.
-
-## Protocol Reference
-- Document: `docs/loxone/CommunicatingWithMiniserver.md`
-- Sections: "CloudDNS", "Using HTTPS/WSS", "Remote Connect Service"
-- Protocol Version: 16.0
-
-## Current Status
-LoxoneEndpoint must be created manually with known host/port.
-
-## Implementation Tasks
-- [ ] Add LoxoneEndpoint.fromCloudDns(snr: String) factory
-- [ ] Implement automatic protocol selection based on httpsStatus
-- [ ] Add local vs remote detection
-- [ ] Add Remote Connect Service support
-- [ ] Implement fallback strategy (HTTPS -> HTTP)
-- [ ] Add connection testing
-- [ ] Write unit tests
-- [ ] Write integration tests
-- [ ] Update documentation
-- [ ] Add usage examples
-
-## Technical Details
-- Use CloudDNS to get IP/port
-- Check httpsStatus for TLS support:
-  - 0: No HTTPS support
-  - 1: HTTPS supported
-  - 2: Certificate expired
-- Prefer HTTPS when available
-- Handle Remote Connect Service
-- Test local connectivity first
-
-## Resolution Strategy
-1. Lookup via CloudDNS
-2. Check httpsStatus
-3. If HTTPS supported, try HTTPS first
-4. If HTTPS fails or not supported, try HTTP
-5. If Remote Connect available, use it
-6. Store resolved endpoint for reuse
-
-## API Design
-```kotlin
-object LoxoneEndpoint {
-    suspend fun fromCloudDns(
-        serialNumber: String,
-        preferHttps: Boolean = true,
-        testConnection: Boolean = true
-    ): LoxoneEndpoint
-    
-    suspend fun fromCloudDnsWithFallback(
-        serialNumber: String
-    ): LoxoneEndpoint
-}
-```
-
-## Testing
-- Mock CloudDNS responses
-- Test HTTPS selection
-- Test fallback to HTTP
-- Test connection testing
-- Test with real Miniserver
-
-## Dependencies
-- Issue #13 (CloudDNS client)
-- Issue #9 (certificate handling)
-
-## Acceptance Criteria
-- [ ] Automatic endpoint creation works
-- [ ] Protocol selection correct
-- [ ] Fallback works
-- [ ] All tests pass
-```
-
----
-
 ## Phase 7: Enhanced Error Handling
 
 ### Issue 15: Implement WebSocket Close Code Handling
@@ -1363,14 +1198,13 @@ None
 
 ## Summary
 
-This document provides 20 ready-to-use GitHub issue templates covering all missing features identified in the protocol gap analysis. Issues are organized into 8 phases:
+This document provides 18 ready-to-use GitHub issue templates covering all missing features identified in the protocol gap analysis. Issues are organized into 7 phases (Phase 6 and Issues 13-14, CloudDNS discovery, were dropped because dns.loxonecloud.com is no longer operational):
 
 1. **Phase 1 (Issues 1-3):** Core event processing - CRITICAL
 2. **Phase 2 (Issues 4-5):** Structure file and control commands - CRITICAL  
 3. **Phase 3 (Issues 6-8):** Command encryption - HIGH PRIORITY
 4. **Phase 4 (Issue 9):** Certificate handling - MEDIUM PRIORITY
 5. **Phase 5 (Issues 10-12):** Extended token management - MEDIUM PRIORITY
-6. **Phase 6 (Issues 13-14):** CloudDNS discovery - MEDIUM PRIORITY
 7. **Phase 7 (Issues 15-16):** Error handling - LOW PRIORITY
 8. **Phase 8 (Issues 17-20):** Additional features - LOW PRIORITY
 
