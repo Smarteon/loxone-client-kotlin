@@ -140,8 +140,12 @@ internal object LoxoneCrypto {
     fun loxoneHmac(token: Token, hashing: Hashing, operation: String): String =
         loxoneHmac(checkNotNull(token.token) { "Can't hash non-filled token" }, hashing, operation)
 
+    /**
+     * Uppercase hex `SHA(secret:salt)` with [hashing]'s salt and algorithm: the stored form of a password,
+     * as `jdev/sps/updateuserpwdh` expects it.
+     */
     @OptIn(ExperimentalStdlibApi::class)
-    private fun loxoneDigest(secret: String, hashing: Hashing): String {
+    internal fun loxoneDigest(secret: String, hashing: Hashing): String {
         val digest = when (hashing.hashAlg) {
             null, "SHA1" -> SHA1()
             "SHA256" -> SHA256()

@@ -33,6 +33,12 @@ data class TokenPermission(val id: Int) {
         /** CONFIG permission - used to connect like Loxone Config application. */
         @JvmField val CONFIG = TokenPermission(12)
 
+        /**
+         * Changing the user's own password and, with [USER_MANAGEMENT], another user's (`jdev/sps/updateuserpwdh`),
+         * which the Miniserver refuses with 403 without it (verified on firmware 17.2 and 17.3).
+         */
+        @JvmField val CHANGE_PWD = TokenPermission(32)
+
         /** Expert mode (`jdev/sps/io/<uuid>/edit/…`), admins only. Alone it caps the token at an hour. */
         @JvmField val EXPERT_MODE = TokenPermission(64)
 

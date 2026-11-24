@@ -1,11 +1,16 @@
 package cz.smarteon.loxkt
 
 import cz.smarteon.loxkt.message.EmptyLoxoneMsgVal
+import cz.smarteon.loxkt.message.Hashing
 import cz.smarteon.loxkt.message.Token
 import cz.smarteon.loxkt.message.TokenPermission
 import io.kotest.assertions.asClue
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldNotContain
+import kotlinx.serialization.json.Json
+import kotlin.time.Instant
 
 class LoxoneCommandsTest : ShouldSpec({
 
@@ -76,6 +81,53 @@ class LoxoneCommandsTest : ShouldSpec({
             it.valueType shouldBe Token::class
             it.authenticated shouldBe true
             it.expectedCode shouldBe "200"
+        }
+    }
+
+    should("create user management read and delete commands") {
+        LoxoneCommands.Users.list().pathSegments shouldBe listOf("jdev", "sps", "getuserlist2")
+        LoxoneCommands.Users.groups().pathSegments shouldBe listOf("jdev", "sps", "getgrouplist")
+        LoxoneCommands.Users.get("u-1").pathSegments shouldBe listOf("jdev", "sps", "getuser", "u-1")
+        LoxoneCommands.Users.delete("u-1").asClue {
+            it.pathSegments shouldBe listOf("jdev", "sps", "deleteuser", "u-1")
+            it.authenticated shouldBe true
+        }
+    }
+
+    should("create a time-limited user in its groups") {
+        val until = Instant.fromEpochSeconds(LoxoneTime.LOXONE_EPOCH_BEGIN + 500_000_000L)
+        LoxoneCommands.Users.create("host-loznice_1", listOf("g-1", "g-2"), until, deleteOnExpiry = true).asClue {
+            it.pathSegments.dropLast(1) shouldBe listOf("jdev", "sps", "addoredituser")
+            it.pathSegments.last() shouldNotContain " "
+            Json.parseToJsonElement(it.pathSegments.last()) shouldBe Json.parseToJsonElement(
+                """{"name":"host-loznice_1","changePassword":false,"userState":2,
+                |"validUntil":500000000,"expirationAction":1,"usergroups":["g-1","g-2"]}
+                """.trimMargin()
+            )
+        }
+    }
+
+    should("refuse user names the clients would encode differently") {
+        listOf("Host ložnice", "a/b", "50%", "", "host@chata", "..", "x".repeat(65)).forEach { name ->
+            shouldThrow<IllegalArgumentException> { LoxoneCommands.Users.create(name, emptyList()) }
+        }
+    }
+
+    should("create a permanent user without validity fields") {
+        val json = Json.parseToJsonElement(LoxoneCommands.Users.create("guest", emptyList()).pathSegments.last())
+        json shouldBe Json.parseToJsonElement("""{"name":"guest","changePassword":false,"userState":0,"usergroups":[]}""")
+    }
+
+    should("send only the salted password hash, encrypted") {
+        val salt = "31346632393637342D303239312D323837622D66666666613532346235633538306662"
+        mapOf(
+            "SHA1" to "75C4C904ECA6C7BC82B9D65D4C7FA94C3775CBCF",
+            "SHA256" to "CB6EE76C8E5403AA303D353C4F2883700BEF489BDB8412D522C80507DF9394E4"
+        ).forEach { (alg, hash) ->
+            LoxoneCommands.Users.setPassword("u-1", "pass", Hashing(byteArrayOf(1), salt, alg)).asClue {
+                it.pathSegments shouldBe listOf("jdev", "sps", "updateuserpwdh", "u-1", hash)
+                it.encrypted shouldBe true
+            }
         }
     }
 })

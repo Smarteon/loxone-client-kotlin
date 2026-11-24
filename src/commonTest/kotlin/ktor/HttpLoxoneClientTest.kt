@@ -155,11 +155,44 @@ class HttpLoxoneClientTest : WordSpec({
                 listOf("refreshjwt", "tokenAuthTest", "killtoken")
         }
 
-        "log requests without autht and tokens" {
+        "log requests without autht, tokens and password hashes" {
             redactSecrets("REQUEST: https://ms/jdev/sps/LoxAPPversion3?user=u&autht=0A1B2C3D") shouldBe
                 "REQUEST: https://ms/jdev/sps/LoxAPPversion3?user=u&autht=***"
             redactSecrets("""{"LL": {"value": {"token": "eyJ0.eyJ1.c2ln", "key": "4142", "validUntil": 1}}}""") shouldBe
                 """{"LL": {"value": {"token": "***", "key": "***", "validUntil": 1}}}"""
+            redactSecrets("REQUEST: https://ms/jdev/sps/updateuserpwdh/1a-2b/75C4C904?user=u&autht=0A") shouldBe
+                "REQUEST: https://ms/jdev/sps/updateuserpwdh/1a-2b/***?user=u&autht=***"
+        }
+
+        "log the answer to a password change without the hash it echoes" {
+            // As Ktor's Logging hands a response to the client's logger (AT log, firmware 17.3).
+            val response = """RESPONSE: 200 OK
+                |METHOD: GET
+                |FROM: https://ms/jdev/sps/updateuserpwdh/1a-2b/$HASH?user=u&autht=0A
+                |BODY START
+                |{"LL": { "control": "dev/sps/updateuserpwdh/1a-2b/$HASH", "value": "$HASH", "Code": "200"}}
+                |
+                |BODY END
+            """.trimMargin()
+            redactSecrets(response) shouldBe """RESPONSE: 200 OK
+                |METHOD: GET
+                |FROM: https://ms/jdev/sps/updateuserpwdh/1a-2b/***?user=u&autht=***
+                |BODY START
+                |{"LL": { "control": "dev/sps/updateuserpwdh/1a-2b/***", "value": "***", "Code": "200"}}
+                |
+                |BODY END
+            """.trimMargin()
+        }
+
+        "log the answer to an encrypted WebSocket command without its value" {
+            // As the WebSocket client logs an incoming message (AT log, firmware 17.3).
+            val cipher = "jdev/sys/enc/Q2lw%2BaGVy%3D"
+            redactSecrets("""{"LL": { "control": "$cipher", "value": "$HASH", "Code": "200"}}""") shouldBe
+                """{"LL": { "control": "$cipher", "value": "***", "Code": "200"}}"""
+            redactSecrets("""{"LL": {"control": "$cipher", "Code": "200", "value": "{\"a\": \"b\"}"}}""") shouldBe
+                """{"LL": {"control": "$cipher", "Code": "200", "value": "***"}}"""
+            redactSecrets("""{"LL": { "control": "jdev/sps/io/x/on", "value": "1", "Code": "200"}}""") shouldBe
+                """{"LL": { "control": "jdev/sps/io/x/on", "value": "1", "Code": "200"}}"""
         }
 
         "send a command's query parameters" {
@@ -286,3 +319,6 @@ class HttpLoxoneClientTest : WordSpec({
     }
 
 })
+
+/** A SHA256 password hash as `updateuserpwdh` carries it. */
+private const val HASH = "CB6EE76C8E5403AA303D353C4F2883700BEF489BDB8412D522C80507DF9394E4"

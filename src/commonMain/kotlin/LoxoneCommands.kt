@@ -5,12 +5,24 @@ import cz.smarteon.loxkt.app.LoxoneAppCommand
 import cz.smarteon.loxkt.app.LoxoneAppVersionCommand
 import cz.smarteon.loxkt.app.StatisticUnit
 import cz.smarteon.loxkt.message.EmptyLoxoneMsgVal
+import cz.smarteon.loxkt.message.Hashing
 import cz.smarteon.loxkt.message.LoxoneMsg
+import cz.smarteon.loxkt.message.MiniserverUser
+import cz.smarteon.loxkt.message.MiniserverUsers
 import cz.smarteon.loxkt.message.SimpleLoxoneMsgCommand
 import cz.smarteon.loxkt.message.Token
 import cz.smarteon.loxkt.message.TokenPermission
+import cz.smarteon.loxkt.message.UserGroups
+import cz.smarteon.loxkt.message.registerUserDecoders
+import cz.smarteon.loxkt.message.spsCommand
 import cz.smarteon.loxkt.message.sysCommand
+import kotlinx.serialization.json.add
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
+import kotlinx.serialization.json.putJsonArray
+import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
+import kotlin.time.Instant
 
 /**
  * Central registry of Loxone commands.
@@ -121,6 +133,95 @@ object LoxoneCommands {
             user,
             expectedCode = LoxoneMsg.CODE_AUTH_FAIL
         )
+    }
+
+    /**
+     * Commands of the Miniserver's user management. The logged-in user needs the user management right;
+     * adding a user to an admin group needs an administrator.
+     */
+    object Users {
+
+        init {
+            registerUserDecoders()
+        }
+
+        /** All users, without their groups. */
+        @JvmStatic
+        fun list() = spsCommand<MiniserverUsers>("getuserlist2")
+
+        /** All user groups with their type and rights. */
+        @JvmStatic
+        fun groups() = spsCommand<UserGroups>("getgrouplist")
+
+        /** The full configuration of the user with [uuid], groups included. */
+        @JvmStatic
+        fun get(uuid: String) = spsCommand<MiniserverUser>("getuser", uuid)
+
+        /**
+         * Creates a user [name] in the groups [groupUuids], answering with the new user. The user has no password
+         * until [setPassword] and may not change it from the apps.
+         *
+         * With [validUntil] the user is valid until then; afterwards the Miniserver deletes the user when
+         * [deleteOnExpiry], deactivates it otherwise (deletion needs firmware 14.2.5.16+).
+         *
+         * The name is 1–64 letters, digits and `._-`, not only dots: the HTTP client percent-encodes path segments and
+         * the WebSocket client does not, so any other character would reach the Miniserver differently per client,
+         * here and in [Hashing.commandForUser]. `@` stays out because the Miniserver reads `name@serial` as a Trust
+         * user.
+         */
+        @JvmStatic
+        @JvmOverloads
+        fun create(
+            name: String,
+            groupUuids: List<String>,
+            validUntil: Instant? = null,
+            deleteOnExpiry: Boolean = false
+        ): LoxoneMsgCommand<MiniserverUser> {
+            require(USER_NAME.matches(name)) { "User name \"$name\" may hold only 1–64 letters, digits and ._-" }
+            return spsCommand<MiniserverUser>("addoredituser", createJson(name, groupUuids, validUntil, deleteOnExpiry))
+        }
+
+        private fun createJson(name: String, groupUuids: List<String>, validUntil: Instant?, deleteOnExpiry: Boolean) =
+            buildJsonObject {
+                put("name", name)
+                put("changePassword", false)
+                if (validUntil == null) {
+                    put("userState", MiniserverUser.STATE_ENABLED)
+                } else {
+                    put("userState", MiniserverUser.STATE_VALID_UNTIL)
+                    put("validUntil", validUntil.epochSeconds - LoxoneTime.LOXONE_EPOCH_BEGIN)
+                    put(
+                        "expirationAction",
+                        if (deleteOnExpiry) MiniserverUser.EXPIRATION_DELETE else MiniserverUser.EXPIRATION_DEACTIVATE
+                    )
+                }
+                // Group uuids as plain strings, as the Loxone app sends them (`_getChangedUser`).
+                putJsonArray("usergroups") { groupUuids.forEach { add(it) } }
+            }.toString()
+
+        private val USER_NAME = Regex("""(?!\.+$)[A-Za-z0-9._-]{1,64}""")
+
+        /**
+         * Sets the password of the user with [uuid]. Only its hash is sent, salted with [hashing], which
+         * [Hashing.commandForUser] returns for that user; the hash can stand in for the password.
+         *
+         * The hash travels in the request path, so over plain `http://` it is as readable as the Basic credentials
+         * of every request. A WebSocket client encrypts the request (`jdev/sys/enc`), but the Miniserver's answer
+         * echoes the hash unencrypted. The client's own logger masks both; Ktor's internal loggers and the message
+         * of a `ClientRequestException` on a 4xx answer still carry the URL, as they do for `autht`.
+         *
+         * A token needs [TokenPermission.CHANGE_PWD] besides [TokenPermission.USER_MANAGEMENT].
+         */
+        @JvmStatic
+        fun setPassword(uuid: String, password: String, hashing: Hashing) = SimpleLoxoneMsgCommand(
+            listOf("jdev", "sps", "updateuserpwdh", uuid, LoxoneCrypto.loxoneDigest(password, hashing)),
+            EmptyLoxoneMsgVal::class,
+            encrypted = true
+        )
+
+        /** Deletes the user with [uuid] and closes its connections; the last administrator can't be deleted. */
+        @JvmStatic
+        fun delete(uuid: String) = spsCommand<EmptyLoxoneMsgVal>("deleteuser", uuid)
     }
 
     /**
