@@ -54,7 +54,9 @@ class KtorWebsocketLoxoneClient internal constructor(
     private val authenticator: LoxoneTokenAuthenticator? = null,
     private val commandEncryption: CommandEncryption = CommandEncryption.NONE,
     dispatcher: CoroutineDispatcher = Dispatchers.Default,
-    eventBufferSize: Int = DEFAULT_EVENT_BUFFER_SIZE
+    eventBufferSize: Int = DEFAULT_EVENT_BUFFER_SIZE,
+    /** Whether [client] was created here, so [close] closes it too (a passed-in one stays open). */
+    private val ownsClient: Boolean = false
 ) : WebsocketLoxoneClient {
 
     @JvmOverloads constructor(
@@ -68,13 +70,17 @@ class KtorWebsocketLoxoneClient internal constructor(
         authenticator,
         commandEncryption,
         Dispatchers.Default,
-        eventBufferSize
+        eventBufferSize,
+        ownsClient = true
     )
 
     private val logger = KotlinLogging.logger {}
 
     private val sessionMutex = Mutex()
-    private var session: ClientWebSocketSession? = null
+    @Volatile private var session: ClientWebSocketSession? = null
+
+    /** Set by [close]; a closed client never opens a session again. */
+    @Volatile private var closed = false
 
     /** Set before we ourselves close the session, so a resulting CLOSE frame on [processFrame]
      *  isn't misreported as peer-initiated (the peer echoes a CLOSE frame back as part of the
@@ -216,16 +222,19 @@ class KtorWebsocketLoxoneClient internal constructor(
      * websocket channel) and normalizes the certificate-wrapped value to a usable PUBLIC KEY PEM.
      */
     private suspend fun fetchPublicKey(): String {
-        val keyResponse = client.get {
-            url {
-                endpoint?.let {
-                    protocol = if (it.useSsl) URLProtocol.HTTPS else URLProtocol.HTTP
-                    host = it.host
-                    port = it.port
-                    encodedPath = it.path.trimEnd('/') + GET_PUBLIC_KEY_PATH
-                } ?: run { encodedPath = GET_PUBLIC_KEY_PATH }
-            }
-        }.bodyAsText()
+        // Bounded: a request the Miniserver never answers would otherwise hang the connect forever.
+        val keyResponse = withTimeoutOrNull(HTTP_REQUEST_TIMEOUT) {
+            client.get {
+                url {
+                    endpoint?.let {
+                        protocol = if (it.useSsl) URLProtocol.HTTPS else URLProtocol.HTTP
+                        host = it.host
+                        port = it.port
+                        encodedPath = it.path.trimEnd('/') + GET_PUBLIC_KEY_PATH
+                    } ?: run { encodedPath = GET_PUBLIC_KEY_PATH }
+                }
+            }.bodyAsText()
+        } ?: throw LoxoneException("Public key not received within $HTTP_REQUEST_TIMEOUT")
         val keyMsg = loxJson.decodeFromString<LoxoneMsg>(keyResponse)
         if (keyMsg.code != LoxoneMsg.CODE_OK) {
             throw LoxoneException("Failed to retrieve public key, code ${keyMsg.code}")
@@ -251,37 +260,60 @@ class KtorWebsocketLoxoneClient internal constructor(
             logger.error(e) { "Error closing authenticator" }
         }
         logger.debug { "Closing session" }
+        // Before reading the session: a session that ensureSession() publishes after this point
+        // sees the flag and closes itself (see there), so none is left open behind our back.
+        closed = true
         closingLocally = true
-        session?.close(CloseReason(NORMAL, "LoxoneKotlin finished"))
+        try {
+            session?.close(CloseReason(NORMAL, "LoxoneKotlin finished"))
+        } catch (e: Exception) {
+            logger.debug(e) { "Error closing session" }
+        }
         sessionKey = null
         scope.cancel("Closing the connection")
+        if (ownsClient) client.close()
     }
 
     private suspend fun ensureSession(): ClientWebSocketSession {
         sessionMutex.withLock {
+            if (closed) throw LoxoneException("Client is closed")
             if (session == null) {
-                client.webSocketSession(
-                    host = endpoint?.host,
-                    port = endpoint?.port,
-                    path = if (endpoint != null) endpoint.path + WS_PATH else WS_PATH,
-                    block = {
-                        url.protocol = if (endpoint?.useSsl == true) URLProtocol.WSS else URLProtocol.WS
-                    }
-                ).let { newSession ->
-                    logger.debug { "WebSocketSession session created" }
-                    session = newSession
-                    newSession.incoming.receiveAsFlow()
-                        .onEach(::processFrame)
-                        // incoming completes however the session ends (CLOSE frame, network
-                        // error, cancellation); only an end we did not initiate is a loss.
-                        .onCompletion { if (!closingLocally) _sessionLost.tryEmit(Unit) }
-                        .launchIn(scope)
-                    startKeepAlive(newSession)
+                val newSession = openSession()
+                session = newSession
+                if (closed) {
+                    // close() ran while the socket was opening: nobody else would close it.
+                    newSession.close(CloseReason(NORMAL, "LoxoneKotlin finished"))
+                    throw LoxoneException("Client closed while connecting")
                 }
+                logger.debug { "WebSocketSession session created" }
+                newSession.incoming.receiveAsFlow()
+                    .onEach(::processFrame)
+                    // incoming completes however the session ends (CLOSE frame, network
+                    // error, cancellation); only an end we did not initiate is a loss.
+                    .onCompletion { if (!closingLocally) _sessionLost.tryEmit(Unit) }
+                    .launchIn(scope)
+                startKeepAlive(newSession)
             }
         }
         return checkNotNull(session) { "WebSocketSession should not be null after init" }
     }
+
+    /**
+     * Opens the WebSocket, bounded by [WS_OPEN_TIMEOUT]: a socket that neither opens nor fails
+     * (e.g. its SYN lost while the network is down) would otherwise hang the connect forever.
+     * On timeout the opening socket is cancelled, which closes it.
+     */
+    private suspend fun openSession(): ClientWebSocketSession =
+        withTimeoutOrNull(WS_OPEN_TIMEOUT) {
+            client.webSocketSession(
+                host = endpoint?.host,
+                port = endpoint?.port,
+                path = if (endpoint != null) endpoint.path + WS_PATH else WS_PATH,
+                block = {
+                    url.protocol = if (endpoint?.useSsl == true) URLProtocol.WSS else URLProtocol.WS
+                }
+            )
+        } ?: throw LoxoneException("WebSocket not opened within $WS_OPEN_TIMEOUT")
 
     private suspend fun processFrame(frame: Frame) {
         when (frame.frameType) {
@@ -425,6 +457,8 @@ class KtorWebsocketLoxoneClient internal constructor(
         private const val ENC_PREFIX = "jdev/sys/enc/"
         private const val FENC_PREFIX = "jdev/sys/fenc/"
         private val RCV_TXT_MSG_TIMEOUT = 10.seconds
+        private val WS_OPEN_TIMEOUT = 15.seconds
+        private val HTTP_REQUEST_TIMEOUT = 15.seconds
         private val KEEP_ALIVE_INTERVAL = 4.minutes
         private val KEEP_ALIVE_RESPONSE_TIMEOUT = 30.seconds
     }

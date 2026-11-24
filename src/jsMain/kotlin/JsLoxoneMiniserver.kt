@@ -7,6 +7,8 @@ import cz.smarteon.loxkt.event.ValueEvent
 import cz.smarteon.loxkt.message.TokenPermission
 import cz.smarteon.loxkt.state.LoxoneState
 import cz.smarteon.loxkt.state.drainBatch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.produceIn
@@ -71,8 +73,9 @@ class JsLoxoneMiniserver(endpoint: LoxoneEndpoint, user: String, password: Strin
     @JsName("loadStructure")
     fun loadStructureAsync(): Promise<LoxoneApp> = sessionScope.promise { super.loadStructure() }
 
+    // Not in sessionScope: close() cancels that scope, which would reject this very promise.
     @JsName("close")
-    fun closeAsync(): Promise<Unit> = sessionScope.promise { super.close() }
+    fun closeAsync(): Promise<Unit> = CoroutineScope(Dispatchers.Default).promise { super.close() }
 
     private val valueListeners = mutableListOf<(String, Double) -> Unit>()
     private val textListeners = mutableListOf<(String, String) -> Unit>()

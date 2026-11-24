@@ -1,9 +1,11 @@
 package cz.smarteon.loxkt.ktor
 
 import cz.smarteon.loxkt.LoxoneEndpoint
+import cz.smarteon.loxkt.LoxoneException
 import cz.smarteon.loxkt.message.ApiInfo
 import cz.smarteon.loxkt.message.TestingLoxValues.API_INFO_MSG_VAL
 import cz.smarteon.loxkt.message.TestingMessages.okMsg
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,6 +36,18 @@ class WebsocketLoxoneClientIT : StringSpec({
         ctx.received.receive() shouldBe "keepalive"
 
         client.close()
+    }
+
+    "should not open a session once closed" {
+        val ctx = startTestWebSocketServer(
+            "jdev/cfg/api" to { _ -> sendLoxoneResponse(okMsg("dev/cfg/api", API_INFO_MSG_VAL)) }
+        )
+        val client = KtorWebsocketLoxoneClient(ctx.testedClient, dispatcher = UnconfinedTestDispatcher())
+
+        client.close()
+
+        shouldThrow<LoxoneException> { client.callRaw("jdev/cfg/api") }
+        ctx.received.tryReceive().isSuccess shouldBe false
     }
 
     "can be constructed via the public endpoint constructor and closed without connecting" {

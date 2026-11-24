@@ -171,6 +171,24 @@ class LoxoneTokenAuthenticatorTest : ShouldSpec({
         }
     }
 
+    context("closing a websocket that never authenticated") {
+        val (authenticator, repository) = authenticatorOf()
+        val authenticated = wsClient()
+        val abandoned = wsClient()
+
+        should("not kill the token it got") {
+            // e.g. a connect abandoned before authwithtoken: there is no session to kill it in
+            authenticated.stubMsg("getjwt", token(TimeUtils.currentLoxoneSeconds().plus(400)))
+            authenticator.ensureAuthenticated(authenticated)
+            val verification = abandoned.stubMsg("killtoken", "", code = "401")
+
+            authenticator.close(abandoned)
+
+            repository.getToken(PROFILE).shouldNotBeNull()
+            verification.matches.size shouldBe 0
+        }
+    }
+
     context("without password") {
         val tokenOnly = LoxoneProfile(PROFILE.endpoint, LoxoneCredentials(USER))
 

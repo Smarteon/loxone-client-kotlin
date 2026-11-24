@@ -196,10 +196,19 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
      * kills it over HTTP when the caller knows it's no longer needed. Only a token this authenticator got
      * with the password: one handed in through the repository may be held by others too (and without a
      * password there would be no way to get a new one).
+     *
+     * Only over a WebSocket this authenticator authenticated: one that never got that far (a
+     * connect abandoned midway) has no session to kill the token in, and the kill would only wait
+     * for a reply that never comes.
      */
     suspend fun close(client: LoxoneClient) {
-        if (settings.killTokenOnClose && gotToken && client is WebsocketLoxoneClient) {
-            killToken(client)
+        if (client !is WebsocketLoxoneClient || client !in authWebsockets) return
+        try {
+            if (settings.killTokenOnClose && gotToken) {
+                killToken(client)
+            }
+        } finally {
+            authWebsockets.remove(client)
         }
     }
 
