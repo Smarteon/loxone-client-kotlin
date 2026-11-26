@@ -146,14 +146,14 @@ class KtorHttpLoxoneClient internal constructor(
 
 private val REQUEST_TIMEOUT = 60.seconds
 
-private val SECRETS = Regex("""(autht=|"token"\s*:\s*"|"key"\s*:\s*"|updateuserpwdh/[^/\s"]+/)[^&"\s?]+""")
+private val SECRETS = Regex("""(autht=|otp=|"token"\s*:\s*"|"key"\s*:\s*"|updateuserpwdh/[^/\s"]+/)[^&"\s?]+""")
 
 /** The string `value` of an answer to `updateuserpwdh` or to an encrypted command: it may echo a secret. */
 private val ECHOED_SECRET =
     Regex("""("control"\s*:\s*"[^"]*(?:updateuserpwdh|sys/enc/)[^"]*"[^{}]*?"value"\s*:\s*")(?:[^"\\]|\\.)*""")
 
 /**
- * [text] without `autht` values, the `token` and `key` of token responses, the password hash of
+ * [text] without `autht` and `otp` values, the `token` and `key` of token responses, the password hash of
  * `updateuserpwdh` and the `value` the Miniserver answers to it or to an encrypted command, for the client's
  * own logging of requests and messages. Ktor's own loggers and the message of a `ClientRequestException` still
  * carry the whole URL.

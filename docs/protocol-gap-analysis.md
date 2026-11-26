@@ -28,6 +28,8 @@ The library currently implements core authentication (token-based), basic WebSoc
 2. **Authentication & Authorization**
    - Token-based authentication (JWT)
    - Token acquisition (`getjwt`)
+   - Login of a user with MFA (firmware 17.3): `getjwt?method=…&otp=…`, the login code of a refusal
+     (`LoxoneLoginCodeException`, codes 460–470), another e-mailed code (`otpresend`); no enrolment (`mfasetup`)
    - Token authentication (`authwithtoken`)
    - Token killing (`killtoken`)
    - Token refresh tracking (expiry detection)

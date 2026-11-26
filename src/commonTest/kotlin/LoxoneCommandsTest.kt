@@ -2,6 +2,7 @@ package cz.smarteon.loxkt
 
 import cz.smarteon.loxkt.message.EmptyLoxoneMsgVal
 import cz.smarteon.loxkt.message.Hashing
+import cz.smarteon.loxkt.message.LoginCode
 import cz.smarteon.loxkt.message.Token
 import cz.smarteon.loxkt.message.TokenPermission
 import io.kotest.assertions.asClue
@@ -62,6 +63,25 @@ class LoxoneCommandsTest : ShouldSpec({
             it.queryString() shouldBe "?tokenHash=true"
             it.authenticated shouldBe false
             it.encrypted shouldBe true
+        }
+    }
+
+    should("create gettoken command with the second factor") {
+        LoxoneCommands.Tokens.get("hash", "user", TokenPermission.APP, method = "totp", otp = "639c").asClue {
+            it.pathSegments shouldBe LoxoneCommands.Tokens.get("hash", "user", TokenPermission.APP).pathSegments
+            it.queryString() shouldBe "?method=totp&otp=639c"
+            it.encrypted shouldBe true
+        }
+        LoxoneCommands.Tokens.get("hash", "user", TokenPermission.APP, method = "email").query shouldBe
+            mapOf("method" to "email")
+        LoxoneCommands.Tokens.get("hash", "user", TokenPermission.APP).query shouldBe emptyMap()
+    }
+
+    should("create otpresend command") {
+        LoxoneCommands.Tokens.resendLoginCode("hash", "user").asClue {
+            it.pathSegments shouldBe listOf("jdev", "sys", "otpresend", "hash", "user")
+            it.valueType shouldBe LoginCode::class
+            it.authenticated shouldBe false
         }
     }
 
