@@ -136,8 +136,9 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
 
     /**
      * Refreshes the token now, without the password: the Miniserver issues a new token with a new validity and
-     * the same rights, which goes to the repository. The previous token stays valid until it expires or the
-     * new one is killed (verified on firmware 17.2), so whoever still holds it isn't cut off.
+     * the same rights, which goes to the repository. On firmware 17.2 the previous token stays valid until it
+     * expires or the new one is killed; on 17.3.11.23 it dies within about 2.5 minutes (401), so whoever still
+     * holds it must take the new one by then.
      *
      * @return the new token
      * @throws LoxoneException when there's no valid token to refresh
