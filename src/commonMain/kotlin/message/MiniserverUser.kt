@@ -90,5 +90,5 @@ internal fun registerUserDecoders() {
     loxoneMsgValDecoders += UserGroups::class to { """{"items":${unquoteJson(it)}}""" }
 }
 
-private fun unquoteJson(value: String): String =
+internal fun unquoteJson(value: String): String =
     if (value.startsWith('"')) loxJson.decodeFromString<String>(value) else value

@@ -2,6 +2,7 @@ package cz.smarteon.loxkt
 
 import cz.smarteon.loxkt.LoxoneEndpoint.Companion.local
 import cz.smarteon.loxkt.message.Hashing.Companion.commandForUser
+import cz.smarteon.loxkt.message.LoginCode
 import cz.smarteon.loxkt.message.LoxoneMsg
 import cz.smarteon.loxkt.message.TestingLoxValues.HASHING
 import cz.smarteon.loxkt.message.TestingLoxValues.token
@@ -70,6 +71,43 @@ class LoxoneTokenAuthenticatorTest : ShouldSpec({
 
             repository.getToken(PROFILE) shouldBe null
             verification.matches.size shouldBe 1
+        }
+    }
+
+    context("logging in a user with MFA") {
+
+        should("send the method and the code as HMAC-SHA256 keyed with getkey2") {
+            val (authenticator, repository) = authenticatorOf()
+            val client = wsClient()
+            val get = client.stubMsg("getjwt", token(TimeUtils.currentLoxoneSeconds().plus(400)))
+
+            authenticator.ensureAuthenticated(client, LoginCode.TOTP, "123456")
+
+            repository.getToken(PROFILE).shouldNotBeNull()
+            // hmac.new(bytes.fromhex(key), code.encode(), hashlib.sha256).hexdigest(), as the M0 probe logged in
+            get.matches.single().query shouldBe mapOf(
+                "method" to "totp",
+                "otp" to "639c8b03a1bb46723e9b658dc0ffaca05ddf991df94056804b14f5af11979d97"
+            )
+        }
+
+        should("tell where the code went") {
+            val (authenticator, repository) = authenticatorOf()
+            val client = wsClient()
+            client.stubMsg("getjwt", """{"otp":{"mail":"sent","to":"m***@example.com","length":6}}""", code = "460")
+
+            shouldThrow<LoxoneLoginCodeException> { authenticator.ensureAuthenticated(client, LoginCode.EMAIL, null) }
+                .loginCode.to shouldBe "m***@example.com"
+            repository.getToken(PROFILE) shouldBe null
+        }
+
+        should("ask for another code by e-mail") {
+            val (authenticator, _) = authenticatorOf()
+            val client = wsClient()
+            val resend = client.stubMsg("otpresend", """{"mail":"wait","resendIn":28}""")
+
+            authenticator.resendLoginCode(client) shouldBe LoginCode(mail = "wait", resendIn = 28)
+            resend.matches.single().pathSegments[4] shouldBe USER
         }
     }
 

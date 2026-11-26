@@ -6,6 +6,7 @@ import cz.smarteon.loxkt.app.LoxoneAppVersionCommand
 import cz.smarteon.loxkt.app.StatisticUnit
 import cz.smarteon.loxkt.message.EmptyLoxoneMsgVal
 import cz.smarteon.loxkt.message.Hashing
+import cz.smarteon.loxkt.message.LoginCode
 import cz.smarteon.loxkt.message.LoxoneMsg
 import cz.smarteon.loxkt.message.MiniserverUser
 import cz.smarteon.loxkt.message.MiniserverUsers
@@ -53,7 +54,46 @@ object LoxoneCommands {
          * @param permission The permission of the token.
          * @param clientId Unique identifier of this client.
          * @param clientInfo Information about this client.
+         * @param method The second factor of a user with MFA (firmware 17.3), e.g. [LoginCode.TOTP] or
+         * [LoginCode.EMAIL]: without it a user with TOTP only can't log in (468). Asked with a method and no [otp],
+         * the Miniserver answers 460 with the user's methods, and e-mails a code only for [LoginCode.EMAIL].
+         * @param otp HMAC-SHA256 of the user's login code, keyed with the same `getkey2` as [credentialsHash],
+         * in lowercase hex.
          */
+        @JvmStatic
+        @Suppress("LongParameterList")
+        fun get(
+            credentialsHash: String,
+            user: String,
+            permission: TokenPermission,
+            clientId: String = LoxoneClientSettings.DEFAULT_CLIENT_ID,
+            clientInfo: String = LoxoneClientSettings.DEFAULT_CLIENT_INFO,
+            method: String? = null,
+            otp: String? = null
+        ): LoxoneMsgCommand<Token> {
+            val command = sysCommand<Token>(
+                "getjwt",
+                credentialsHash,
+                user,
+                permission.id.toString(),
+                clientId,
+                clientInfo,
+                authenticated = false,
+                // getjwt must be sent over the encrypted channel; a Miniserver declines plain getjwt with 400
+                encrypted = true
+            )
+            val params = listOfNotNull(method?.let { "method" to it }, otp?.let { "otp" to it }).toMap()
+            return if (params.isEmpty()) {
+                command
+            } else {
+                object : LoxoneMsgCommand<Token> by command {
+                    override val query = params
+                }
+            }
+        }
+
+        /** [get] as 2.1 had it, for code compiled against it. */
+        @Deprecated("Use get with method and otp", level = DeprecationLevel.HIDDEN)
         @JvmStatic
         fun get(
             credentialsHash: String,
@@ -61,17 +101,17 @@ object LoxoneCommands {
             permission: TokenPermission,
             clientId: String = LoxoneClientSettings.DEFAULT_CLIENT_ID,
             clientInfo: String = LoxoneClientSettings.DEFAULT_CLIENT_INFO
-        ) = sysCommand<Token>(
-            "getjwt",
-            credentialsHash,
-            user,
-            permission.id.toString(),
-            clientId,
-            clientInfo,
-            authenticated = false,
-            // getjwt must be sent over the encrypted channel; a Miniserver declines plain getjwt with 400
-            encrypted = true
-        )
+        ): LoxoneMsgCommand<Token> = get(credentialsHash, user, permission, clientId, clientInfo, null, null)
+
+        /**
+         * Command to e-mail a user with MFA (firmware 17.3) another login code. The Miniserver answers `sent`, or
+         * `wait` with [LoginCode.resendIn] seconds when asked too early or during a lock.
+         * @param credentialsHash The credentials hash as for [get].
+         * @param user The user to send the code to.
+         */
+        @JvmStatic
+        fun resendLoginCode(credentialsHash: String, user: String) =
+            sysCommand<LoginCode>("otpresend", credentialsHash, user, authenticated = false, encrypted = true)
 
         /**
          * Command to get a new token signed with an existing one instead of the password (`?tokenHash=true`).

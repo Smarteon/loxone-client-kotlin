@@ -162,6 +162,8 @@ class HttpLoxoneClientTest : WordSpec({
                 """{"LL": {"value": {"token": "***", "key": "***", "validUntil": 1}}}"""
             redactSecrets("REQUEST: https://ms/jdev/sps/updateuserpwdh/1a-2b/75C4C904?user=u&autht=0A") shouldBe
                 "REQUEST: https://ms/jdev/sps/updateuserpwdh/1a-2b/***?user=u&autht=***"
+            redactSecrets("REQUEST: https://ms/jdev/sys/getjwt/h/u/4/id/info?method=totp&otp=639c8b03") shouldBe
+                "REQUEST: https://ms/jdev/sys/getjwt/h/u/4/id/info?method=totp&otp=***"
         }
 
         "log the answer to a password change without the hash it echoes" {

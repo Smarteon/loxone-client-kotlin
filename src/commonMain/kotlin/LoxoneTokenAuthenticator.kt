@@ -5,6 +5,7 @@ import cz.smarteon.loxkt.LoxoneCrypto.loxoneHashing
 import cz.smarteon.loxkt.message.EmptyLoxoneMsgVal
 import cz.smarteon.loxkt.message.Hashing
 import cz.smarteon.loxkt.message.Hashing.Companion.commandForUser
+import cz.smarteon.loxkt.message.LoginCode
 import cz.smarteon.loxkt.message.LoxoneMsg
 import cz.smarteon.loxkt.message.Token
 import cz.smarteon.loxkt.message.TokenPermission
@@ -65,7 +66,20 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
     // Whether this authenticator got the token with the password, rather than from the repository
     private var gotToken = false
 
-    suspend fun ensureAuthenticated(client: LoxoneClient) =
+    suspend fun ensureAuthenticated(client: LoxoneClient) = ensureAuthenticated(client, null, null)
+
+    /**
+     * [ensureAuthenticated] for a user with MFA (firmware 17.3), who gets a new token only with the second factor:
+     * [method] is the one to use ([LoginCode.TOTP], [LoginCode.EMAIL], see [Tokens.get]) and [loginCode] the code
+     * the user got by it, sent as HMAC-SHA256 keyed with the same `getkey2` as the password. Both are used only
+     * when a new token is needed, and also for a user without MFA, who logs in as without them.
+     *
+     * Refused with [LoxoneLoginCodeException]: asked with a method and no code, it tells the user's methods
+     * (460), and [LoginCode.EMAIL] e-mails a code. Every wrong code counts towards a lock of the login, so send a
+     * code only once. Over a WebSocket the Miniserver closes the session after refusing (firmware 17.3.11.23): ask
+     * again on a new client.
+     */
+    suspend fun ensureAuthenticated(client: LoxoneClient, method: String?, loginCode: String?) =
         execConditionalWithMutex({
             !TokenState(token).isUsable ||
                 (client is WebsocketLoxoneClient && !authWebsockets.contains(client))
@@ -85,7 +99,9 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
                             user,
                             settings.tokenPermission,
                             settings.clientId,
-                            settings.clientInfo
+                            settings.clientInfo,
+                            method,
+                            loginCode?.let { LoxoneCrypto.loxoneHmac(it, hashing.copy(hashAlg = "SHA256"), "otp") }
                         )
                     )
                     gotToken = true
@@ -120,8 +136,9 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
 
     /**
      * Refreshes the token now, without the password: the Miniserver issues a new token with a new validity and
-     * the same rights, which goes to the repository. The previous token stays valid until it expires or the
-     * new one is killed (verified on firmware 17.2), so whoever still holds it isn't cut off.
+     * the same rights, which goes to the repository. On firmware 17.2 the previous token stays valid until it
+     * expires or the new one is killed; on 17.3.11.23 it dies within about 2.5 minutes (401), so whoever still
+     * holds it must take the new one by then.
      *
      * @return the new token
      * @throws LoxoneException when there's no valid token to refresh
@@ -157,6 +174,18 @@ class LoxoneTokenAuthenticator @JvmOverloads constructor(
         val key = Codec.hexToBytes(Codec.loxJson.decodeFromString<String>(client.call(ONE_TIME_KEY).value))
         val tokenHash = LoxoneCrypto.loxoneHmac(current, Hashing(key, "", "SHA256"), "getjwt-tokenHash")
         return client.callForMsg(Tokens.getWithToken(tokenHash, user, permission, settings.clientId, clientInfo))
+    }
+
+    /**
+     * E-mails the user another login code ([Tokens.resendLoginCode]), signed with the password.
+     *
+     * @return `sent`, or `wait` with [LoginCode.resendIn] seconds when asked too early or during a lock
+     * @throws LoxoneException without a password
+     */
+    suspend fun resendLoginCode(client: LoxoneClient): LoginCode {
+        val password = password ?: throw LoxoneException("No password of $user to ask for a login code with")
+        val hashing = client.callForMsg(commandForUser(user))
+        return client.callForMsg(Tokens.resendLoginCode(loxoneHashing(password, hashing, "otpresend", user), user))
     }
 
     private suspend fun refresh(client: LoxoneClient, current: Token, hashing: Hashing) {

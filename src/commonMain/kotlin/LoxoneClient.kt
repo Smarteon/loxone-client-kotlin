@@ -3,6 +3,8 @@ package cz.smarteon.loxkt
 import cz.smarteon.loxkt.Codec.loxJson
 import cz.smarteon.loxkt.event.LoxoneEvent
 import cz.smarteon.loxkt.message.EmptyLoxoneMsgVal
+import cz.smarteon.loxkt.message.LoginCode
+import cz.smarteon.loxkt.message.LoxoneMsg
 import cz.smarteon.loxkt.message.LoxoneMsgVal
 import kotlinx.coroutines.flow.SharedFlow
 
@@ -63,6 +65,12 @@ suspend inline fun <reified VAL : LoxoneMsgVal> LoxoneClient.callForMsg(command:
             loxJson.decodeFromString<VAL>(msg.valueForDecoding(VAL::class))
         }
     } else {
-        throw LoxoneException("Miniserver answered ${msg.code} instead of ${command.expectedCode}", code = msg.code)
+        throw refusal(msg, command.expectedCode)
     }
 }
+
+/** [msg] answering other than [expectedCode]: a [LoxoneLoginCodeException] for a login code, else [LoxoneException]. */
+@PublishedApi
+internal fun refusal(msg: LoxoneMsg, expectedCode: String): LoxoneException =
+    LoginCode.of(msg)?.let { LoxoneLoginCodeException(msg.code, it) }
+        ?: LoxoneException("Miniserver answered ${msg.code} instead of $expectedCode", code = msg.code)

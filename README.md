@@ -18,7 +18,7 @@ This library implements core features of the Loxone protocol including token-bas
 - **[GitHub Issue Templates](docs/github-issues-templates.md)** - Ready-to-use templates for implementing missing features
 
 Key implemented features:
-- ✅ Token-based authentication (JWT)
+- ✅ Token-based authentication (JWT), also for users with MFA (code from an authenticator app or e-mail)
 - ✅ WebSocket and HTTP clients
 - ✅ Keep-alive mechanism
 - ✅ Basic API commands
