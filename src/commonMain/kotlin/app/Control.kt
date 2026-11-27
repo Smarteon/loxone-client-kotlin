@@ -159,20 +159,24 @@ data class ConfigState(
 /**
  * Statistics configuration for a control.
  *
+ * Every attribute of the statistic classes is optional. The Structure File lists them all, but
+ * firmware 17.3.11.23 sends some outputs of an Intelligent Room Controller as `{id, visuType}`
+ * only, and one control's statistic must not fail the whole structure file.
+ *
  * @property frequency How often the statistic is written
  * @property outputs Array of outputs for which statistic data is recorded
  */
 @JsExport
 @Serializable
 data class Statistic(
-    val frequency: Int,
+    val frequency: Int? = null,
     val outputs: List<StatisticOutput> = emptyList(),
 ) {
     val outputsArray: Array<StatisticOutput> get() = outputs.toTypedArray()
 }
 
 /**
- * Output configuration for statistics.
+ * Output configuration for statistics; every attribute may be missing (see [Statistic]).
  *
  * @property id Index of the datapoint row used (0-6)
  * @property name Name of the output
@@ -183,11 +187,11 @@ data class Statistic(
 @JsExport
 @Serializable
 data class StatisticOutput(
-    val id: Int,
-    val name: String,
+    val id: Int? = null,
+    val name: String? = null,
     val format: String? = null,
-    val uuid: String,
-    val visuType: Int,
+    val uuid: String? = null,
+    val visuType: Int? = null,
 )
 
 /**
@@ -204,7 +208,8 @@ data class StatisticV2(
 }
 
 /**
- * Group of statistics with the same recording frequency.
+ * Group of statistics with the same recording frequency; every attribute may be missing (see
+ * [Statistic]).
  *
  * @property id Group ID used for getStatistics requests
  * @property mode Recording mode (0=none, 1=every change max 1/min, 7=every change, 8-12=intervals)
@@ -215,8 +220,8 @@ data class StatisticV2(
 @JsExport
 @Serializable
 data class StatisticGroup(
-    val id: Int,
-    val mode: Int,
+    val id: Int? = null,
+    val mode: Int? = null,
     val accumulated: Boolean? = null,
     val activeSince: Long? = null,
     val dataPoints: List<StatisticDataPoint> = emptyList(),
