@@ -266,6 +266,59 @@ class LoxoneAppTest : ShouldSpec({
             control.statistic.outputs.shouldHaveSize(1)
             control.statistic.outputs.first().name shouldBe "Power"
         }
+
+        should("parse statistics with attributes missing") {
+            // Outputs 1 and 2 as firmware 17.3.11.23 sends an Intelligent Room Controller's; the
+            // missing frequency and the empty output stand for whatever the next one leaves out.
+            val jsonString = """
+                {
+                    "lastModified": "2026-11-27 10:04:56",
+                    "msInfo": {
+                        "serialNr": "504F94123456",
+                        "msName": "TestMiniserver",
+                        "projectName": "TestProject",
+                        "tempUnit": 0,
+                        "miniserverType": 2
+                    },
+                    "rooms": {},
+                    "cats": {},
+                    "controls": {
+                        "control-uuid-1": {
+                            "name": "Room Controller",
+                            "type": "IRoomControllerV2",
+                            "uuidAction": "control-uuid-1",
+                            "statistic": {
+                                "outputs": [
+                                    {
+                                        "id": 0,
+                                        "name": "Teplota",
+                                        "format": "%.1f°C",
+                                        "uuid": "output-uuid-1",
+                                        "visuType": 0
+                                    },
+                                    { "id": 1, "visuType": 0 },
+                                    { "id": 2, "visuType": 0 },
+                                    {}
+                                ]
+                            },
+                            "statisticV2": { "groups": [ {} ] }
+                        }
+                    }
+                }
+            """.trimIndent()
+
+            val control = json.decodeFromString<LoxoneApp>(jsonString).controls["control-uuid-1"].shouldNotBeNull()
+            val outputs = control.statistic.shouldNotBeNull().outputs
+
+            control.statistic.frequency shouldBe null
+            outputs.shouldHaveSize(4)
+            outputs[0].name shouldBe "Teplota"
+            outputs[1].name shouldBe null
+            outputs[1].uuid shouldBe null
+            outputs[2].id shouldBe 2
+            outputs[3] shouldBe StatisticOutput()
+            control.statisticV2.shouldNotBeNull().groups.single() shouldBe StatisticGroup()
+        }
     }
 
     context("Control extensions") {
